@@ -63,6 +63,8 @@ public class SOSResultSet extends OGCResultSet {
 			filters.remove(first);
 			currentFilter = first;
 			hasNext = true;
+		} else {
+			currentFilter = null;
 		}
 		return hasNext;
 	}
@@ -92,13 +94,13 @@ public class SOSResultSet extends OGCResultSet {
 		TableRow row = null;
 		try {
 			TableRow inRow = null;
-			boolean hasFilter = true;
+			boolean hasFilter = (null != currentFilter || !filters.isEmpty());
 			while (row == null && hasFilter) {
 				if (currentFilteredResultSet == null || currentFilteredResultSet.isAfterLast()) {
 					hasFilter = nextFilter();
 				}
 
-				while (currentFilteredResultSet.next() && row == null && hasFilter) {
+				while (row == null && hasFilter && currentFilteredResultSet.next()) {
 					inRow = TableRow.buildTableRow(currentFilteredResultSet);
 					if (filter(inRow)) {
 						Map<Column, String> resultMap = new HashMap<>();
