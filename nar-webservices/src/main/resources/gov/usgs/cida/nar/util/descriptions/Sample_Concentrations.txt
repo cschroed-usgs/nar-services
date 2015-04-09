@@ -6,4 +6,4 @@
 #DATE  Date
 #WY Water year
 #CONCENTRATION Concentration in milligrams per liter
-#REMARK Water-quality remark.  This value is “<” if data are censored to the laboratory reporting level or blank if they are not
+#REMARK Water-quality remark.  This field is "<" if data are less than the laboratory reporting level or blank if they are not
