@@ -44,15 +44,15 @@ import java.util.TreeSet;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SosAggregationService {
-	
-	private static final Logger log = Logger.getLogger(SosAggregationService.class);
+	private static final Logger log = LoggerFactory.getLogger(SosAggregationService.class);
 	
 	//determines how long we wait to check if SOS connectors are ready
 	//a higher wait time also helps with keeping output streams active by slowly streaming out bytes
@@ -119,7 +119,7 @@ public class SosAggregationService {
 			final String startDateTime,
 			final String endDateTime,
 			final String header) throws IOException {
-		
+		log.trace("Beginning stream for {}", this.type.name());
 		
 		final StringReader headerReader = new StringReader(header);
 
@@ -156,7 +156,7 @@ public class SosAggregationService {
 						Thread.sleep(WAIT_TIME_BETWEEN_SOS_REQUESTS);
 					}
 					catch (InterruptedException ex) {
-						log.debug(ex);
+						log.debug("Thread waiting for SOS response interrupted", ex);
 					}
 					
 					if (mimeType == MimeType.CSV || mimeType == MimeType.TAB) { //TODO use NUDE for this header writing
@@ -269,13 +269,13 @@ public class SosAggregationService {
 		try {
 			start = DateTime.parse(startDateTime, DateTimeFormat.forPattern("MM/dd/yyyy"));
 		} catch(Exception e) {
-			log.debug(e);
+			log.debug("Failed to parse date", e);
 		}
 		DateTime end = null;
 		try {
 			end = DateTime.parse(endDateTime, DateTimeFormat.forPattern("MM/dd/yyyy"));
 		} catch(Exception e) {
-			log.debug(e);
+			log.debug("Failed to parse date",e);
 		}
 		
 		Map<String, List<String>> columnMap = new HashMap<>();
