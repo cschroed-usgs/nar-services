@@ -2,7 +2,6 @@ package gov.usgs.cida.nar.resultset;
 
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
-import gov.usgs.cida.nude.resultset.inmemory.PeekingResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -22,11 +21,9 @@ public class WFSResultSet extends OGCResultSet {
 	
 	public static final String FID_NAME = "FID";
 	
-	private SimpleFeatureCollection features;
 	private SimpleFeatureIterator it;
 
 	public WFSResultSet(SimpleFeatureCollection features, ColumnGrouping colGroups) {
-		this.features = features;
 		this.it = features.features();
 		this.columns = colGroups;
 	}

@@ -6,6 +6,9 @@ import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.SimpleColumn;
 import gov.usgs.cida.nude.resultset.inmemory.PeekingResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
+import gov.usgs.cida.sos.ObservationMetadata;
+import gov.usgs.cida.sos.OrderedFilter;
+
 import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,8 +20,12 @@ import java.io.ObjectOutputStream;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.SortedSet;
+
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +33,14 @@ import org.slf4j.LoggerFactory;
 /**
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
+ * @author thongsav
  */
 public class CachedResultSet extends PeekingResultSet {
+	private static final Column PROCEDURE_IN_COL = new SimpleColumn(ObservationMetadata.PROCEDURE_ELEMENT);
+	private static final Column OBSERVED_PROPERTY_IN_COL = new SimpleColumn(ObservationMetadata.OBSERVED_PROPERTY_ELEMENT);
+	private static final Column FEATURE_OF_INTEREST_IN_COL = new SimpleColumn(ObservationMetadata.FEATURE_OF_INTEREST_ELEMENT);
 	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -1057296193256896787L;
 	
 	private static final Logger log = LoggerFactory.getLogger(CachedResultSet.class);
@@ -63,7 +75,6 @@ public class CachedResultSet extends PeekingResultSet {
 	 */
 	public static void serialize(ResultSet rset, File file) throws IOException, SQLException {
 		FileOutputStream f = new FileOutputStream(file);
-		
 		try (ObjectOutput s = new ObjectOutputStream(f)) {
 			ColumnGrouping columnGrouping = ColumnGrouping.getColumnGrouping(rset);
 			ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
@@ -75,6 +86,111 @@ public class CachedResultSet extends PeekingResultSet {
 			}
 		}
 	}
+	
+	/**
+	 * Does an in-memory sort of the result set based on the OrderedFilters passed in.
+	 *  
+	 * @param rset {@link java.sql.Resultset} to sort and cache to disk
+	 * @param file {@link java.io.File} to write to
+	 * @throws java.io.IOException
+	 * @throws java.sql.SQLException
+	 */
+	public static void sortedSerialize(ResultSet rset, SortedSet<OrderedFilter> filters, File file) throws IOException, SQLException {
+		FileOutputStream out = new FileOutputStream(file);
+		
+		//In-memory data structure to store rows that are not yet serialized out to disc.
+		//Key is the filter sort, value is a list of TableRows which match the sort key. 
+		HashMap<String, List<TableRow>> inMemoryCache = new HashMap<>();
+		
+		try (ObjectOutput s = new ObjectOutputStream(out)) {
+			ColumnGrouping columnGrouping = ColumnGrouping.getColumnGrouping(rset);
+			ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
+			s.writeObject(metaData);
+			
+			//loop through filters...
+			//For each filter, loop through the inMemoryCache looking to pluck rows that match plucking out rows that match the sort order. When done,
+			//continue down the result set either plucking matching rows or moving rows to the inMemoryCache.
+			//Repeat until no filters are left
+			for(OrderedFilter f : filters) {
+				List<String> keysToRemove = new ArrayList<>();
+				for(String k : inMemoryCache.keySet()) { //pluck from inMemory
+					List<TableRow> currentRows = inMemoryCache.get(k);
+					if(currentRows != null && currentRows.size() > 0) {
+						List<TableRow> rowsToRemove = new ArrayList<>();
+						for(TableRow tr : currentRows) {
+							if(matchesFilter(tr, f)) {
+								s.writeObject(tr);
+								rowsToRemove.add(tr);
+							}
+						}
+						for(TableRow remove : rowsToRemove) {
+							currentRows.remove(remove);
+						}
+					} else if(currentRows != null && currentRows.size() == 0) {
+						keysToRemove.add(k);
+					}
+				}
+				for(String remove : keysToRemove) {
+					inMemoryCache.remove(remove);
+				}
+				
+				//go through result set, worst case will have entire result set dumped into inMemoryCache
+				while (rset.next()) {
+					TableRow tr = TableRow.buildTableRow(rset);
+					if(matchesFilter(tr, f)) { 
+						s.writeObject(tr);
+					} else { //does not match, put into cache
+						String key = tr.getValue(PROCEDURE_IN_COL) + tr.getValue(OBSERVED_PROPERTY_IN_COL) + tr.getValue(FEATURE_OF_INTEREST_IN_COL);
+						List<TableRow> cachedRows = inMemoryCache.get(key);
+						if(cachedRows == null) {
+							cachedRows = new ArrayList<>();
+							inMemoryCache.put(key, cachedRows);
+						}
+						cachedRows.add(tr);
+					}
+				}
+			}
+			
+			//serialize rows left in the inMemoryCache in order found
+			List<String> keysToRemove = new ArrayList<>();
+			for(String k : inMemoryCache.keySet()) { 
+				List<TableRow> currentRows = inMemoryCache.get(k);
+				if(currentRows != null && currentRows.size() > 0) {
+					for(TableRow tr : currentRows) {
+						s.writeObject(tr);
+						currentRows.remove(tr);
+					}
+				} else if(currentRows != null && currentRows.size() == 0) {
+					keysToRemove.add(k);
+				}
+			}
+			for(String remove : keysToRemove) {
+				inMemoryCache.remove(remove);
+			}
+
+		}
+	}
+	
+	
+	private static boolean matchesFilter(TableRow row, OrderedFilter filter) {
+		boolean allEqual = true;
+		if (row != null) {
+			if (filter.procedure != null &&
+					!filter.procedure.equals(row.getValue(PROCEDURE_IN_COL))) {
+				allEqual = false;
+			}
+			if (filter.observedProperty != null &&
+					!filter.observedProperty.equals(row.getValue(OBSERVED_PROPERTY_IN_COL))) {
+				allEqual = false;
+			}
+			if (filter.featureOfInterest != null &&
+					!filter.featureOfInterest.equals(row.getValue(FEATURE_OF_INTEREST_IN_COL))) {
+				allEqual = false;
+			}
+		}
+		return allEqual;
+	}
+	
 
 	@Override
 	protected void addNextRow() throws SQLException {
