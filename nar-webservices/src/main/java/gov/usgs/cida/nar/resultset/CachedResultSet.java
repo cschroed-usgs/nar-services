@@ -156,9 +156,13 @@ public class CachedResultSet extends PeekingResultSet {
 			for(String k : inMemoryCache.keySet()) { 
 				List<TableRow> currentRows = inMemoryCache.get(k);
 				if(currentRows != null && currentRows.size() > 0) {
+					List<TableRow> rowsToRemove = new ArrayList<>();
 					for(TableRow tr : currentRows) {
 						s.writeObject(tr);
-						currentRows.remove(tr);
+						rowsToRemove.add(tr);
+					}
+					for(TableRow remove : rowsToRemove) {
+						currentRows.remove(remove);
 					}
 				} else if(currentRows != null && currentRows.size() == 0) {
 					keysToRemove.add(k);
