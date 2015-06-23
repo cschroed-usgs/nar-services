@@ -1,12 +1,12 @@
 package gov.usgs.cida.nar.resultset;
 
+import gov.usgs.cida.nar.service.SosTableRowComparator;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.SimpleColumn;
 import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import gov.usgs.cida.sos.ObservationMetadata;
-import gov.usgs.cida.sos.OrderedFilter;
 
 import java.io.File;
 import java.sql.ResultSet;
@@ -14,8 +14,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -114,17 +112,10 @@ public class CachedResultSetTest {
 		ResultSet rset = makeResultSet();
 		File file = File.createTempFile("testSortedSerialize", "tmp");
 		
-		//Sorting filters
-		SortedSet<OrderedFilter> filters = new TreeSet<>();
-		filters.add(new OrderedFilter("1", "prop3", "1"));
-		filters.add(new OrderedFilter("1", "prop3", "3"));
-		filters.add(new OrderedFilter("6", "prop2", "1"));
-		filters.add(new OrderedFilter("6", "prop2", "2"));
-		
-		CachedResultSet.sortedSerialize(rset, filters, file);
+		CachedResultSet.sortedSerialize(rset, new SosTableRowComparator(), file);
 		CachedResultSet instance = new CachedResultSet(file);
 		assertThat(instance.getMetaData().getColumnCount(), is(equalTo(3)));
-		
+
 		instance.next();
 		TableRow row1 = TableRow.buildTableRow(instance);
 		assertThat("6", is(equalTo(row1.getValue(procedure))));
@@ -139,21 +130,21 @@ public class CachedResultSetTest {
 		
 		instance.next();
 		TableRow row3 = TableRow.buildTableRow(instance);
-		assertThat("6", is(equalTo(row3.getValue(procedure))));
-		assertThat("prop2", is(equalTo(row3.getValue(observedProp))));
+		assertThat("2", is(equalTo(row3.getValue(procedure))));
+		assertThat("prop1", is(equalTo(row3.getValue(observedProp))));
 		assertThat("2", is(equalTo(row3.getValue(feature))));
 		
 		instance.next();
 		TableRow row4 = TableRow.buildTableRow(instance);
-		assertThat("1", is(equalTo(row4.getValue(procedure))));
-		assertThat("prop3", is(equalTo(row4.getValue(observedProp))));
-		assertThat("3", is(equalTo(row4.getValue(feature))));
+		assertThat("6", is(equalTo(row4.getValue(procedure))));
+		assertThat("prop2", is(equalTo(row4.getValue(observedProp))));
+		assertThat("2", is(equalTo(row4.getValue(feature))));
 		
 		instance.next(); //this row didn't match any of the filters and fell to the bottom
 		TableRow row5 = TableRow.buildTableRow(instance);
-		assertThat("2", is(equalTo(row5.getValue(procedure))));
-		assertThat("prop1", is(equalTo(row5.getValue(observedProp))));
-		assertThat("2", is(equalTo(row5.getValue(feature))));
+		assertThat("1", is(equalTo(row5.getValue(procedure))));
+		assertThat("prop3", is(equalTo(row5.getValue(observedProp))));
+		assertThat("3", is(equalTo(row5.getValue(feature))));
 		
 		rset.close();
 		FileUtils.deleteQuietly(file);

@@ -6,8 +6,6 @@ import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.SimpleColumn;
 import gov.usgs.cida.nude.resultset.inmemory.PeekingResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
-import gov.usgs.cida.sos.ObservationMetadata;
-import gov.usgs.cida.sos.OrderedFilter;
 
 import java.io.EOFException;
 import java.io.File;
@@ -22,10 +20,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
@@ -39,11 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author thongsav
  */
 public class CachedResultSet extends PeekingResultSet {
-	private static final Column PROCEDURE_IN_COL = new SimpleColumn(ObservationMetadata.PROCEDURE_ELEMENT);
-	private static final Column OBSERVED_PROPERTY_IN_COL = new SimpleColumn(ObservationMetadata.OBSERVED_PROPERTY_ELEMENT);
-	private static final Column FEATURE_OF_INTEREST_IN_COL = new SimpleColumn(ObservationMetadata.FEATURE_OF_INTEREST_ELEMENT);
-	
-	private static final int ROW_SIZE_FOR_SERIALIZATION = 10000;  //low numbers = lower memory usage, higher disk access/usage
+	private static final int ROW_SIZE_FOR_SERIALIZATION = 500000;  //low numbers = lower memory usage, higher disk access/usage
 	
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -1057296193256896787L;
@@ -100,7 +94,7 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @throws java.io.IOException
 	 * @throws java.sql.SQLException
 	 */
-	public static void sortedSerialize(ResultSet rset, SortedSet<OrderedFilter> filters, File file) throws IOException, SQLException {
+	public static void sortedSerialize(ResultSet rset, Comparator<TableRow> sortBy, File file) throws IOException, SQLException {
 		List<File> dataSubsetFiles = new ArrayList<>();
 		
 		try {
@@ -113,23 +107,50 @@ public class CachedResultSet extends PeekingResultSet {
 				currentRowSet.add(tr);
 				
 				if(currentRowSet.size() >= ROW_SIZE_FOR_SERIALIZATION) { //reached subset size
-					dataSubsetFiles.add(sortedSerialize(currentRowSet, columnGrouping, filters));
+					dataSubsetFiles.add(sortedSerialize(currentRowSet, columnGrouping, sortBy));
 					currentRowSet = new ArrayList<>();
 				}
 			}
 			//last subset
 			if(currentRowSet.size() > 0) {
-				dataSubsetFiles.add(sortedSerialize(currentRowSet, columnGrouping, filters));
+				dataSubsetFiles.add(sortedSerialize(currentRowSet, columnGrouping, sortBy));
 				currentRowSet = new ArrayList<>();
 			}
 			
 			//merge all data into a single File on disk
-			binaryMergeSortedDataSubsets(dataSubsetFiles, file);
+			binaryMergeSortedDataSubsets(dataSubsetFiles, sortBy, file);
 		} finally {
 			for(File f : dataSubsetFiles) {
 				FileUtils.deleteQuietly(f);
 			}
 		}
+	}
+	
+	/**
+	 * Sort's a list of TableRows based on the comparator
+	 * 
+	 * @param rows TableRows to sort
+	 * @param columnGrouping ColumnGrouping describing the tablerows
+	 * @param filters filters used for sorting
+	 * @return
+	 * @throws IOException
+	 * @throws SQLException
+	 */
+	private static File sortedSerialize(final List<TableRow> rows, ColumnGrouping columnGrouping, Comparator<TableRow> sortBy) throws IOException, SQLException {
+		File file = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".sorted.subset");
+		
+		try (FileOutputStream out = new FileOutputStream(file); ObjectOutput s = new ObjectOutputStream(out)) {
+			ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
+			s.writeObject(metaData);
+			
+			TableRow[] sorted = rows.toArray(new TableRow[]{});
+			Arrays.sort(sorted, sortBy);
+			for(TableRow r : sorted) {
+				s.writeObject(r);
+			}
+		}
+		
+		return file;
 	}
 	
 	/**
@@ -139,7 +160,7 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	private static void binaryMergeSortedDataSubsets(final List<File> dataSubsetFiles, File out) throws FileNotFoundException, IOException {
+	private static void binaryMergeSortedDataSubsets(final List<File> dataSubsetFiles, Comparator<TableRow> rowComparator, File out) throws FileNotFoundException, IOException {
 		//terminal case 1, only one file, copy it to the out file
 		if(dataSubsetFiles.size() == 1) {
 			try (FileOutputStream f = new FileOutputStream(out); FileInputStream in = new FileInputStream(dataSubsetFiles.get(0))) {
@@ -154,8 +175,8 @@ public class CachedResultSet extends PeekingResultSet {
 			
 			//merge the subsets
 			try{
-				binaryMergeSortedDataSubsets(leftFileSet, mergedLeftSetFile);
-				binaryMergeSortedDataSubsets(rightFileSet, mergedRightSetFile);
+				binaryMergeSortedDataSubsets(leftFileSet, rowComparator, mergedLeftSetFile);
+				binaryMergeSortedDataSubsets(rightFileSet, rowComparator, mergedRightSetFile);
 
 				CachedResultSet leftRows = new CachedResultSet(mergedLeftSetFile);
 				CachedResultSet rightRows  =new CachedResultSet(mergedRightSetFile);
@@ -165,7 +186,7 @@ public class CachedResultSet extends PeekingResultSet {
 					ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
 					s.writeObject(metaData);
 					
-					mergeToOutput(leftRows, rightRows, s);
+					mergeToOutput(leftRows, rightRows, rowComparator, s);
 				} catch (SQLException e) {
 					log.warn("Error merging subsets", e);
 				} 
@@ -176,7 +197,7 @@ public class CachedResultSet extends PeekingResultSet {
 		}
 	}
 	
-	private static void mergeToOutput(CachedResultSet leftRows, CachedResultSet rightRows, ObjectOutput s) throws IOException, SQLException {
+	private static void mergeToOutput(CachedResultSet leftRows, CachedResultSet rightRows, Comparator<TableRow> rowComparator, ObjectOutput s) throws IOException, SQLException {
 		TableRow currentLeft = getNextRow(leftRows);
 		TableRow currentRight = getNextRow(rightRows);
 		
@@ -187,7 +208,7 @@ public class CachedResultSet extends PeekingResultSet {
 			} else if(currentRight == null) {
 				s.writeObject(currentLeft);
 				currentLeft = getNextRow(leftRows);
-			} else if(compareRows(currentLeft, currentRight) < 0) {
+			} else if(rowComparator.compare(currentLeft, currentRight) < 0) {
 				s.writeObject(currentLeft);
 				currentLeft = getNextRow(leftRows);
 			} else {
@@ -207,120 +228,6 @@ public class CachedResultSet extends PeekingResultSet {
 		return row;
 	}
 	
-	//Sort by featuresOfInterest, 
-	private static int compareRows(TableRow row1, TableRow row2) {
-		return new OrderedFilter(row1.getValue(PROCEDURE_IN_COL), row1.getValue(OBSERVED_PROPERTY_IN_COL), row1.getValue(FEATURE_OF_INTEREST_IN_COL)).
-				compareTo(new OrderedFilter(row2.getValue(PROCEDURE_IN_COL), row2.getValue(OBSERVED_PROPERTY_IN_COL), row2.getValue(FEATURE_OF_INTEREST_IN_COL)));
-	}
-	
-	/**
-	 * Sort's a list of TableRows based on the OrderedFilters passed in.
-	 * 
-	 * @param rows TableRows to sort
-	 * @param columnGrouping ColumnGrouping describing the tablerows
-	 * @param filters filters used for sorting
-	 * @return
-	 * @throws IOException
-	 * @throws SQLException
-	 */
-	private static File sortedSerialize(final List<TableRow> rows, ColumnGrouping columnGrouping, SortedSet<OrderedFilter> filters) throws IOException, SQLException {
-		File file = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".sorted.subset");
-		
-		//In-memory data structure to store rows that are not yet serialized out to disc.
-		//Key is the filter sort, value is a list of TableRows which match the sort key. 
-		HashMap<String, List<TableRow>> inMemoryCache = new HashMap<>();
-		
-		try (FileOutputStream out = new FileOutputStream(file); ObjectOutput s = new ObjectOutputStream(out)) {
-			ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
-			s.writeObject(metaData);
-			
-			//move all TRs into HashMap cache
-			for(TableRow tr : rows) {
-				if(filters.size() > 0 && matchesFilter(tr, filters.first())) { 
-					s.writeObject(tr);
-				} else { //does not match, put into cache
-					String key = tr.getValue(PROCEDURE_IN_COL) + tr.getValue(OBSERVED_PROPERTY_IN_COL) + tr.getValue(FEATURE_OF_INTEREST_IN_COL);
-					List<TableRow> cachedRows = inMemoryCache.get(key);
-					if(cachedRows == null) {
-						cachedRows = new ArrayList<>();
-						inMemoryCache.put(key, cachedRows);
-					}
-					cachedRows.add(tr);
-				}
-			}
-			
-			//for each filter serialize the matching rows out to the file
-			for(OrderedFilter f : filters) {
-				List<String> keysToRemove = new ArrayList<>();
-				for(String k : inMemoryCache.keySet()) { //pluck from inMemory
-					List<TableRow> currentRows = inMemoryCache.get(k);
-					if(currentRows != null && currentRows.size() > 0) {
-						List<TableRow> rowsToRemove = new ArrayList<>();
-						for(TableRow tr : currentRows) {
-							if(matchesFilter(tr, f)) {
-								s.writeObject(tr);
-								rowsToRemove.add(tr);
-							}
-						}
-						for(TableRow remove : rowsToRemove) {
-							currentRows.remove(remove);
-						}
-					} else if(currentRows != null && currentRows.size() == 0) {
-						keysToRemove.add(k);
-					}
-				}
-				for(String remove : keysToRemove) {
-					inMemoryCache.remove(remove);
-				}
-			}
-			
-			//serialize rows left in the inMemoryCache in order found
-			List<String> keysToRemove = new ArrayList<>();
-			for(String k : inMemoryCache.keySet()) { 
-				List<TableRow> currentRows = inMemoryCache.get(k);
-				if(currentRows != null && currentRows.size() > 0) {
-					List<TableRow> rowsToRemove = new ArrayList<>();
-					for(TableRow tr : currentRows) {
-						s.writeObject(tr);
-						rowsToRemove.add(tr);
-					}
-					for(TableRow remove : rowsToRemove) {
-						currentRows.remove(remove);
-					}
-				} else if(currentRows != null && currentRows.size() == 0) {
-					keysToRemove.add(k);
-				}
-			}
-			for(String remove : keysToRemove) {
-				inMemoryCache.remove(remove);
-			}
-
-		}
-		
-		return file;
-	}
-	
-	
-	private static boolean matchesFilter(TableRow row, OrderedFilter filter) {
-		boolean allEqual = true;
-		if (row != null) {
-			if (filter.procedure != null &&
-					!filter.procedure.equals(row.getValue(PROCEDURE_IN_COL))) {
-				allEqual = false;
-			}
-			if (filter.observedProperty != null &&
-					!filter.observedProperty.equals(row.getValue(OBSERVED_PROPERTY_IN_COL))) {
-				allEqual = false;
-			}
-			if (filter.featureOfInterest != null &&
-					!filter.featureOfInterest.equals(row.getValue(FEATURE_OF_INTEREST_IN_COL))) {
-				allEqual = false;
-			}
-		}
-		return allEqual;
-	}
-	
-
 	@Override
 	protected void addNextRow() throws SQLException {
 		TableRow row = null;

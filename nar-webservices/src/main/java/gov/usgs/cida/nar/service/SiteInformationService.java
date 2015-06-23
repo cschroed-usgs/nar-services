@@ -63,9 +63,11 @@ public class SiteInformationService {
 	private static final String SITE_TYPE_OUT_COL = "SITE_TYPE";
 	
 	private String wfsUrl;
+	private String siteLayerName;
 	
 	public SiteInformationService() {
 		this.wfsUrl = JNDISingleton.getInstance().getProperty(SITE_INFO_URL_JNDI_NAME);
+		this.siteLayerName = JNDISingleton.getInstance().getProperty(SITE_LAYER_JNDI_NAME);
 	}
 	
 	public SiteInformationService(String wfsUrl) {
@@ -78,9 +80,6 @@ public class SiteInformationService {
 			final List<String> siteType,
 			final List<String> stationId,
 			final List<String> state) throws IOException {
-		
-		String siteLayerName = JNDISingleton.getInstance().getProperty(SITE_LAYER_JNDI_NAME);
-		
 		final WFSConnector wfsConnector = new WFSConnector(wfsUrl, siteLayerName, getFilter(siteType, stationId, state));
 		
 		List<PlanStep> steps = new LinkedList<>();

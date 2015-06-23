@@ -1,10 +1,10 @@
 package gov.usgs.cida.nar.connector;
 
 import gov.usgs.cida.nar.resultset.CachedResultSet;
+import gov.usgs.cida.nar.service.SosTableRowComparator;
 import gov.usgs.cida.nar.util.Profiler;
 import gov.usgs.cida.sos.DataAvailabilityMember;
 import gov.usgs.cida.sos.EndOfXmlStreamException;
-import gov.usgs.cida.sos.OrderedFilter;
 import gov.usgs.cida.sos.WaterML2Parser;
 
 import java.io.File;
@@ -13,8 +13,6 @@ import java.io.InputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.UUID;
 
 import javax.ws.rs.client.Client;
@@ -44,7 +42,6 @@ public class SOSClient extends Thread implements AutoCloseable {
 	private static int numConnections = 0;
 	
 	private File file;
-	SortedSet<OrderedFilter> filters;
 	private String sosEndpoint;
 	private DateTime startTime;
 	private DateTime endTime;
@@ -63,18 +60,6 @@ public class SOSClient extends Thread implements AutoCloseable {
 		this.observedProperties = observedProperties;
 		this.procedures = procedures;
 		this.featuresOfInterest = featuresOfInterest;
-		
-		//used to sort the serialize
-		filters = new TreeSet<>();
-		if(this.procedures != null && this.observedProperties != null && this.featuresOfInterest != null) {
-			for (String procedure : this.procedures) {
-				for (String prop : this.observedProperties) {
-					for (String featureOfInterest : this.featuresOfInterest) {
-						filters.add(new OrderedFilter(procedure, prop, featureOfInterest));
-					}
-				}
-			}
-		}
 	}
 
 	@Override
@@ -157,7 +142,7 @@ public class SOSClient extends Thread implements AutoCloseable {
 			
 			timerId = Profiler.startTimer();
 			ResultSet parse = parser.parse();
-			CachedResultSet.sortedSerialize(parse, this.filters, this.file);
+			CachedResultSet.sortedSerialize(parse, new SosTableRowComparator(), this.file);
 			long parseTime = Profiler.stopTimer(timerId);
 			Profiler.log.debug("Parsing and sorting SOS took {} milliseconds", parseTime);
 		} catch (IOException | XMLStreamException | SQLException ex) {
