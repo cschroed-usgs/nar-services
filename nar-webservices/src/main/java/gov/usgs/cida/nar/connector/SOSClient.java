@@ -7,12 +7,8 @@ import gov.usgs.cida.sos.EndOfXmlStreamException;
 import gov.usgs.cida.sos.WaterML2Parser;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -39,8 +35,8 @@ import org.slf4j.LoggerFactory;
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
 public class SOSClient extends Thread implements AutoCloseable {
-	
 	private static final Logger log = LoggerFactory.getLogger(SOSClient.class);
+	
 	private static final int MAX_CONNECTIONS = 8;
 	private static int numConnections = 0;
 	
@@ -85,10 +81,12 @@ public class SOSClient extends Thread implements AutoCloseable {
 
 		InputStream returnStream = null;
 		try {
+			Entity<String> dataAvailReq = buildGetDataAvailability(observedProperties, procedures);
+			log.trace("GetDataAvailability from {}:\n{}", this.sosEndpoint, dataAvailReq.getEntity());
 			Response response = client.target(this.sosEndpoint)
 				.path("")
 				.request(new MediaType[]{MediaType.APPLICATION_XML_TYPE})
-				.post(buildGetDataAvailability(observedProperties, procedures));
+				.post(dataAvailReq);
 			returnStream = response.readEntity(InputStream.class);
 			dataAvailabilityMembers = DataAvailabilityMember.buildListFromXmlInputStream(returnStream);
 		} catch (EndOfXmlStreamException | XMLStreamException | FactoryConfigurationError e) {
@@ -130,10 +128,12 @@ public class SOSClient extends Thread implements AutoCloseable {
 			}
 			numConnections++;
 			UUID timerId = Profiler.startTimer();
+			Entity<String> getObsRequest = buildGetObservationRequest(startTime, endTime, observedProperties, procedures, featuresOfInterest);
+			log.trace("GetObservation request {}:\n{}", this.sosEndpoint, getObsRequest.getEntity());
 			Response response = client.target(this.sosEndpoint)
 				.path("")
 				.request(new MediaType[]{MediaType.APPLICATION_XML_TYPE})
-				.post(buildGetObservationRequest(startTime, endTime, observedProperties, procedures, featuresOfInterest));
+				.post(getObsRequest);
 			returnStream = response.readEntity(InputStream.class);
 			WaterML2Parser parser = new WaterML2Parser(returnStream);
 			long sosTime = Profiler.stopTimer(timerId);
@@ -153,7 +153,7 @@ public class SOSClient extends Thread implements AutoCloseable {
 		}
 	}
 	
-	private static Entity buildGetObservationRequest(DateTime startTime, DateTime endTime, List<String> observedProperties,
+	private static Entity<String> buildGetObservationRequest(DateTime startTime, DateTime endTime, List<String> observedProperties,
 			List<String> procedures, List<String> featuresOfInterest) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
@@ -198,7 +198,7 @@ public class SOSClient extends Thread implements AutoCloseable {
 		return Entity.xml(builder.toString());
 	}
 	
-	private static Entity buildGetDataAvailability(List<String> observedProperties,
+	private static Entity<String> buildGetDataAvailability(List<String> observedProperties,
 			List<String> procedures) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")

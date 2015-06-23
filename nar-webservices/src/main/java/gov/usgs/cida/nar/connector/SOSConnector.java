@@ -75,6 +75,7 @@ public class SOSConnector implements IConnector, Closeable {
 		ResultSet resultSet = null;
 		
 		if (!isReady()) {
+			log.error("The SOS stream is not ready");
 			throw new RuntimeException("Not ready yet");
 		}
 		resultSet = new SOSResultSet(this.filters, this.client, this.cg);

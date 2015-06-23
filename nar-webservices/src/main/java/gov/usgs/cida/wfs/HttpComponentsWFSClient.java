@@ -80,7 +80,9 @@ public class HttpComponentsWFSClient implements WFSClientInterface {
         
         try {
             HttpPost post = new HttpPost(wfsEndpoint);
-            StringEntity stringEntity = new StringEntity(fillInTemplate(typeName, filterXml), ContentType.APPLICATION_XML);
+            String requestXml = fillInTemplate(typeName, filterXml);
+            StringEntity stringEntity = new StringEntity(requestXml, ContentType.APPLICATION_XML);
+            LOG.trace("WFS request to {}:\n{}", wfsEndpoint, requestXml);
             post.setEntity(stringEntity);
             HttpContext localContext = new BasicHttpContext();
             httpClient.setReuseStrategy(new NoConnectionReuseStrategy());
