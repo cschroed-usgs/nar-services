@@ -123,7 +123,7 @@ public class CachedResultSet extends PeekingResultSet {
 			}
 			
 			//merge all data into a single File on disk
-			binaryMergeSortedDataSubsets(dataSubsetFiles, sortBy, file);
+			binaryMergeSortedDataSubsets(dataSubsetFiles, sortBy, file, true);
 		} catch (SQLException e) {
 			log.warn("Unhandled SQLException", e);
 		} finally {
@@ -166,11 +166,16 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	private static void binaryMergeSortedDataSubsets(final List<File> dataSubsetFiles, Comparator<TableRow> rowComparator, File out) throws FileNotFoundException, IOException {
+	private static void binaryMergeSortedDataSubsets(final List<File> dataSubsetFiles, Comparator<TableRow> rowComparator, File out, boolean preserveFile) throws FileNotFoundException, IOException {
 		//terminal case 1, only one file, copy it to the out file
 		if(dataSubsetFiles.size() == 1) {
-			try (FileOutputStream f = new FileOutputStream(out); FileInputStream in = new FileInputStream(dataSubsetFiles.get(0))) {
-				IOUtils.copy(in, f);
+			if(preserveFile) { //this signifies that out is a file that must be preserved (likely final output)
+				try (FileOutputStream f = new FileOutputStream(out); FileInputStream in = new FileInputStream(dataSubsetFiles.get(0))) {
+					IOUtils.copy(in, f);
+				}
+			} else {
+				FileUtils.deleteQuietly(out);
+				out = dataSubsetFiles.get(0);
 			}
 		} else { //recursive case, divide file set in half and merge the halves recursively
 			File mergedLeftSetFile = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".merged.subset");
@@ -181,8 +186,8 @@ public class CachedResultSet extends PeekingResultSet {
 			
 			//merge the subsets
 			try{
-				binaryMergeSortedDataSubsets(leftFileSet, rowComparator, mergedLeftSetFile);
-				binaryMergeSortedDataSubsets(rightFileSet, rowComparator, mergedRightSetFile);
+				binaryMergeSortedDataSubsets(leftFileSet, rowComparator, mergedLeftSetFile, false);
+				binaryMergeSortedDataSubsets(rightFileSet, rowComparator, mergedRightSetFile, false);
 
 				CachedResultSet leftRows = new CachedResultSet(mergedLeftSetFile);
 				CachedResultSet rightRows  =new CachedResultSet(mergedRightSetFile);
