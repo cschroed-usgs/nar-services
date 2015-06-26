@@ -171,6 +171,13 @@ public class SosAggregationServiceTest {
 				withHeaders(new Header("Content-Type", "application/xml")).
 				withBody(l95Response));
 	}
+	
+	@Test
+	public void loopTests() throws IOException {
+		for(int i = 0; i < Integer.MAX_VALUE; i++) {
+			testAnnualLoadDownload();
+		}
+	}
 
 
 	@Test
@@ -191,6 +198,7 @@ public class SosAggregationServiceTest {
 					"");
 		
 		String resultCsv = new String(resultStream.toByteArray());
+		resultStream.close();
 		assertEquals("The combined SOS responses were transformed into the expected CSV", expectedCsv, resultCsv);
 	}
 }

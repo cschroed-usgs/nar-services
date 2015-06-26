@@ -70,9 +70,8 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @param rset {@link java.sql.Resultset} to cache to disk
 	 * @param file {@link java.io.File} to write to
 	 * @throws java.io.IOException
-	 * @throws java.sql.SQLException
 	 */
-	public static void serialize(ResultSet rset, File file) throws IOException, SQLException {
+	public static void serialize(ResultSet rset, File file) throws IOException {
 		try (FileOutputStream f = new FileOutputStream(file); ObjectOutput s = new ObjectOutputStream(f)) {
 			ColumnGrouping columnGrouping = ColumnGrouping.getColumnGrouping(rset);
 			ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
@@ -82,7 +81,9 @@ public class CachedResultSet extends PeekingResultSet {
 				TableRow tr = TableRow.buildTableRow(rset);
 				s.writeObject(tr);
 			}
-		}
+		} catch (SQLException e) {
+			throw new RuntimeException("Error while attempting to serialize ResultSet", e);
+		} 
 	}
 	
 	/**
@@ -92,9 +93,8 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @param rset {@link java.sql.Resultset} to sort and cache to disk
 	 * @param file {@link java.io.File} to write to
 	 * @throws java.io.IOException
-	 * @throws java.sql.SQLException
 	 */
-	public static void sortedSerialize(ResultSet rset, Comparator<TableRow> sortBy, File file) throws IOException, SQLException {
+	public static void sortedSerialize(ResultSet rset, Comparator<TableRow> sortBy, File file) throws IOException {
 		List<File> dataSubsetFiles = new ArrayList<>();
 		
 		try {
@@ -119,6 +119,8 @@ public class CachedResultSet extends PeekingResultSet {
 			
 			//merge all data into a single File on disk
 			binaryMergeSortedDataSubsets(dataSubsetFiles, sortBy, file);
+		} catch (SQLException e) {
+			log.warn("Unhandled SQLException", e);
 		} finally {
 			for(File f : dataSubsetFiles) {
 				FileUtils.deleteQuietly(f);
@@ -187,17 +189,17 @@ public class CachedResultSet extends PeekingResultSet {
 					s.writeObject(metaData);
 					
 					mergeToOutput(leftRows, rightRows, rowComparator, s);
-				} catch (SQLException e) {
-					log.warn("Error merging subsets", e);
-				} 
+				}
 			} finally {
-				FileUtils.deleteQuietly(mergedLeftSetFile);
-				FileUtils.deleteQuietly(mergedRightSetFile);
+				boolean leftDelete = FileUtils.deleteQuietly(mergedLeftSetFile);
+				boolean rightDelete = FileUtils.deleteQuietly(mergedRightSetFile);
+				log.trace("File " + mergedLeftSetFile.getName() + " delete status: " + leftDelete + 
+						"\nFile " + mergedRightSetFile.getName() + " delete status: " + rightDelete);
 			}
 		}
 	}
 	
-	private static void mergeToOutput(CachedResultSet leftRows, CachedResultSet rightRows, Comparator<TableRow> rowComparator, ObjectOutput s) throws IOException, SQLException {
+	private static void mergeToOutput(CachedResultSet leftRows, CachedResultSet rightRows, Comparator<TableRow> rowComparator, ObjectOutput s) throws IOException {
 		TableRow currentLeft = getNextRow(leftRows);
 		TableRow currentRight = getNextRow(rightRows);
 		
@@ -218,18 +220,22 @@ public class CachedResultSet extends PeekingResultSet {
 		}
 	}
 	
-	private static TableRow getNextRow(CachedResultSet rset) throws SQLException {
+	private static TableRow getNextRow(CachedResultSet rset) {
 		TableRow row = null;
 		
-		if(rset.next()) {
-			row = TableRow.buildTableRow(rset);
+		try {
+			if(rset.next()) {
+				row = TableRow.buildTableRow(rset);
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException("Error getting next row", e);
 		}
 		
 		return row;
 	}
 	
 	@Override
-	protected void addNextRow() throws SQLException {
+	protected void addNextRow() {
 		TableRow row = null;
 		try {
 			Object obj = objInputStream.readObject();
@@ -248,7 +254,7 @@ public class CachedResultSet extends PeekingResultSet {
 	}
 
 	@Override
-	public String getCursorName() throws SQLException {
+	public String getCursorName() {
 		return "cacheCursor";
 	}
 	
@@ -274,9 +280,13 @@ public class CachedResultSet extends PeekingResultSet {
 	}
 
 	@Override
-	public void close() throws SQLException {
+	public void close() {
 		IOUtils.closeQuietly(this.objInputStream);
-		super.close();
+		try {
+			super.close();
+		} catch (SQLException e) {
+			throw new RuntimeException("Could not close CachedResultSet", e);
+		}
 	}
 
 }

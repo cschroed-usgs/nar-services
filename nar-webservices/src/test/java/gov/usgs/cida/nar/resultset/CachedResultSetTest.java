@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
@@ -64,7 +65,7 @@ public class CachedResultSetTest {
 	@Test
 	public void testSerialize() throws Exception {
 		ResultSet rset = makeResultSet();
-		File file = File.createTempFile("testSerialize", "tmp");
+		File file = File.createTempFile("testSerialize", ".test.tmp");
 
 		CachedResultSet.serialize(rset, file);
 		CachedResultSet instance = new CachedResultSet(file);
@@ -101,7 +102,8 @@ public class CachedResultSetTest {
 		assertThat("1", is(equalTo(row5.getValue(feature))));
 		
 		rset.close();
-		FileUtils.deleteQuietly(file);
+		instance.close();
+		assertTrue("Temporary testSerialize files deleted", FileUtils.deleteQuietly(file));
 	}
 	
 	/**
@@ -110,7 +112,7 @@ public class CachedResultSetTest {
 	@Test
 	public void testSortedSerialize() throws Exception {
 		ResultSet rset = makeResultSet();
-		File file = File.createTempFile("testSortedSerialize", "tmp");
+		File file = File.createTempFile("testSortedSerialize", ".test.tmp");
 		
 		CachedResultSet.sortedSerialize(rset, new SosTableRowComparator(), file);
 		CachedResultSet instance = new CachedResultSet(file);
@@ -147,7 +149,7 @@ public class CachedResultSetTest {
 		assertThat("3", is(equalTo(row5.getValue(feature))));
 		
 		rset.close();
-		FileUtils.deleteQuietly(file);
+		instance.close();
+		assertTrue("Temporary testSortedSerialize files deleted", FileUtils.deleteQuietly(file));
 	}
-
 }

@@ -293,6 +293,7 @@ public class GMLStreamingFeatureCollection implements SimpleFeatureCollection {
 						inputStream.close();
 					} catch (IOException e) {
 						// do nothing, cleaning up
+						LOGGER.warn("Failed to close input stream");
 					}
 					inputStream = null;
 				}

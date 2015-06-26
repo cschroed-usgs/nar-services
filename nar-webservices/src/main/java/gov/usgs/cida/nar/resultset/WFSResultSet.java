@@ -50,7 +50,7 @@ public class WFSResultSet extends OGCResultSet {
 	}
 
 	@Override
-	public void close() throws SQLException {
+	public void close() {
 		IOUtils.closeQuietly(this.it);
 		super.close();
 	}

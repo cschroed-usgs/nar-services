@@ -9,10 +9,12 @@ import gov.usgs.cida.nude.column.SimpleColumn;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import gov.usgs.cida.sos.Observation;
 import gov.usgs.cida.sos.ObservationMetadata;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +34,12 @@ public class SOSResultSet extends OGCResultSet {
 	}
 
 	@Override
-	public void close() throws SQLException {
-		loadedResultSet.close();
+	public void close() {
+		try {
+			loadedResultSet.close();
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 		super.close();
 	}
 	
