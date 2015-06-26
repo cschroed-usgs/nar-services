@@ -176,7 +176,9 @@ public class CachedResultSet extends PeekingResultSet {
 			//merge the subsets
 			File mergedLeftSetFile = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".merged.subset");
 			File mergedRightSetFile = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".merged.subset");
-			
+
+			CachedResultSet leftRows = null; 
+			CachedResultSet rightRows = null;
 			try{
 				List<File> leftFileSet = dataSubsetFiles.subList(0, dataSubsetFiles.size()/2);
 				List<File> rightFileSet = dataSubsetFiles.subList(dataSubsetFiles.size()/2, dataSubsetFiles.size());
@@ -184,9 +186,8 @@ public class CachedResultSet extends PeekingResultSet {
 				binaryMergeSortedDataSubsets(leftFileSet, rowComparator, mergedLeftSetFile);
 				binaryMergeSortedDataSubsets(rightFileSet, rowComparator, mergedRightSetFile);
 
-				CachedResultSet leftRows = new CachedResultSet(mergedLeftSetFile);
-				CachedResultSet rightRows  =new CachedResultSet(mergedRightSetFile);
-				
+				leftRows = new CachedResultSet(mergedLeftSetFile);
+				rightRows = new CachedResultSet(mergedRightSetFile);
 				try (FileOutputStream f = new FileOutputStream(out); ObjectOutput s = new ObjectOutputStream(f)) {
 					ColumnGrouping columnGrouping = ColumnGrouping.getColumnGrouping(leftRows);
 					ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
@@ -195,6 +196,8 @@ public class CachedResultSet extends PeekingResultSet {
 					mergeToOutput(leftRows, rightRows, rowComparator, s);
 				}
 			} finally {
+				leftRows.close();
+				rightRows.close();
 				boolean leftDelete = FileUtils.deleteQuietly(mergedLeftSetFile);
 				boolean rightDelete = FileUtils.deleteQuietly(mergedRightSetFile);
 				log.trace("File " + mergedLeftSetFile.getName() + " delete status: " + leftDelete + 
