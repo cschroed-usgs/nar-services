@@ -1,26 +1,34 @@
 package gov.usgs.cida.gml;
 
 import com.ctc.wstx.stax.WstxInputFactory;
+
+import gov.usgs.cida.nar.resultset.CachedResultSet;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
 import org.geotools.gml3.ApplicationSchemaConfiguration;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author tkunicki
  */
 public class GMLUtil {
-
+	private static final Logger log = LoggerFactory.getLogger(GMLUtil.class);
+	
 	private static final WstxInputFactory INPUTFACTORY_XML;
 //	private static final StAXInputFactory INPUTFACTORY_FINF;
 
@@ -43,7 +51,7 @@ public class GMLUtil {
 				try {
 					inputStream.close();
 				} catch (IOException e) {
-					// don't care, cleaning up...
+					log.warn("Failed to close input stream", e);
 				}
 			}
 		}
@@ -99,7 +107,8 @@ public class GMLUtil {
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		} finally {
-			if (inputStream != null) try { inputStream.close(); } catch (IOException e) { }
+			if (inputStream != null) try { inputStream.close(); } catch (IOException e) { 
+				log.warn("Failed to close input stream", e); }
 		}
 		return configuration;
 	}

@@ -13,12 +13,10 @@ import gov.usgs.cida.nude.filter.FilterStage;
 import gov.usgs.cida.nude.filter.FilterStageBuilder;
 import gov.usgs.cida.nude.filter.FilteredResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
-import gov.usgs.cida.sos.OrderedFilter;
 import java.io.Closeable;
 import java.sql.ResultSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.SortedSet;
 import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -45,16 +43,14 @@ public class SOSConnector implements IConnector, Closeable {
 	
 	private SOSClient client;
 	private ColumnGrouping cg;
-	private SortedSet<OrderedFilter> filters;
 	private final Column valueColumn;
 	
 	private boolean isReady;
 
 	private UUID timer;
 
-	public SOSConnector(SOSClient client, SortedSet<OrderedFilter> filters, String valueColumnName) {
+	public SOSConnector(SOSClient client, String valueColumnName) {
 		this.client = client;
-		this.filters = filters;
 		this.isReady = false;
 		this.valueColumn = new SimpleColumn(valueColumnName);
 		this.cg = makeColumnGrouping(valueColumn);
@@ -78,7 +74,7 @@ public class SOSConnector implements IConnector, Closeable {
 			log.error("The SOS stream is not ready");
 			throw new RuntimeException("Not ready yet");
 		}
-		resultSet = new SOSResultSet(this.filters, this.client, this.cg);
+		resultSet = new SOSResultSet(this.client, this.cg);
 		
 		FilterStage makeNumericColumnsStage = new FilterStageBuilder(getExpectedColumns())
 				.addTransform(new SimpleColumn(SOS_SITE_COL.getName() + NUMERIC_SUFFIX, false), new ColumnTransform() {

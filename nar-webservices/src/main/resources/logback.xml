@@ -44,7 +44,7 @@
 	</logger>
 	
 	<logger name="gov.usgs.cida.wfs" level="ERROR" />
-	<logger name="gov.usgs.cida.nar.service" level="ERROR" />
+	<logger name="gov.usgs.cida.nar.service" level="DEBUG" />
 	<logger name="gov.usgs.cida.nar.connector" level="ERROR" />
 	<logger name="org.apache.http" level="INFO" />
 	<logger name="org.apache.commons.beanutils" level="ERROR" />

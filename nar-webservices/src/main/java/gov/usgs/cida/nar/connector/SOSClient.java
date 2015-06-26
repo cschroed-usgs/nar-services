@@ -1,6 +1,7 @@
 package gov.usgs.cida.nar.connector;
 
 import gov.usgs.cida.nar.resultset.CachedResultSet;
+import gov.usgs.cida.nar.service.SosTableRowComparator;
 import gov.usgs.cida.nar.util.Profiler;
 import gov.usgs.cida.sos.DataAvailabilityMember;
 import gov.usgs.cida.sos.EndOfXmlStreamException;
@@ -10,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,6 +41,7 @@ public class SOSClient extends Thread implements AutoCloseable {
 	private static int numConnections = 0;
 	
 	private File file;
+	private	CachedResultSet openResultSet = null;
 	private String sosEndpoint;
 	private DateTime startTime;
 	private DateTime endTime;
@@ -68,7 +69,11 @@ public class SOSClient extends Thread implements AutoCloseable {
 	
 	@Override
 	public void close() {
-		FileUtils.deleteQuietly(file);
+		if(openResultSet != null) {
+			openResultSet.close();
+		}
+		boolean deleted = FileUtils.deleteQuietly(file);
+		log.trace("File delete attempt status: " + deleted);
 	}
 	
 	public List<DataAvailabilityMember> getDataAvailability() {
@@ -79,11 +84,12 @@ public class SOSClient extends Thread implements AutoCloseable {
 		clientConfig.property(ClientProperties.READ_TIMEOUT, 60000);
 		Client client = ClientBuilder.newClient(clientConfig);
 
+		Response response = null;
 		InputStream returnStream = null;
 		try {
 			Entity<String> dataAvailReq = buildGetDataAvailability(observedProperties, procedures);
 			log.trace("GetDataAvailability from {}:\n{}", this.sosEndpoint, dataAvailReq.getEntity());
-			Response response = client.target(this.sosEndpoint)
+			response = client.target(this.sosEndpoint)
 				.path("")
 				.request(new MediaType[]{MediaType.APPLICATION_XML_TYPE})
 				.post(dataAvailReq);
@@ -93,18 +99,19 @@ public class SOSClient extends Thread implements AutoCloseable {
 			log.debug("error parsing GetDataAvailability response", e);
 		} finally {
 			IOUtils.closeQuietly(returnStream);
+			response.close();
+			client.close();
 		}
 		return dataAvailabilityMembers;
 	}
 	
 	public ResultSet readFile() {
-		CachedResultSet result = null;
 		try {
-			result = new CachedResultSet(this.file);
+			openResultSet = new CachedResultSet(this.file);
 		} catch (IOException ex) {
 			log.debug("Error retrieving cached dataset", ex);
 		}
-		return result;
+		return openResultSet;
 	}
 
 	private synchronized void fetchData() {
@@ -116,6 +123,7 @@ public class SOSClient extends Thread implements AutoCloseable {
 		clientConfig.property(ClientProperties.READ_TIMEOUT, 180000);
 		Client client = ClientBuilder.newClient(clientConfig);
 		
+		Response response = null;
 		InputStream returnStream = null;
 		try {
 			while (numConnections >= MAX_CONNECTIONS) {
@@ -130,7 +138,7 @@ public class SOSClient extends Thread implements AutoCloseable {
 			UUID timerId = Profiler.startTimer();
 			Entity<String> getObsRequest = buildGetObservationRequest(startTime, endTime, observedProperties, procedures, featuresOfInterest);
 			log.trace("GetObservation request {}:\n{}", this.sosEndpoint, getObsRequest.getEntity());
-			Response response = client.target(this.sosEndpoint)
+			response = client.target(this.sosEndpoint)
 				.path("")
 				.request(new MediaType[]{MediaType.APPLICATION_XML_TYPE})
 				.post(getObsRequest);
@@ -141,14 +149,16 @@ public class SOSClient extends Thread implements AutoCloseable {
 			
 			timerId = Profiler.startTimer();
 			ResultSet parse = parser.parse();
-			CachedResultSet.serialize(parse, this.file);
+			CachedResultSet.sortedSerialize(parse, new SosTableRowComparator(), this.file);
 			long parseTime = Profiler.stopTimer(timerId);
-			Profiler.log.debug("Parsing SOS took {} milliseconds", parseTime);
-		} catch (IOException | XMLStreamException | SQLException ex) {
+			Profiler.log.debug("Parsing and sorting SOS took {} milliseconds", parseTime);
+		} catch (IOException | XMLStreamException ex) {
 			log.error("Unable to get data from service", ex);
 		} finally {
 			numConnections--;
 			IOUtils.closeQuietly(returnStream);
+			response.close();
+			client.close();
 			fetched = true;
 		}
 	}

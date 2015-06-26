@@ -172,7 +172,6 @@ public class SosAggregationServiceTest {
 				withBody(l95Response));
 	}
 
-
 	@Test
 	public void testAnnualLoadDownload() throws IOException {
 		ByteArrayOutputStream resultStream = new ByteArrayOutputStream();
@@ -191,6 +190,7 @@ public class SosAggregationServiceTest {
 					"");
 		
 		String resultCsv = new String(resultStream.toByteArray());
+		resultStream.close();
 		assertEquals("The combined SOS responses were transformed into the expected CSV", expectedCsv, resultCsv);
 	}
 }

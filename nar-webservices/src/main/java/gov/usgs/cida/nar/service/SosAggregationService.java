@@ -24,7 +24,6 @@ import gov.usgs.cida.nude.plan.Plan;
 import gov.usgs.cida.nude.plan.PlanStep;
 import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.sos.DataAvailabilityMember;
-import gov.usgs.cida.sos.OrderedFilter;
 import gov.usgs.webservices.framework.basic.MimeType;
 
 import java.io.IOException;
@@ -38,8 +37,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -294,7 +291,6 @@ public class SosAggregationService {
 		
 		for (String columnName : columnMap.keySet()) {
 			List<String> procList = columnMap.get(columnName);
-			SortedSet<OrderedFilter> filters = new TreeSet<>();
 
 			SOSClient gdaClient = new SOSClient(sosUrl, null, null, actualProperties, procList, null);
 			List<DataAvailabilityMember> dataAvailityMembers = gdaClient.getDataAvailability();
@@ -302,14 +298,8 @@ public class SosAggregationService {
 			
 			List<String> filteredStations = filterStationsByDataAvailibility(dataAvailityMembers, stationId);
 			SOSClient sosClient = new SOSClient(sosUrl, start, end, actualProperties, procList, filteredStations);
-			for (String procedure : procList) {
-				for (String prop : actualProperties) {
-					for (String featureOfInterest : filteredStations) {
-						filters.add(new OrderedFilter(procedure, prop, featureOfInterest));
-					}
-				}
-			}
-			final SOSConnector sosConnector = new SOSConnector(sosClient, filters, columnName);
+			
+			final SOSConnector sosConnector = new SOSConnector(sosClient, columnName);
 			sosConnectors.add(sosConnector);
 		}
 		return sosConnectors;
@@ -599,7 +589,6 @@ public class SosAggregationService {
 		finalColList.add(allCols.get(indexOfCol(allCols, WY_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONCENTRATION_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, REMARK_OUT_COL)));
-		//TODO NEED REMARK
 		
 		ColumnGrouping finalCols = new ColumnGrouping(finalColList);
 		FilterStep removeUnusedColsStep = new FilterStep(new NudeFilterBuilder(finalCols)
