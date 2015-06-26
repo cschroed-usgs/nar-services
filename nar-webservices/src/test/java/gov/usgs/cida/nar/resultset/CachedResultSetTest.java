@@ -31,6 +31,7 @@ public class CachedResultSetTest {
 	private static final Column procedure = new SimpleColumn(ObservationMetadata.PROCEDURE_ELEMENT);
 	private static final Column observedProp = new SimpleColumn(ObservationMetadata.OBSERVED_PROPERTY_ELEMENT);
 	private static final Column feature = new SimpleColumn(ObservationMetadata.FEATURE_OF_INTEREST_ELEMENT);
+	private static final Column time = new SimpleColumn(ObservationMetadata.TIME_PERIOD_ELEMENT);
 	
 	private static ColumnGrouping cg;
 	static {
@@ -38,24 +39,49 @@ public class CachedResultSetTest {
 		columns.add(procedure);
 		columns.add(observedProp);
 		columns.add(feature);
+		columns.add(time);
 		cg = new ColumnGrouping(columns);
 	}
 	
 	private ResultSet makeResultSet() {
 		StringTableResultSet rs = new StringTableResultSet(cg);
-		rs.addRow(makeRow("6", "prop2", "2"));
-		rs.addRow(makeRow("6", "prop2", "1"));
-		rs.addRow(makeRow("1", "prop3", "3"));
-		rs.addRow(makeRow("2", "prop1", "2"));
-		rs.addRow(makeRow("1", "prop3", "1"));
+		rs.addRow(makeRow("2", "prop2", "6", "time"));
+		rs.addRow(makeRow("1", "prop2", "6", "time"));
+		rs.addRow(makeRow("3", "prop3", "1", "time"));
+		rs.addRow(makeRow("2", "prop1", "2", "time"));
+		rs.addRow(makeRow("1", "prop3", "1", "time"));
 		return rs;
 	}
 	
-	private TableRow makeRow(String proc, String prop, String feat) {
+	/**
+	 * This result set should have enough rows to use sorting out to file system
+	 */
+	private ResultSet makeLargeResultSet() {
+		StringTableResultSet rs = new StringTableResultSet(cg);
+
+		int rowNum = CachedResultSet.ROW_SIZE_FOR_SERIALIZATION + (CachedResultSet.ROW_SIZE_FOR_SERIALIZATION/2); //should result in 1 and half pages
+		for(int i = 1; i <= rowNum; i++) {
+			String flip = leftPadInt(rowNum - i);
+			rs.addRow(makeRow("feat-" + flip, "prop-" + flip, "proc-" + flip, "time-" + flip));
+		}
+		return rs;
+	}
+	
+	//So that numbers are alphabetically ordered
+	private String leftPadInt(int i) {
+		String val = String.valueOf(i);
+		while(val.length() < 10) {
+			val = "0" + val;
+		}
+		return val;
+	}
+	
+	private TableRow makeRow(String feat, String prop, String proc, String inTime) {
 		Map<Column, String> row = new HashMap<>();
-		row.put(procedure, proc);
-		row.put(observedProp, prop);
 		row.put(feature, feat);
+		row.put(observedProp, prop);
+		row.put(procedure, proc);
+		row.put(time, inTime);
 		return new TableRow(cg, row);
 	}
 
@@ -69,7 +95,7 @@ public class CachedResultSetTest {
 
 		CachedResultSet.serialize(rset, file);
 		CachedResultSet instance = new CachedResultSet(file);
-		assertThat(instance.getMetaData().getColumnCount(), is(equalTo(3)));
+		assertThat(instance.getMetaData().getColumnCount(), is(equalTo(4)));
 		
 		instance.next();
 		TableRow row1 = TableRow.buildTableRow(instance);
@@ -116,7 +142,7 @@ public class CachedResultSetTest {
 		
 		CachedResultSet.sortedSerialize(rset, new SosTableRowComparator(), file);
 		CachedResultSet instance = new CachedResultSet(file);
-		assertThat(instance.getMetaData().getColumnCount(), is(equalTo(3)));
+		assertThat(instance.getMetaData().getColumnCount(), is(equalTo(4)));
 
 		instance.next();
 		TableRow row1 = TableRow.buildTableRow(instance);
@@ -151,5 +177,31 @@ public class CachedResultSetTest {
 		rset.close();
 		instance.close();
 		assertTrue("Temporary testSortedSerialize files deleted", FileUtils.deleteQuietly(file));
+	}
+	
+	@Test
+	public void testSortedSerialize_Disk() throws Exception {
+		ResultSet rset = makeLargeResultSet();
+		File file = File.createTempFile("testSortedSerializeLarge", ".test.tmp");
+		
+		CachedResultSet.sortedSerialize(rset, new SosTableRowComparator(), file);
+		CachedResultSet instance = new CachedResultSet(file);
+		assertThat(instance.getMetaData().getColumnCount(), is(equalTo(4)));
+
+		//each row should be sorted from lowest to highest
+		int i = 0;
+		while(instance.next()) {
+			TableRow row = TableRow.buildTableRow(instance);
+			String rowNum = leftPadInt(i);
+			assertThat("feat-" + rowNum, is(equalTo(row.getValue(feature))));
+			assertThat("prop-" + rowNum, is(equalTo(row.getValue(observedProp))));
+			assertThat("proc-" + rowNum, is(equalTo(row.getValue(procedure))));
+			assertThat("time-" + rowNum, is(equalTo(row.getValue(time))));
+			i++;
+		}
+		
+		rset.close();
+		instance.close();
+		assertTrue("Temporary testSortedSerializeLarge files deleted", FileUtils.deleteQuietly(file));
 	}
 }

@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author thongsav
  */
 public class CachedResultSet extends PeekingResultSet {
-	private static final int ROW_SIZE_FOR_SERIALIZATION = 500000;  //low numbers = lower memory usage, higher disk access/usage
+	protected static final int ROW_SIZE_FOR_SERIALIZATION = 500000;  //low numbers = lower memory usage, higher disk access/usage
 	
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -1057296193256896787L;
@@ -123,7 +123,7 @@ public class CachedResultSet extends PeekingResultSet {
 			}
 			
 			//merge all data into a single File on disk
-			binaryMergeSortedDataSubsets(dataSubsetFiles, sortBy, file, true);
+			binaryMergeSortedDataSubsets(dataSubsetFiles, sortBy, file);
 		} catch (SQLException e) {
 			log.warn("Unhandled SQLException", e);
 		} finally {
@@ -166,28 +166,23 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	private static void binaryMergeSortedDataSubsets(final List<File> dataSubsetFiles, Comparator<TableRow> rowComparator, File out, boolean preserveFile) throws FileNotFoundException, IOException {
+	private static void binaryMergeSortedDataSubsets(final List<File> dataSubsetFiles, Comparator<TableRow> rowComparator, File out) throws FileNotFoundException, IOException {
 		//terminal case 1, only one file, copy it to the out file
 		if(dataSubsetFiles.size() == 1) {
-			if(preserveFile) { //this signifies that out is a file that must be preserved (likely final output)
-				try (FileOutputStream f = new FileOutputStream(out); FileInputStream in = new FileInputStream(dataSubsetFiles.get(0))) {
-					IOUtils.copy(in, f);
-				}
-			} else {
-				FileUtils.deleteQuietly(out);
-				out = dataSubsetFiles.get(0);
+			try (FileOutputStream f = new FileOutputStream(out); FileInputStream in = new FileInputStream(dataSubsetFiles.get(0))) {
+				IOUtils.copy(in, f);
 			}
 		} else { //recursive case, divide file set in half and merge the halves recursively
+			//merge the subsets
 			File mergedLeftSetFile = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".merged.subset");
 			File mergedRightSetFile = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".merged.subset");
 			
-			List<File> leftFileSet = dataSubsetFiles.subList(0, dataSubsetFiles.size()/2);
-			List<File> rightFileSet = dataSubsetFiles.subList(dataSubsetFiles.size()/2, dataSubsetFiles.size());
-			
-			//merge the subsets
 			try{
-				binaryMergeSortedDataSubsets(leftFileSet, rowComparator, mergedLeftSetFile, false);
-				binaryMergeSortedDataSubsets(rightFileSet, rowComparator, mergedRightSetFile, false);
+				List<File> leftFileSet = dataSubsetFiles.subList(0, dataSubsetFiles.size()/2);
+				List<File> rightFileSet = dataSubsetFiles.subList(dataSubsetFiles.size()/2, dataSubsetFiles.size());
+				
+				binaryMergeSortedDataSubsets(leftFileSet, rowComparator, mergedLeftSetFile);
+				binaryMergeSortedDataSubsets(rightFileSet, rowComparator, mergedRightSetFile);
 
 				CachedResultSet leftRows = new CachedResultSet(mergedLeftSetFile);
 				CachedResultSet rightRows  =new CachedResultSet(mergedRightSetFile);
