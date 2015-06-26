@@ -171,14 +171,6 @@ public class SosAggregationServiceTest {
 				withHeaders(new Header("Content-Type", "application/xml")).
 				withBody(l95Response));
 	}
-	
-	@Test
-	public void loopTests() throws IOException {
-		for(int i = 0; i < Integer.MAX_VALUE; i++) {
-			testAnnualLoadDownload();
-		}
-	}
-
 
 	@Test
 	public void testAnnualLoadDownload() throws IOException {
