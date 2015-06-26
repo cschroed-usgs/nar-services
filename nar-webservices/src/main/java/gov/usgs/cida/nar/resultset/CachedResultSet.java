@@ -101,20 +101,25 @@ public class CachedResultSet extends PeekingResultSet {
 			ColumnGrouping columnGrouping = ColumnGrouping.getColumnGrouping(rset);
 			//Read N number or rows to serialize and sort out to disc, to limit number of rows we
 			//keep in-memory at any given time.
-			List<TableRow> currentRowSet = new ArrayList<>();
+			TableRow[] currentRowSet = new TableRow[ROW_SIZE_FOR_SERIALIZATION];
+			int arrayPointer = -1;
 			while(rset.next()) {
-				TableRow tr = TableRow.buildTableRow(rset);
-				currentRowSet.add(tr);
+				arrayPointer++;
 				
-				if(currentRowSet.size() >= ROW_SIZE_FOR_SERIALIZATION) { //reached subset size
+				TableRow tr = TableRow.buildTableRow(rset);
+				currentRowSet[arrayPointer] = tr;
+				
+				if(arrayPointer == ROW_SIZE_FOR_SERIALIZATION - 1) { //reached subset size
 					dataSubsetFiles.add(sortedSerialize(currentRowSet, columnGrouping, sortBy));
-					currentRowSet = new ArrayList<>();
+					currentRowSet = new TableRow[ROW_SIZE_FOR_SERIALIZATION];
+					arrayPointer = -1;
 				}
 			}
 			//last subset
-			if(currentRowSet.size() > 0) {
-				dataSubsetFiles.add(sortedSerialize(currentRowSet, columnGrouping, sortBy));
-				currentRowSet = new ArrayList<>();
+			if(arrayPointer >= 0) {
+				TableRow[] lastSet = Arrays.copyOfRange(currentRowSet, 0, arrayPointer + 1);
+				dataSubsetFiles.add(sortedSerialize(lastSet, columnGrouping, sortBy));
+				currentRowSet = null;
 			}
 			
 			//merge all data into a single File on disk
@@ -138,16 +143,15 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	private static File sortedSerialize(final List<TableRow> rows, ColumnGrouping columnGrouping, Comparator<TableRow> sortBy) throws IOException, SQLException {
+	private static File sortedSerialize(final TableRow[] rows, ColumnGrouping columnGrouping, Comparator<TableRow> sortBy) throws IOException, SQLException {
 		File file = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".sorted.subset");
 		
 		try (FileOutputStream out = new FileOutputStream(file); ObjectOutput s = new ObjectOutputStream(out)) {
 			ResultSetMetaData metaData = new CGResultSetMetaData(columnGrouping);
 			s.writeObject(metaData);
 			
-			TableRow[] sorted = rows.toArray(new TableRow[]{});
-			Arrays.sort(sorted, sortBy);
-			for(TableRow r : sorted) {
+			Arrays.sort(rows, sortBy);
+			for(TableRow r : rows) {
 				s.writeObject(r);
 			}
 		}
