@@ -4,6 +4,4 @@
 #SITE_FLOW_ID USGS or other agency station identifier for streamflow measurement (Note that opening this file in Excel may cause leading zeros to be dropped from this field unless imported into an open worksheet and changing columns A and B to text)
 #DATE  Date
 #FLOW Daily mean discharge in cubic feet per second
-#WY Water year
-
-
+#WY Water year; the 12-month period beginning on October 1 for any given year and lasting through September 30 of the following year. The water year is designated by the calendar year in which it ends.
