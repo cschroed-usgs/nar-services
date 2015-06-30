@@ -33,6 +33,8 @@ public class CachedResultSetTest {
 	private static final Column feature = new SimpleColumn(ObservationMetadata.FEATURE_OF_INTEREST_ELEMENT);
 	private static final Column time = new SimpleColumn(ObservationMetadata.TIME_PERIOD_ELEMENT);
 	
+	private static final int ROW_SIZE_FOR_SERIALIZATION = 10;
+	
 	private static ColumnGrouping cg;
 	static {
 		List<Column> columns = new LinkedList<>();
@@ -59,7 +61,7 @@ public class CachedResultSetTest {
 	private ResultSet makeLargeResultSet() {
 		StringTableResultSet rs = new StringTableResultSet(cg);
 
-		int rowNum = CachedResultSet.ROW_SIZE_FOR_SERIALIZATION + (CachedResultSet.ROW_SIZE_FOR_SERIALIZATION/2); //should result in 1 and half pages
+		int rowNum = ROW_SIZE_FOR_SERIALIZATION * 5 + (1/ROW_SIZE_FOR_SERIALIZATION); //should result in 5 and half pages
 		for(int i = 1; i <= rowNum; i++) {
 			String flip = leftPadInt(rowNum - i);
 			rs.addRow(makeRow("feat-" + flip, "prop-" + flip, "proc-" + flip, "time-" + flip));
@@ -184,7 +186,7 @@ public class CachedResultSetTest {
 		ResultSet rset = makeLargeResultSet();
 		File file = File.createTempFile("testSortedSerializeLarge", ".test.tmp");
 		
-		CachedResultSet.sortedSerialize(rset, new SosTableRowComparator(), file);
+		CachedResultSet.sortedSerialize(rset, new SosTableRowComparator(), file, ROW_SIZE_FOR_SERIALIZATION);
 		CachedResultSet instance = new CachedResultSet(file);
 		assertThat(instance.getMetaData().getColumnCount(), is(equalTo(4)));
 
