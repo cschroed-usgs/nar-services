@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author thongsav
  */
 public class CachedResultSet extends PeekingResultSet {
-	protected static final int ROW_SIZE_FOR_SERIALIZATION = 500000;  //low numbers = lower memory usage, higher disk access/usage
+	private static final int DEFAULT_ROW_SIZE_FOR_SERIALIZATION = 500000;  //low numbers = lower memory usage, higher disk access/usage
 	
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -1057296193256896787L;
@@ -88,20 +88,34 @@ public class CachedResultSet extends PeekingResultSet {
 	
 	/**
 	 * Does a sort of a result set and serializes the sorted data into a file. The sorting is combination of in-memory
-	 * and in disk sorting to balance memory usage with number of file system accesses.
+	 * and in disk sorting to balance memory usage with number of file system accesses. This signature uses the 
+	 * default setting for how much memory to use.
 	 *  
 	 * @param rset {@link java.sql.Resultset} to sort and cache to disk
 	 * @param file {@link java.io.File} to write to
 	 * @throws java.io.IOException
 	 */
 	public static void sortedSerialize(ResultSet rset, Comparator<TableRow> sortBy, File file) throws IOException {
+		sortedSerialize(rset, sortBy, file, DEFAULT_ROW_SIZE_FOR_SERIALIZATION);
+	}
+	
+	/**
+	 * Does a sort of a result set and serializes the sorted data into a file. The sorting is combination of in-memory
+	 * and in disk sorting to balance memory usage with number of file system accesses.
+	 *  
+	 * @param rset {@link java.sql.Resultset} to sort and cache to disk
+	 * @param file {@link java.io.File} to write to
+	 * @param inMemoryRowAllotment number of rows to sort in-memory before using disk
+	 * @throws java.io.IOException
+	 */
+	public static void sortedSerialize(ResultSet rset, Comparator<TableRow> sortBy, File file, int inMemoryRowAllotment) throws IOException {
 		List<File> dataSubsetFiles = new ArrayList<>();
 		
 		try {
 			ColumnGrouping columnGrouping = ColumnGrouping.getColumnGrouping(rset);
 			//Read N number or rows to serialize and sort out to disc, to limit number of rows we
 			//keep in-memory at any given time.
-			TableRow[] currentRowSet = new TableRow[ROW_SIZE_FOR_SERIALIZATION];
+			TableRow[] currentRowSet = new TableRow[inMemoryRowAllotment];
 			int arrayPointer = -1;
 			while(rset.next()) {
 				arrayPointer++;
@@ -109,16 +123,16 @@ public class CachedResultSet extends PeekingResultSet {
 				TableRow tr = TableRow.buildTableRow(rset);
 				currentRowSet[arrayPointer] = tr;
 				
-				if(arrayPointer == ROW_SIZE_FOR_SERIALIZATION - 1) { //reached subset size
-					dataSubsetFiles.add(sortedSerialize(currentRowSet, columnGrouping, sortBy));
-					currentRowSet = new TableRow[ROW_SIZE_FOR_SERIALIZATION];
+				if(arrayPointer == inMemoryRowAllotment - 1) { //reached subset size
+					dataSubsetFiles.add(sortRowsToDisk(currentRowSet, columnGrouping, sortBy));
+					currentRowSet = new TableRow[inMemoryRowAllotment];
 					arrayPointer = -1;
 				}
 			}
 			//last subset
 			if(arrayPointer >= 0) {
 				TableRow[] lastSet = Arrays.copyOfRange(currentRowSet, 0, arrayPointer + 1);
-				dataSubsetFiles.add(sortedSerialize(lastSet, columnGrouping, sortBy));
+				dataSubsetFiles.add(sortRowsToDisk(lastSet, columnGrouping, sortBy));
 				currentRowSet = null;
 			}
 			
@@ -143,7 +157,7 @@ public class CachedResultSet extends PeekingResultSet {
 	 * @throws IOException
 	 * @throws SQLException
 	 */
-	private static File sortedSerialize(final TableRow[] rows, ColumnGrouping columnGrouping, Comparator<TableRow> sortBy) throws IOException, SQLException {
+	private static File sortRowsToDisk(final TableRow[] rows, ColumnGrouping columnGrouping, Comparator<TableRow> sortBy) throws IOException, SQLException {
 		File file = FileUtils.getFile(FileUtils.getTempDirectory(), UUID.randomUUID().toString() + ".sorted.subset");
 		
 		try (FileOutputStream out = new FileOutputStream(file); ObjectOutput s = new ObjectOutputStream(out)) {
