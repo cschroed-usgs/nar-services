@@ -6,6 +6,7 @@ import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.SimpleColumn;
 import gov.usgs.cida.nude.resultset.inmemory.StringTableResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
+import gov.usgs.cida.sos.Observation;
 import gov.usgs.cida.sos.ObservationMetadata;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class CachedResultSetTest {
 	private static final Column procedure = new SimpleColumn(ObservationMetadata.PROCEDURE_ELEMENT);
 	private static final Column observedProp = new SimpleColumn(ObservationMetadata.OBSERVED_PROPERTY_ELEMENT);
 	private static final Column feature = new SimpleColumn(ObservationMetadata.FEATURE_OF_INTEREST_ELEMENT);
-	private static final Column time = new SimpleColumn(ObservationMetadata.TIME_PERIOD_ELEMENT);
+	private static final Column time = new SimpleColumn(Observation.TIME_ELEMENT);
 	
 	private static final int ROW_SIZE_FOR_SERIALIZATION = 10;
 	
@@ -52,6 +53,7 @@ public class CachedResultSetTest {
 		rs.addRow(makeRow("3", "prop3", "1", "time"));
 		rs.addRow(makeRow("2", "prop1", "2", "time"));
 		rs.addRow(makeRow("1", "prop3", "1", "time"));
+		rs.addRow(makeRow("1", "prop3", "1", "time2"));
 		return rs;
 	}
 	
@@ -153,10 +155,18 @@ public class CachedResultSetTest {
 		assertThat("1", is(equalTo(row1.getValue(feature))));
 		
 		instance.next();
-		TableRow row2 = TableRow.buildTableRow(instance);
-		assertThat("1", is(equalTo(row2.getValue(procedure))));
-		assertThat("prop3", is(equalTo(row2.getValue(observedProp))));
-		assertThat("1", is(equalTo(row2.getValue(feature))));
+		TableRow row2a = TableRow.buildTableRow(instance);
+		assertThat("1", is(equalTo(row2a.getValue(procedure))));
+		assertThat("prop3", is(equalTo(row2a.getValue(observedProp))));
+		assertThat("1", is(equalTo(row2a.getValue(feature))));
+		assertThat("time", is(equalTo(row2a.getValue(time))));
+		
+		instance.next();
+		TableRow row2b = TableRow.buildTableRow(instance);
+		assertThat("1", is(equalTo(row2b.getValue(procedure))));
+		assertThat("prop3", is(equalTo(row2b.getValue(observedProp))));
+		assertThat("1", is(equalTo(row2b.getValue(feature))));
+		assertThat("time2", is(equalTo(row2b.getValue(time))));
 		
 		instance.next();
 		TableRow row3 = TableRow.buildTableRow(instance);
