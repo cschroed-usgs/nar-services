@@ -3,6 +3,7 @@ package gov.usgs.cida.nar.service;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.SimpleColumn;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
+import gov.usgs.cida.sos.Observation;
 import gov.usgs.cida.sos.ObservationMetadata;
 
 import java.util.Comparator;
@@ -11,7 +12,7 @@ public class SosTableRowComparator implements Comparator<TableRow> {
 	private static final Column PROCEDURE_IN_COL = new SimpleColumn(ObservationMetadata.PROCEDURE_ELEMENT);
 	private static final Column OBSERVED_PROPERTY_IN_COL = new SimpleColumn(ObservationMetadata.OBSERVED_PROPERTY_ELEMENT);
 	private static final Column FEATURE_OF_INTEREST_IN_COL = new SimpleColumn(ObservationMetadata.FEATURE_OF_INTEREST_ELEMENT);
-	private static final Column DATETIME_IN_COL = new SimpleColumn(ObservationMetadata.TIME_PERIOD_ELEMENT);
+	private static final Column DATETIME_IN_COL = new SimpleColumn(Observation.TIME_ELEMENT);
 
 	@Override
 	public int compare(TableRow o1, TableRow o2) {
