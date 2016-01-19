@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.util;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 /**
@@ -14,6 +15,10 @@ public class JSONUtil {
 	 * @return 
 	 */
 	public static String toJSON(Object object) {
-		return new GsonBuilder().create().toJson(object);
+		return getBuilder().toJson(object);
+	}
+
+	public static Gson getBuilder() {
+		return new GsonBuilder().create();
 	}
 }

@@ -30,14 +30,16 @@ public class AflowDao {
 	
 	public static final String queryPackage = "gov.usgs.cida.nar.mybatis.mappers";
 	
-	public List<Aflow> getAflow(String siteQwId) {
+	public List<Aflow> getAflow(String siteQwId, Integer startWy, Integer endWy) {
 		List<Aflow> result = null;
 		
-		Map<String, String> params = new HashMap<>(7);
+		Map<String, Object> params = new HashMap<>(7);
 		params.put("siteQwId", siteQwId);
+		params.put("startWy", startWy);
+		params.put("endWy", endWy);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-			result = session.selectList( queryPackage + ".AflowMapper.getAflow", params);
+			result = session.selectList(queryPackage + ".AflowMapper.getAflow", params);
 		}
 		
 		return result;
