@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sos:GetObservationResponse xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sos="http://www.opengis.net/sos/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/waterml/2.0 http://schemas.opengis.net/waterml/2.0/waterml2.xsd http://www.opengis.net/waterml/2.0 http://schemas.opengis.net/waterml/2.0/timeseries.xsd http://www.opengis.net/sos/2.0 http://schemas.opengis.net/sos/2.0/sos.xsd">
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_41FC27BA607AB3F23E0A91AB86FD2ED4B8A76541">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_41FC27BA607AB3F23E0A91AB86FD2ED4B8A76541">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_41FC27BA607AB3F23E0A91AB86FD2ED4B8A76541"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/TN"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="03378500"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.41FC27BA607AB3F23E0A91AB86FD2ED4B8A76541">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_41FC27BA607AB3F23E0A91AB86FD2ED4B8A76541"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>5.42</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_9EBA990329D1525A603315680787FEB24B1A0651">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_9EBA990329D1525A603315680787FEB24B1A0651">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_9EBA990329D1525A603315680787FEB24B1A0651"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/SSC"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="03378500"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.9EBA990329D1525A603315680787FEB24B1A0651">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_9EBA990329D1525A603315680787FEB24B1A0651"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>182.0</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_EC9E59338A954B71A6441F0D259DA1C59F8E20C6">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_EC9E59338A954B71A6441F0D259DA1C59F8E20C6">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_EC9E59338A954B71A6441F0D259DA1C59F8E20C6"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/TN"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="03612500"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.EC9E59338A954B71A6441F0D259DA1C59F8E20C6">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_EC9E59338A954B71A6441F0D259DA1C59F8E20C6"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>2.56</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_75283525423C934D36AA2EBD4963588D4AFAE895">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_75283525423C934D36AA2EBD4963588D4AFAE895">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_75283525423C934D36AA2EBD4963588D4AFAE895"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/SSC"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="03612500"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.75283525423C934D36AA2EBD4963588D4AFAE895">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_75283525423C934D36AA2EBD4963588D4AFAE895"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>117.0</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_951149F5C8507014900267E7288D35AEE2ABA425">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_951149F5C8507014900267E7288D35AEE2ABA425">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_951149F5C8507014900267E7288D35AEE2ABA425"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/TN"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="05586100"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.951149F5C8507014900267E7288D35AEE2ABA425">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_951149F5C8507014900267E7288D35AEE2ABA425"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>6.22</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_1032D36AE5D5C6D6339E7FC0201151276D2C52DF">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_1032D36AE5D5C6D6339E7FC0201151276D2C52DF">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_1032D36AE5D5C6D6339E7FC0201151276D2C52DF"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/SSC"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="05586100"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.1032D36AE5D5C6D6339E7FC0201151276D2C52DF">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_1032D36AE5D5C6D6339E7FC0201151276D2C52DF"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>158.0</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_36E31A8C18448D25B10AE40820322C4050D7220E">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_36E31A8C18448D25B10AE40820322C4050D7220E">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_36E31A8C18448D25B10AE40820322C4050D7220E"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/TN"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="05587455"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.36E31A8C18448D25B10AE40820322C4050D7220E">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_36E31A8C18448D25B10AE40820322C4050D7220E"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>3.5</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_E41795635D2A47250845AEDAF4EEAF637371A884">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_E41795635D2A47250845AEDAF4EEAF637371A884">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_E41795635D2A47250845AEDAF4EEAF637371A884"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/DAILY"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/SSC"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="05587455"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.E41795635D2A47250845AEDAF4EEAF637371A884">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_E41795635D2A47250845AEDAF4EEAF637371A884"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>198.0</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_43C05755C4898F9ECF9D1860218DFED3BFE91C56">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_43C05755C4898F9ECF9D1860218DFED3BFE91C56">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_43C05755C4898F9ECF9D1860218DFED3BFE91C56"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/REG"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/TN"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="07022000"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.43C05755C4898F9ECF9D1860218DFED3BFE91C56">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_43C05755C4898F9ECF9D1860218DFED3BFE91C56"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>1.38</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+  <sos:observationData>
+    <om:OM_Observation xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:om="http://www.opengis.net/om/2.0" xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="o_882B3C542D85B3206A533EF2535AEB7E2891AE0F">
+      <om:phenomenonTime>
+        <gml:TimeInstant xmlns:gml="http://www.opengis.net/gml/3.2" gml:id="phenomenonTime_882B3C542D85B3206A533EF2535AEB7E2891AE0F">
+  <gml:timePosition>2013-01-01T00:00:00.000Z</gml:timePosition>
+</gml:TimeInstant>
+      </om:phenomenonTime>
+      <om:resultTime xlink:href="#phenomenonTime_882B3C542D85B3206A533EF2535AEB7E2891AE0F"/>
+      <om:procedure xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://cida.usgs.gov/def/NAR/procedure/annual_yield/DAILY"/>
+      <om:observedProperty xlink:href="http://cida.usgs.gov/def/NAR/property/SSC"/>
+      <om:featureOfInterest xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="07022000"/>
+      <om:result xmlns:wml2="http://www.opengis.net/waterml/2.0">
+        <wml2:MeasurementTimeseries gml:id="timeseries.882B3C542D85B3206A533EF2535AEB7E2891AE0F">
+          <wml2:metadata>
+            <wml2:TimeseriesMetadata>
+              <wml2:temporalExtent xlink:href="#phenomenonTime_882B3C542D85B3206A533EF2535AEB7E2891AE0F"/>
+            </wml2:TimeseriesMetadata>
+          </wml2:metadata>
+          <wml2:defaultPointMetadata>
+            <wml2:DefaultTVPMeasurementMetadata>
+
+              <wml2:interpolationType xlink:href="http://www.opengis.net/def/timeseriesType/WaterML/2.0/continuous" xlink:title="Instantaneous"/>
+            </wml2:DefaultTVPMeasurementMetadata>
+          </wml2:defaultPointMetadata>
+          <wml2:point>
+            <wml2:MeasurementTVP>
+              <wml2:time>2013-01-01T00:00:00.000Z</wml2:time>
+              <wml2:value>96.9</wml2:value>
+            </wml2:MeasurementTVP>
+          </wml2:point>
+        </wml2:MeasurementTimeseries>
+      </om:result>
+    </om:OM_Observation>
+  </sos:observationData>
+</sos:GetObservationResponse>

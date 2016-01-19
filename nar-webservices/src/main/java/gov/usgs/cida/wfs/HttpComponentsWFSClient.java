@@ -26,9 +26,9 @@ import org.apache.http.protocol.HttpContext;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.filter.FilterTransformer;
 import org.opengis.filter.Filter;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.Logger;
 
 /**
  * This implementation uses regular HTTP client to download wfs to temporary
@@ -36,7 +36,7 @@ import ch.qos.logback.classic.Logger;
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
 public class HttpComponentsWFSClient implements WFSClientInterface {
-	private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(HttpComponentsWFSClient.class);
+	private static final Logger LOG = LoggerFactory.getLogger(HttpComponentsWFSClient.class);
     
     private String wfsEndpoint;
     private File tmpWfsFile;
@@ -80,7 +80,9 @@ public class HttpComponentsWFSClient implements WFSClientInterface {
         
         try {
             HttpPost post = new HttpPost(wfsEndpoint);
-            StringEntity stringEntity = new StringEntity(fillInTemplate(typeName, filterXml), ContentType.APPLICATION_XML);
+            String requestXml = fillInTemplate(typeName, filterXml);
+            StringEntity stringEntity = new StringEntity(requestXml, ContentType.APPLICATION_XML);
+            LOG.trace("WFS request to {}:\n{}", wfsEndpoint, requestXml);
             post.setEntity(stringEntity);
             HttpContext localContext = new BasicHttpContext();
             httpClient.setReuseStrategy(new NoConnectionReuseStrategy());

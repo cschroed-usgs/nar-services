@@ -43,9 +43,10 @@
 		<appender-ref ref="profile"/>
 	</logger>
 	
-	<logger name="gov.usgs.cida.wfs" level="ERROR" />
-	<logger name="gov.usgs.cida.nar.service" level="DEBUG" />
-	<logger name="gov.usgs.cida.nar.connector" level="ERROR" />
+	<logger name="gov.usgs.cida.wfs" level="TRACE" />
+	<logger name="gov.usgs.cida.gml" level="TRACE" />
+	<logger name="gov.usgs.cida.nar.service" level="TRACE" />
+	<logger name="gov.usgs.cida.nar.connector" level="TRACE" />
 	<logger name="org.apache.http" level="INFO" />
 	<logger name="org.apache.commons.beanutils" level="ERROR" />
 	<logger name="gov.usgs.cida.nude.resultset.inmemory" level="ERROR" />

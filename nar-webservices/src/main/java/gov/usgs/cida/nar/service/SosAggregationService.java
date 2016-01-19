@@ -24,7 +24,6 @@ import gov.usgs.cida.nude.plan.Plan;
 import gov.usgs.cida.nude.plan.PlanStep;
 import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
 import gov.usgs.cida.sos.DataAvailabilityMember;
-import gov.usgs.cida.sos.OrderedFilter;
 import gov.usgs.webservices.framework.basic.MimeType;
 
 import java.io.IOException;
@@ -38,21 +37,19 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SosAggregationService {
-	
-	private static final Logger log = Logger.getLogger(SosAggregationService.class);
+	private static final Logger log = LoggerFactory.getLogger(SosAggregationService.class);
 	
 	//determines how long we wait to check if SOS connectors are ready
 	//a higher wait time also helps with keeping output streams active by slowly streaming out bytes
@@ -119,7 +116,7 @@ public class SosAggregationService {
 			final String startDateTime,
 			final String endDateTime,
 			final String header) throws IOException {
-		
+		log.trace("Beginning stream for {}", this.type.name());
 		
 		final StringReader headerReader = new StringReader(header);
 
@@ -156,7 +153,7 @@ public class SosAggregationService {
 						Thread.sleep(WAIT_TIME_BETWEEN_SOS_REQUESTS);
 					}
 					catch (InterruptedException ex) {
-						log.debug(ex);
+						log.debug("Thread waiting for SOS response interrupted", ex);
 					}
 					
 					if (mimeType == MimeType.CSV || mimeType == MimeType.TAB) { //TODO use NUDE for this header writing
@@ -269,13 +266,13 @@ public class SosAggregationService {
 		try {
 			start = DateTime.parse(startDateTime, DateTimeFormat.forPattern("MM/dd/yyyy"));
 		} catch(Exception e) {
-			log.debug(e);
+			log.debug("Failed to parse date", e);
 		}
 		DateTime end = null;
 		try {
 			end = DateTime.parse(endDateTime, DateTimeFormat.forPattern("MM/dd/yyyy"));
 		} catch(Exception e) {
-			log.debug(e);
+			log.debug("Failed to parse date",e);
 		}
 		
 		Map<String, List<String>> columnMap = new HashMap<>();
@@ -294,7 +291,6 @@ public class SosAggregationService {
 		
 		for (String columnName : columnMap.keySet()) {
 			List<String> procList = columnMap.get(columnName);
-			SortedSet<OrderedFilter> filters = new TreeSet<>();
 
 			SOSClient gdaClient = new SOSClient(sosUrl, null, null, actualProperties, procList, null);
 			List<DataAvailabilityMember> dataAvailityMembers = gdaClient.getDataAvailability();
@@ -302,14 +298,8 @@ public class SosAggregationService {
 			
 			List<String> filteredStations = filterStationsByDataAvailibility(dataAvailityMembers, stationId);
 			SOSClient sosClient = new SOSClient(sosUrl, start, end, actualProperties, procList, filteredStations);
-			for (String procedure : procList) {
-				for (String prop : actualProperties) {
-					for (String featureOfInterest : filteredStations) {
-						filters.add(new OrderedFilter(procedure, prop, featureOfInterest));
-					}
-				}
-			}
-			final SOSConnector sosConnector = new SOSConnector(sosClient, filters, columnName);
+			
+			final SOSConnector sosConnector = new SOSConnector(sosClient, columnName);
 			sosConnectors.add(sosConnector);
 		}
 		return sosConnectors;
@@ -599,7 +589,6 @@ public class SosAggregationService {
 		finalColList.add(allCols.get(indexOfCol(allCols, WY_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONCENTRATION_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, REMARK_OUT_COL)));
-		//TODO NEED REMARK
 		
 		ColumnGrouping finalCols = new ColumnGrouping(finalColList);
 		FilterStep removeUnusedColsStep = new FilterStep(new NudeFilterBuilder(finalCols)

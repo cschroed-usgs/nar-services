@@ -1,8 +1,7 @@
-# This automated data download from the USGS Tracking Water Quality over Time website have not received director's approval and as such are provisional and are subject to revision. The data are released on the conditions that neither the USGS nor the United States Government may be held liable for any damages resulting from its use.
+# This automated data download from the USGS Tracking Water Quality of the Nation's Rivers and Streams website have not received director's approval and as such are provisional and are subject to revision. The data are released on the conditions that neither the USGS nor the United States Government may be held liable for any damages resulting from its use.
 #
-#SITE_QW_ID USGS station identifier for water-quality sampling
-
-#SITE_FLOW_ID USGS or other agency station identifier for streamflow measurement
+#SITE_QW_ID USGS station identifier for water-quality sampling (Note that opening this file in Excel may cause leading zeros to be dropped from this field unless imported into an open worksheet and changing columns A and B to text)
+#SITE_FLOW_ID USGS or other agency station identifier for streamflow measurement (Note that opening this file in Excel may cause leading zeros to be dropped from this field unless imported into an open worksheet and changing columns A and B to text)
 #DATE  Date
-#"FLOW Daily, mean discharge in cubic feet per second"
-#WY Water year (10/1 through 9/30)
+#FLOW Daily mean discharge in cubic feet per second
+#WY Water year; the 12-month period beginning on October 1 for any given year and lasting through September 30 of the following year. The water year is designated by the calendar year in which it ends.

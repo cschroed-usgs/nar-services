@@ -38,10 +38,12 @@ public class DownloadService {
 	private static final String SOS_URL_JNDI_NAME = "nar.endpoint.sos";
 	//This list is needed to mimic the "get all" when no constituents are chosen from the front end
 	private static final List<String> CONSTITUENT_LIST = Arrays.asList(
-			"NH3", "NO23", "OP", "SI", "SSC", "TN", "TP"
+			"NO3_NO2", "SSC", "TN", "TP"
 			);
 	private static final String FLOW_CONSTITUENT = "Q";
 	private static final String NEWLINE_CHAR = "\r\n";
+	
+	private SiteInformationService siteInformationService = new SiteInformationService();
 	
 	@GET
 	@Path("/bundle/zip")
@@ -128,7 +130,7 @@ public class DownloadService {
 			if(ServiceParameterUtils.isMayLoadsRequested(dataType, qwDataType, siteType)) {
 				//only do these if one of the sites is actually MRB
 				if(SiteInformationService.containsMrbSite(
-						SiteInformationService.getStationFeatures(siteType,	stationId,state)
+						siteInformationService.getStationFeatures(siteType,	stationId,state)
 						)
 				) {
 					//include both may load and may flow
@@ -260,7 +262,7 @@ public class DownloadService {
 				downloadType, 
 				JNDISingleton.getInstance().getProperty(SOS_URL_JNDI_NAME),
 				OBSERVED_PROPERTY_PREFIX,
-				SiteInformationService.getStationFeatures(siteType, inStationId, state)
+				siteInformationService.getStationFeatures(siteType, inStationId, state)
 				).streamData(zip, 
 					mimeType,
 					constituentsToUse,
@@ -323,7 +325,7 @@ public class DownloadService {
 		if(ServiceParameterUtils.isMayLoadsRequested(dataType, qwDataType, siteType)) {
 			//only do these if one of the sites is actually MRB
 			if(SiteInformationService.containsMrbSite(
-					SiteInformationService.getStationFeatures(siteType,	stationId, state)
+					siteInformationService.getStationFeatures(siteType,	stationId, state)
 					)
 			) {
 				//include both may
