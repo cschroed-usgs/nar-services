@@ -1,7 +1,9 @@
 package gov.usgs.cida.nar.webservice;
 
 import gov.usgs.cida.nar.mybatis.model.Aflow;
+import gov.usgs.cida.nar.mybatis.model.Aloads;
 import gov.usgs.cida.nar.service.AflowService;
+import gov.usgs.cida.nar.service.AloadsService;
 import gov.usgs.cida.nar.util.JSONUtil;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -32,5 +34,17 @@ public class TimeseriesWebservice {
 		AflowService service = new AflowService();
 		List<Aflow> aflows = service.request(siteQwId, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(aflows)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/aloads/site/{siteQwId}")
+	public Response getAloadsBySite(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("constit")String constit, @QueryParam("excludeModtype")List<String> excludeModtype,
+			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+		log.debug("Aflow requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
+		AloadsService service = new AloadsService();
+		List<Aloads> aloads = service.request(siteQwId, constit, excludeModtype, startTime, endTime);
+		return Response.ok(JSONUtil.toJSON(aloads)).build();
 	}
 }

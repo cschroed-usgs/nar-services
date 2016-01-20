@@ -8,6 +8,7 @@
 	</settings>
 	<typeAliases>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Aflow' alias='Aflow'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Aloads' alias='Aloads'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>
@@ -19,5 +20,6 @@
 	</environments>
 	<mappers>
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/AflowMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/AloadsMapper.xml' />
 	</mappers>
 </configuration>
