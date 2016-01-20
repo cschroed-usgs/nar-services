@@ -31,7 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Path("download")
+@Path("/download")
 public class DownloadService {
 	private final static Logger LOG = LoggerFactory.getLogger(DownloadService.class);
 	private static final String OBSERVED_PROPERTY_PREFIX = "http://cida.usgs.gov/def/NAR/property/";
