@@ -1,7 +1,6 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
 import gov.usgs.cida.nar.mybatis.MyBatisConnectionFactory;
-import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.Aloads;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +28,6 @@ public class AloadsDao {
 		this.sqlSessionFactory = sqlSessionFactory;
 	}
 	
-	public static final String queryPackage = "gov.usgs.cida.nar.mybatis.mappers";
-	
 	public List<Aloads> getAloads(String siteQwId, String constit, List<String> modtypeExcludes,
 			Integer startWy, Integer endWy) {
 		List<Aloads> result = null;
@@ -43,7 +40,7 @@ public class AloadsDao {
 		params.put("endWy", endWy);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-			result = session.selectList(queryPackage + ".AloadsMapper.getAloads", params);
+			result = session.selectList(MyBatisConnectionFactory.QUERY_PACKAGE + ".AloadsMapper.getAloads", params);
 		}
 		
 		return result;
