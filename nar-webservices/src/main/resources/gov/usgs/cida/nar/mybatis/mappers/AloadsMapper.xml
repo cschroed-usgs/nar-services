@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="gov.usgs.cida.nar.mybatis.mappers.AloadsMapper">
+	
+	<resultMap id="aloadsResult" type="Aloads">
+		<result property="siteAbb" column="site_abb"/>
+		<result property="siteQwId" column="site_qw_id"/>
+		<result property="siteFlowId" column="site_flow_id"/>
+		<result property="constit" column="constit"/>
+		<result property="wy" column="wy"/>
+		<result property="modtype" column="modtype"/>
+		<result property="tons" column="tons"/>
+		<result property="tonsL95" column="tons_l95"/>
+		<result property="tonsU95" column="tons_u95"/>
+		<result property="fwc" column="fwc"/>
+		<result property="yield" column="yield"/>
+	</resultMap>
+	
+	<sql id="columns">
+		site_abb,
+		site_qw_id,
+		site_flow_id,
+		constit,
+		wy,
+		modtype,
+		tons,
+		tons_l95,
+		tons_u95,
+		fwc,
+		yield
+	</sql>
+	
+	<select id="getAloads" parameterType="map" resultMap="aloadsResult">
+		SELECT
+			<include refid="columns"/>
+		FROM
+			aloads
+		<where>
+			<if test="null != siteQwId">
+				AND site_qw_id = #{siteQwId}
+			</if>
+			<if test="null != startWy">
+				AND wy &gt;= #{startWy}
+			</if>
+			<if test="null != endWy">
+				AND wy &lt;= #{endWy}
+			</if>
+			<if test="null != modtypeExcludes and modtypeExcludes.size() &gt; 0">
+				AND modtype NOT IN
+				<foreach item="exclude" collection="modtypeExcludes" open="(" close=")" separator=",">
+					#{exclude}
+				</foreach>
+			</if>
+			<if test="null != constit">
+				AND constit = #{constit}
+			</if>
+		</where>
+	ORDER BY site_qw_id, site_flow_id, constit, modtype, wy ASC
+	</select>
+	
+</mapper>

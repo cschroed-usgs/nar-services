@@ -8,6 +8,11 @@
 	</settings>
 	<typeAliases>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Aflow' alias='Aflow'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Aloads' alias='Aloads'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Dflow' alias='Dflow'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Discqw' alias='Discqw'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mflow' alias='Mflow'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mloads' alias='Mloads'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>
@@ -19,5 +24,10 @@
 	</environments>
 	<mappers>
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/AflowMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/AloadsMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/DflowMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/DiscqwMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MflowMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MloadsMapper.xml' />
 	</mappers>
 </configuration>

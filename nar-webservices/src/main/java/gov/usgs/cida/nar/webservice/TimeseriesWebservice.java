@@ -1,7 +1,17 @@
 package gov.usgs.cida.nar.webservice;
 
 import gov.usgs.cida.nar.mybatis.model.Aflow;
+import gov.usgs.cida.nar.mybatis.model.Aloads;
+import gov.usgs.cida.nar.mybatis.model.Dflow;
+import gov.usgs.cida.nar.mybatis.model.Discqw;
+import gov.usgs.cida.nar.mybatis.model.Mflow;
+import gov.usgs.cida.nar.mybatis.model.Mloads;
 import gov.usgs.cida.nar.service.AflowService;
+import gov.usgs.cida.nar.service.AloadsService;
+import gov.usgs.cida.nar.service.DflowService;
+import gov.usgs.cida.nar.service.DiscqwService;
+import gov.usgs.cida.nar.service.MflowService;
+import gov.usgs.cida.nar.service.MloadsService;
 import gov.usgs.cida.nar.util.JSONUtil;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -32,5 +42,62 @@ public class TimeseriesWebservice {
 		AflowService service = new AflowService();
 		List<Aflow> aflows = service.request(siteQwId, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(aflows)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/aloads/site/{siteQwId}")
+	public Response getAloadsBySite(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("constit")String constit, @QueryParam("excludeModtype")List<String> excludeModtype,
+			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+		log.debug("Aloads requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
+		AloadsService service = new AloadsService();
+		List<Aloads> aloads = service.request(siteQwId, constit, excludeModtype, startTime, endTime);
+		return Response.ok(JSONUtil.toJSON(aloads)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/dflow/site/{siteQwId}")
+	public Response getDflowBySite(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+		log.debug("Dflow requested from {} from {} to {}", siteQwId, startTime, endTime);
+		DflowService service = new DflowService();
+		List<Dflow> dflow = service.request(siteQwId, startTime, endTime);
+		return Response.ok(JSONUtil.toJSON(dflow)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/discqw/site/{siteQwId}")
+	public Response getDiscqwBySite(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("constit")String constit, @QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+		log.debug("Discqw requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
+		DiscqwService service = new DiscqwService();
+		List<Discqw> discqw = service.request(siteQwId, constit, startTime, endTime);
+		return Response.ok(JSONUtil.toJSON(discqw)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/mflow/site/{siteQwId}")
+	public Response getMflowBySite(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+		log.debug("Aflow requested from {} from {} to {}", siteQwId, startTime, endTime);
+		MflowService service = new MflowService();
+		List<Mflow> mflow = service.request(siteQwId, startTime, endTime);
+		return Response.ok(JSONUtil.toJSON(mflow)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/mloads/site/{siteQwId}")
+	public Response getMloadsBySite(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("constit")String constit, @QueryParam("excludeModtype")List<String> excludeModtype,
+			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+		log.debug("Aflow requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
+		MloadsService service = new MloadsService();
+		List<Mloads> mloads = service.request(siteQwId, constit, excludeModtype, startTime, endTime);
+		return Response.ok(JSONUtil.toJSON(mloads)).build();
 	}
 }

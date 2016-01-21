@@ -16,6 +16,8 @@ public class MyBatisConnectionFactory {
 	private static final Logger log = LoggerFactory.getLogger(MyBatisConnectionFactory.class);
 	private static SqlSessionFactory sqlSessionFactory;
 	private final static String RESOURCE = "mybatis-config.xml";
+	
+	public static final String QUERY_PACKAGE = "gov.usgs.cida.nar.mybatis.mappers";
 
 	static {
 		try (InputStream inputStream = Resources.getResourceAsStream(RESOURCE)) {

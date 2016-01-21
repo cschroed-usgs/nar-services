@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="gov.usgs.cida.nar.mybatis.mappers.MflowMapper">
+	
+	<resultMap id="mflowResult" type="Mflow">
+		<result property="siteAbb" column="site_abb"/>
+		<result property="siteQwId" column="site_qw_id"/>
+		<result property="siteFlowId" column="site_flow_id"/>
+		<result property="wy" column="wy"/>
+		<result property="month" column="month"/>
+		<result property="flow" column="flow"/>
+	</resultMap>
+	
+	<sql id="columns">
+		site_abb,
+		site_qw_id,
+		site_flow_id,
+		wy,
+		month,
+		flow
+	</sql>
+	
+	<select id="getMflow" parameterType="map" resultMap="mflowResult">
+		SELECT
+			<include refid="columns"/>
+		FROM
+			mflow
+		<where>
+			<if test="null != siteQwId">
+				AND site_qw_id = #{siteQwId}
+			</if>
+			<if test="null != startWy">
+				AND wy &gt;= #{startWy}
+			</if>
+			<if test="null != endWy">
+				AND wy &lt;= #{endWy}
+			</if>
+		</where>
+	ORDER BY site_qw_id, site_flow_id, wy, month ASC
+	</select>
+	
+</mapper>
