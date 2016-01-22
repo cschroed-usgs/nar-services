@@ -21,10 +21,10 @@ public class DiscqwDao extends BaseDao {
 		List<Discqw> result = null;
 		
 		Map<String, Object> params = new HashMap<>(11);
-		params.put("siteQwId", siteQwId);
-		params.put("constit", constit);
-		params.put("startDate", startDate);
-		params.put("endDate", endDate);
+		params.put(SITE_QW, siteQwId);
+		params.put(CONSTIT, constit);
+		params.put(START_DATE, startDate);
+		params.put(END_DATE, endDate);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectList(QUERY_PACKAGE + ".DiscqwMapper.getDiscqw", params);

@@ -20,9 +20,9 @@ public class MflowDao extends BaseDao {
 		List<Mflow> result = null;
 		
 		Map<String, Object> params = new HashMap<>(7);
-		params.put("siteQwId", siteQwId);
-		params.put("startWy", startWy);
-		params.put("endWy", endWy);
+		params.put(SITE_QW, siteQwId);
+		params.put(WY_START, startWy);
+		params.put(WY_END, endWy);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectList(QUERY_PACKAGE + ".MflowMapper.getMflow", params);

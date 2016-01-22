@@ -21,11 +21,11 @@ public class MloadsDao extends BaseDao {
 		List<Mloads> result = null;
 		
 		Map<String, Object> params = new HashMap<>(11);
-		params.put("siteQwId", siteQwId);
-		params.put("constit", constit);
-		params.put("modtypeExcludes", modtypeExcludes);
-		params.put("startWy", startWy);
-		params.put("endWy", endWy);
+		params.put(SITE_QW, siteQwId);
+		params.put(CONSTIT, constit);
+		params.put(MODTYPE_EXCLUDE, modtypeExcludes);
+		params.put(WY_START, startWy);
+		params.put(WY_END, endWy);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectList(QUERY_PACKAGE + ".MloadsMapper.getMloads", params);

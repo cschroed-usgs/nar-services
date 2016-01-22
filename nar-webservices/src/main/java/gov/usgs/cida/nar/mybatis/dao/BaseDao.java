@@ -10,6 +10,13 @@ import org.apache.ibatis.session.SqlSessionFactory;
 public class BaseDao {
 	
 	public static final String QUERY_PACKAGE = "gov.usgs.cida.nar.mybatis.mappers";
+	public static final String SITE_QW = "siteQwId";
+	public static final String WY_START = "startWy";
+	public static final String WY_END = "endWy";
+	public static final String CONSTIT = "constit";
+	public static final String MODTYPE_EXCLUDE = "modtypeExcludes";
+	public static final String START_DATE = "startDate";
+	public static final String END_DATE = "endDate";
 	
 	protected final SqlSessionFactory sqlSessionFactory;
 

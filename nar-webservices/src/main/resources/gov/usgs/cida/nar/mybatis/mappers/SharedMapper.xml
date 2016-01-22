@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="gov.usgs.cida.nar.mybatis.mappers.SharedMapper">
+	
+	<sql id="wyWithin">
+		<if test="null != startWy">
+			AND wy &gt;= #{startWy}
+		</if>
+		<if test="null != endWy">
+			AND wy &lt;= #{endWy}
+		</if>
+	</sql>
+	
+	<sql id="dateWithin">
+		<if test="null != startDate">
+			AND date &gt;= #{startDate,jdbcType=DATE}
+		</if>
+		<if test="null != endDate">
+			 AND date &lt;= #{endDate,jdbcType=DATE}
+		</if>
+	</sql>
+</mapper>

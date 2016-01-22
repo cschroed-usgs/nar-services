@@ -32,9 +32,7 @@
 			<if test="null != siteQwId">
 				AND site_qw_id = #{siteQwId}
 			</if>
-			<if test="null != startDate and null != endDate">
-				AND date BETWEEN #{startDate,jdbcType=DATE} AND #{endDate,jdbcType=DATE}
-			</if>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.dateWithin" />
 		</where>
 	ORDER BY site_qw_id, site_flow_id, date ASC
 	</select>

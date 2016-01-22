@@ -29,5 +29,6 @@
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/DiscqwMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MflowMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MloadsMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/SharedMapper.xml' />
 	</mappers>
 </configuration>
