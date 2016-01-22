@@ -2,10 +2,9 @@ package gov.usgs.cida.nar.service;
 
 import gov.usgs.cida.nar.mybatis.dao.DflowDao;
 import gov.usgs.cida.nar.mybatis.model.Dflow;
-import java.util.Date;
+import gov.usgs.cida.nar.util.DateUtil;
+import java.sql.Date;
 import java.util.List;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  *
@@ -13,21 +12,18 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public class DflowService {
 
+	private DflowDao dao;
 	public DflowService() {
-		
+		this(new DflowDao());
+	}
+	
+	public DflowService(DflowDao dao) {
+		this.dao = dao;
 	}
 	
 	public List<Dflow> request(String siteQwId, String startDateStr, String endDateStr) {
-		DflowDao dao = new DflowDao();
-		DateTimeFormatter dateTimeParser = ISODateTimeFormat.dateTimeParser();
-		Date startDate = null;
-		Date endDate = null;
-		if (startDateStr != null) {
-			startDate = dateTimeParser.parseDateTime(startDateStr).toDate();
-		}
-		if (endDateStr != null) {
-			endDate = dateTimeParser.parseDateTime(endDateStr).toDate();
-		}
+		Date startDate = DateUtil.getSqlDate(startDateStr);
+		Date endDate = DateUtil.getSqlDate(endDateStr);
 		return dao.getDflow(siteQwId, startDate, endDate);
 	}
 }
