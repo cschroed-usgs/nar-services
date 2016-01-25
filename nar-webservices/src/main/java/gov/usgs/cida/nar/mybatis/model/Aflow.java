@@ -4,7 +4,7 @@ package gov.usgs.cida.nar.mybatis.model;
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class Aflow {
+public class Aflow extends NARData {
 
 	private String siteAbb;
 	private String siteQwId;

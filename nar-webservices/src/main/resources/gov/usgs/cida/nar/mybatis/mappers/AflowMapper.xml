@@ -27,8 +27,11 @@
 		FROM
 			aflow
 		<where>
-			<if test="null != siteQwId">
-				AND site_qw_id = #{siteQwId}
+			<if test="null != siteQwId and siteQwId.size() &gt; 0">
+				AND site_qw_id IN
+				<foreach item="exclude" collection="siteQwId" open="(" close=")" separator=",">
+					#{exclude}
+				</foreach>
 			</if>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin"/>
 		</where>

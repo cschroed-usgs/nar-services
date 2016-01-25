@@ -1,10 +1,13 @@
 package gov.usgs.cida.nar.webservice;
 
 import gov.usgs.cida.nar.service.DownloadServiceParameters;
+
 import static gov.usgs.cida.nar.service.DownloadServiceParameters.*;
+
 import gov.usgs.cida.nar.service.DownloadType;
 import gov.usgs.cida.nar.service.SiteInformationService;
 import gov.usgs.cida.nar.service.SosAggregationService;
+import gov.usgs.cida.nar.service.TabularDownloadService;
 import gov.usgs.cida.nar.util.DescriptionLoaderSingleton;
 import gov.usgs.cida.nar.util.JNDISingleton;
 import gov.usgs.cida.nar.util.ServiceParameterUtils;
@@ -258,12 +261,10 @@ public class DownloadService {
 			headerText = DescriptionLoaderSingleton.getDescription(downloadType.getTitle());
 		}
 		
-		new SosAggregationService(
-				downloadType, 
-				JNDISingleton.getInstance().getProperty(SOS_URL_JNDI_NAME),
-				OBSERVED_PROPERTY_PREFIX,
+		new TabularDownloadService(
+				downloadType,
 				siteInformationService.getStationFeatures(siteType, inStationId, state)
-				).streamData(zip, 
+				).streamData(zip,
 					mimeType,
 					constituentsToUse,
 					startDateTime,

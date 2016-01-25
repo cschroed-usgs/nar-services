@@ -1,12 +1,10 @@
 package gov.usgs.cida.nar.mybatis.model;
 
-import java.util.Date;
-
 /**
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class Mflow {
+public class Mflow extends NARData {
 
 	private String siteAbb;
 	private String siteQwId;

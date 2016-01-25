@@ -16,7 +16,7 @@ public class AflowDao extends BaseDao {
 
 	private static final Logger log = LoggerFactory.getLogger(AflowDao.class);
 	
-	public List<Aflow> getAflow(String siteQwId, Integer startWy, Integer endWy) {
+	public List<Aflow> getAflow(List<String> siteQwId, Integer startWy, Integer endWy) {
 		List<Aflow> result = null;
 		
 		Map<String, Object> params = new HashMap<>(7);

@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.connector.AflowConnector;
+import gov.usgs.cida.nar.connector.MyBatisConnector;
 import gov.usgs.cida.nar.connector.SOSClient;
 import gov.usgs.cida.nar.connector.SOSConnector;
 import gov.usgs.cida.nar.transform.FourDigitYearTransform;
@@ -47,13 +49,12 @@ import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-public class SosAggregationService {
-	private static final Logger log = LoggerFactory.getLogger(SosAggregationService.class);
-	
-	//determines how long we wait to check if SOS connectors are ready
-	//a higher wait time also helps with keeping output streams active by slowly streaming out bytes
-	private static final int WAIT_TIME_BETWEEN_SOS_REQUESTS = 1000; 
+/**
+ * Copied from SosAggregationService, should take its place
+ * @author jiwalker
+ */
+public class TabularDownloadService {
+	private static final Logger log = LoggerFactory.getLogger(TabularDownloadService.class);
 
 	private static final String DATE_IN_COL = "DATE";
 	
@@ -61,9 +62,9 @@ public class SosAggregationService {
 	private static final String SITE_FLOW_ID_IN_COL = "SITE_FLOW_ID";
 
 	private static final String QW_CONSTIT_IN_COL = "CONSTIT";
-	private static final String QW_CONCENTRATION_IN_COL = "procedure"; 
+	private static final String QW_CONCENTRATION_IN_COL = "procedure";
 
-	private static final String FLOW_IN_COL = "procedure"; 
+	private static final String FLOW_IN_COL = "procedure";
 	
 	private static final String AN_MASS_UPPER_95_IN_COL = "annual_mass_upper_95";
 	private static final String AN_MASS_LOWER_95_IN_COL = "annual_mass_lower_95";
@@ -99,14 +100,10 @@ public class SosAggregationService {
 	private static final String PROPERTY_PREFIX = "http://cida.usgs.gov/def/NAR/property/";
 	
 	private DownloadType type;
-	private String sosUrl;
-	private String observedPropertyPrefix;
 	private final SimpleFeatureCollection siteFeatures;
 	
-	public SosAggregationService(DownloadType type, String sosUrl, String observedPropertyPrefix, SimpleFeatureCollection siteFeatures) {
+	public TabularDownloadService(DownloadType type, SimpleFeatureCollection siteFeatures) {
 		this.type = type;
-		this.sosUrl = sosUrl;
-		this.observedPropertyPrefix = observedPropertyPrefix;
 		this.siteFeatures = siteFeatures;
 	}
 	
@@ -119,13 +116,7 @@ public class SosAggregationService {
 		log.trace("Beginning stream for {}", this.type.name());
 		
 		final StringReader headerReader = new StringReader(header);
-
-		final List<SOSConnector> sosConnectors = getSosConnectors(
-				sosUrl,
-				constituent,
-				SiteInformationService.getStationIdsFromFeatureCollection(siteFeatures),
-				startDateTime,
-				endDateTime);
+		final MyBatisConnector connector = buildConnector(type, siteFeatures, constituent, startDateTime, endDateTime);
 		
 		List<PlanStep> steps = new LinkedList<>();
 		PlanStep connectorStep;
@@ -133,46 +124,9 @@ public class SosAggregationService {
 			
 			@Override
 			public ResultSet runStep(ResultSet rs) {
-				boolean areAllReady = false;
-				List<ResultSet> rsets = new ArrayList<>();
+				ResultSet resultSet = null;
 				
-				long start = System.currentTimeMillis();
-				while (!areAllReady) {
-					boolean readyCheck = true;
-					int numberReady = 0;
-					for (IConnector conn : sosConnectors) {
-						boolean connReady = conn.isReady();
-						readyCheck = (readyCheck && connReady);
-						if (connReady) {
-							numberReady++;
-						}
-					}
-					// TODO make sure isReady() will eventually be true
-					log.trace(String.format("Streams complete: {} of {}", numberReady, sosConnectors.size()));
-					try {
-						Thread.sleep(WAIT_TIME_BETWEEN_SOS_REQUESTS);
-					}
-					catch (InterruptedException ex) {
-						log.debug("Thread waiting for SOS response interrupted", ex);
-					}
-					
-					if (mimeType == MimeType.CSV || mimeType == MimeType.TAB) { //TODO use NUDE for this header writing
-						//write a single byte to keep the stream active
-						try {
-							int nextByte = headerReader.read();
-							if(nextByte > -1) {
-								output.write(nextByte);
-								output.flush();
-							}
-						} catch (IOException e) {
-							log.debug("Exception writing header fragment", e);
-						}
-					}
-					
-					areAllReady = readyCheck;
-				}
-				
-				//Write out what's left of the header now that we aren't waiting for SOS connectors
+				//Write out what's left of the header
 				if (mimeType == MimeType.CSV || mimeType == MimeType.TAB) { //TODO use NUDE for this header writing
 					//write a single byte to keep the stream active
 					try {
@@ -187,22 +141,16 @@ public class SosAggregationService {
 					}
 				}
 				
-				for (IConnector conn : sosConnectors) {
-					ResultSet resultSet = conn.getResultSet();
-					rsets.add(resultSet);
+				if (connector.isReady()) {
+					resultSet = connector.getResultSet();
 				}
 				
-				log.debug("***** Time elapsed: " + (System.currentTimeMillis() - start));
-				return new MuxResultSet(rsets);
+				return resultSet;
 			}
 
 			@Override
 			public ColumnGrouping getExpectedColumns() {
-				List<ColumnGrouping> cgs = new ArrayList<>();
-				for (IConnector conn : sosConnectors) {
-					cgs.add(conn.getExpectedColumns());
-				}
-				return ColumnGrouping.join(cgs);
+				return connector.getExpectedColumns();
 			}
 		};
 		
@@ -244,84 +192,8 @@ public class SosAggregationService {
 		if (sr != null && output != null) {
 			StreamResponse.dispatch(sr, new PrintWriter(output));
 			output.flush();
-			for (SOSConnector conn : sosConnectors) {
-				IOUtils.closeQuietly(conn);
-			}
+			IOUtils.closeQuietly(connector);
 		}
-	}
-	
-	public List<SOSConnector> getSosConnectors(final String sosUrl,
-			final List<String> constituent,
-			final List<String> stationId,
-			final String startDateTime,
-			final String endDateTime) {
-		List<SOSConnector> sosConnectors = new ArrayList<>();
-		
-		List<String> actualProperties = new ArrayList<>();
-		for(String prop : constituent) {
-			actualProperties.add(this.observedPropertyPrefix + prop);
-		}
-		
-		DateTime start = null;
-		try {
-			start = DateTime.parse(startDateTime, DateTimeFormat.forPattern("MM/dd/yyyy"));
-		} catch(Exception e) {
-			log.debug("Failed to parse date", e);
-		}
-		DateTime end = null;
-		try {
-			end = DateTime.parse(endDateTime, DateTimeFormat.forPattern("MM/dd/yyyy"));
-		} catch(Exception e) {
-			log.debug("Failed to parse date",e);
-		}
-		
-		Map<String, List<String>> columnMap = new HashMap<>();
-		
-		for(String procedure : this.type.getProcedures()) {
-			String columnName = DownloadType.getColumnNameFromProcedure(procedure);
-			if (columnMap.containsKey(columnName)) {
-				List<String> procList = columnMap.get(columnName);
-				procList.add(procedure);
-			} else {
-				List<String> procList = new LinkedList<>();
-				procList.add(procedure);
-				columnMap.put(columnName, procList);
-			}
-		}
-		
-		for (String columnName : columnMap.keySet()) {
-			List<String> procList = columnMap.get(columnName);
-
-			SOSClient gdaClient = new SOSClient(sosUrl, null, null, actualProperties, procList, null);
-			List<DataAvailabilityMember> dataAvailityMembers = gdaClient.getDataAvailability();
-			gdaClient.close();
-			
-			List<String> filteredStations = filterStationsByDataAvailibility(dataAvailityMembers, stationId);
-			SOSClient sosClient = new SOSClient(sosUrl, start, end, actualProperties, procList, filteredStations);
-			
-			final SOSConnector sosConnector = new SOSConnector(sosClient, columnName);
-			sosConnectors.add(sosConnector);
-		}
-		return sosConnectors;
-	}
-	
-	private List<String> filterStationsByDataAvailibility(List<DataAvailabilityMember> dataAvailityMembers, final List<String> stationIds) {
-		List<String> filteredStationIds = new ArrayList<>();
-
-		if(stationIds != null) {
-			//filter features down to only those available
-			for(String staid : stationIds) {
-				for(DataAvailabilityMember da : dataAvailityMembers) {
-					if(da.getFeatureOfInterest().equals(staid)) {
-						if(!filteredStationIds.contains(staid)) {
-							filteredStationIds.add(staid);
-						}
-					}
-				}
-			}
-		}
-		
-		return filteredStationIds;
 	}
 	
 	private List<PlanStep> getAnnualLoadSteps(final List<PlanStep> prevSteps) {
@@ -639,5 +511,40 @@ public class SosAggregationService {
 			}
 		}
 		return index;
+	}
+
+	private MyBatisConnector buildConnector(DownloadType type,
+			SimpleFeatureCollection siteFeatures,
+			List<String> constituent,
+			String startDateTime,
+			String endDateTime) throws IOException {
+		MyBatisConnector connector = null;
+		List<String> sites = SiteInformationService.getStationIdsFromFeatureCollection(siteFeatures);
+		switch(this.type) {
+			case annualLoad:
+				// TODO build service
+				break;
+			case mayLoad:
+				// TODO build service
+				break;
+			case annualFlow:
+				AflowService aflowService = new AflowService();
+				aflowService.setSiteQwId(sites);
+				aflowService.setStartDate(startDateTime);
+				aflowService.setEndDate(endDateTime);
+				connector = new AflowConnector(aflowService);
+				break;
+			case mayFlow:
+				// TODO build service
+				break;
+			case dailyFlow:
+				// TODO build service
+				break;
+			case sampleConcentrations:
+				// TODO build service
+				break;
+			default: //nothing
+		}
+		return connector;
 	}
 }

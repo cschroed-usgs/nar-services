@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.webservice;
 
+import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.Aloads;
 import gov.usgs.cida.nar.mybatis.model.Dflow;
@@ -40,7 +41,7 @@ public class TimeseriesWebservice {
 			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Aflow requested from {} for {} to {}", siteQwId, startTime, endTime);
 		AflowService service = new AflowService();
-		List<Aflow> aflows = service.request(siteQwId, startTime, endTime);
+		List<Aflow> aflows = service.request(Lists.newArrayList(siteQwId), startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(aflows)).build();
 	}
 	
