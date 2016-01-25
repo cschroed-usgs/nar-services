@@ -2,10 +2,9 @@ package gov.usgs.cida.nar.service;
 
 import gov.usgs.cida.nar.mybatis.dao.DiscqwDao;
 import gov.usgs.cida.nar.mybatis.model.Discqw;
-import java.util.Date;
+import gov.usgs.cida.nar.util.DateUtil;
+import java.sql.Date;
 import java.util.List;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  *
@@ -13,21 +12,19 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public class DiscqwService {
 
+	DiscqwDao dao;
+	
 	public DiscqwService() {
-		
+		this(new DiscqwDao());
+	}
+	
+	public DiscqwService(DiscqwDao dao) {
+		this.dao = dao;
 	}
 	
 	public List<Discqw> request(String siteQwId, String constit, String startDateStr, String endDateStr) {
-		DiscqwDao dao = new DiscqwDao();
-		DateTimeFormatter dateTimeParser = ISODateTimeFormat.dateTimeParser();
-		Date startDate = null;
-		Date endDate = null;
-		if (startDateStr != null) {
-			startDate = dateTimeParser.parseDateTime(startDateStr).toDate();
-		}
-		if (endDateStr != null) {
-			endDate = dateTimeParser.parseDateTime(endDateStr).toDate();
-		}
+		Date startDate = DateUtil.getSqlDate(startDateStr);
+		Date endDate = DateUtil.getSqlDate(endDateStr);
 		return dao.getDiscqw(siteQwId, constit, startDate, endDate);
 	}
 }

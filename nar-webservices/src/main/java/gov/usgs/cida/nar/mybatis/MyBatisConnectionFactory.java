@@ -17,8 +17,6 @@ public class MyBatisConnectionFactory {
 	private static SqlSessionFactory sqlSessionFactory;
 	private final static String RESOURCE = "mybatis-config.xml";
 	
-	public static final String QUERY_PACKAGE = "gov.usgs.cida.nar.mybatis.mappers";
-
 	static {
 		try (InputStream inputStream = Resources.getResourceAsStream(RESOURCE)) {
 			sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);

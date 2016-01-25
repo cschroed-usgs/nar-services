@@ -32,12 +32,7 @@
 			<if test="null != siteQwId">
 				AND site_qw_id = #{siteQwId}
 			</if>
-			<if test="null != startWy">
-				AND wy &gt;= #{startWy}
-			</if>
-			<if test="null != endWy">
-				AND wy &lt;= #{endWy}
-			</if>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin"/>
 		</where>
 	ORDER BY site_qw_id, site_flow_id, wy, month ASC
 	</select>
