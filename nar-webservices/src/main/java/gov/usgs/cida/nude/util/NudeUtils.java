@@ -107,7 +107,7 @@ public class NudeUtils {
 		if (obj instanceof DateRange) {
 			result = makeDateRangeString((DateRange)obj);
 		} else {
-			result = obj.toString();
+			result = String.valueOf(obj);
 		}
 		return result;
 	}

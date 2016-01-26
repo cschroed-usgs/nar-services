@@ -1,7 +1,7 @@
 package gov.usgs.cida.nar.connector;
 
 import gov.usgs.cida.nar.mybatis.model.NARData;
-import gov.usgs.cida.nar.resultset.BeanResultSet;
+import gov.usgs.cida.nar.resultset.BeanIteratorResultSet;
 import gov.usgs.cida.nar.service.NARService;
 import gov.usgs.cida.nude.connector.IConnector;
 import gov.usgs.cida.nude.connector.parser.IParser;
@@ -27,7 +27,7 @@ public abstract class MyBatisConnector implements IConnector, Closeable {
 	public ResultSet getResultSet() {
 		List<? extends NARData> data = service.request();
 		Iterator<? extends NARData> iterator = data.iterator();
-		BeanResultSet resultSet = new BeanResultSet(iterator);
+		BeanIteratorResultSet resultSet = new BeanIteratorResultSet(iterator, this.getExpectedColumns());
 		return resultSet;
 	}
 

@@ -2,8 +2,6 @@ package gov.usgs.cida.nar.service;
 
 import gov.usgs.cida.nar.connector.AflowConnector;
 import gov.usgs.cida.nar.connector.MyBatisConnector;
-import gov.usgs.cida.nar.connector.SOSClient;
-import gov.usgs.cida.nar.connector.SOSConnector;
 import gov.usgs.cida.nar.transform.FourDigitYearTransform;
 import gov.usgs.cida.nar.transform.PrefixStripTransform;
 import gov.usgs.cida.nar.transform.QwIdToFlowIdTransform;
@@ -14,7 +12,6 @@ import gov.usgs.cida.nar.transform.WaterYearTransform;
 import gov.usgs.cida.nude.column.Column;
 import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.column.SimpleColumn;
-import gov.usgs.cida.nude.connector.IConnector;
 import gov.usgs.cida.nude.filter.FilterStageBuilder;
 import gov.usgs.cida.nude.filter.FilterStep;
 import gov.usgs.cida.nude.filter.NudeFilterBuilder;
@@ -24,8 +21,6 @@ import gov.usgs.cida.nude.out.StreamResponse;
 import gov.usgs.cida.nude.out.TableResponse;
 import gov.usgs.cida.nude.plan.Plan;
 import gov.usgs.cida.nude.plan.PlanStep;
-import gov.usgs.cida.nude.resultset.inmemory.MuxResultSet;
-import gov.usgs.cida.sos.DataAvailabilityMember;
 import gov.usgs.webservices.framework.basic.MimeType;
 
 import java.io.IOException;
@@ -35,17 +30,13 @@ import java.io.StringReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.IOUtils;
 import org.geotools.data.simple.SimpleFeatureCollection;
-import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,14 +48,14 @@ public class TabularDownloadService {
 	private static final Logger log = LoggerFactory.getLogger(TabularDownloadService.class);
 
 	private static final String DATE_IN_COL = "DATE";
-	
-	private static final String SITE_QW_ID_IN_COL = "SITE_QW_ID";
-	private static final String SITE_FLOW_ID_IN_COL = "SITE_FLOW_ID";
+	private static final String WY_IN_COL = "wy";
+	private static final String SITE_QW_ID_IN_COL = "siteQwId";
+	private static final String SITE_FLOW_ID_IN_COL = "siteFlowId";
 
 	private static final String QW_CONSTIT_IN_COL = "CONSTIT";
 	private static final String QW_CONCENTRATION_IN_COL = "procedure";
 
-	private static final String FLOW_IN_COL = "procedure";
+	private static final String FLOW_IN_COL = "flow";
 	
 	private static final String AN_MASS_UPPER_95_IN_COL = "annual_mass_upper_95";
 	private static final String AN_MASS_LOWER_95_IN_COL = "annual_mass_lower_95";
@@ -77,6 +68,8 @@ public class TabularDownloadService {
 	private static final String MON_FLOW_IN_COL = "procedure";
 	private static final String MON_MASS_LOWER_95_IN_COL= "monthly_mass_lower_95";
 	
+	private static final String SITE_FLOW_ID_OUT_COL = "SITE_FLOW_ID";
+	private static final String SITE_QW_ID_OUT_COL = "SITE_QW_ID";
 	private static final String WY_OUT_COL = "WY";
 	private static final String FLOW_OUT_COL = "FLOW";
 
@@ -318,8 +311,9 @@ public class TabularDownloadService {
 		ColumnGrouping originals = prevSteps.get(prevSteps.size()-1).getExpectedColumns();
 		FilterStep renameColsStep = new FilterStep(new NudeFilterBuilder(originals)
 						.addFilterStage(new FilterStageBuilder(originals)
-							.addTransform(new SimpleColumn(SITE_FLOW_ID_IN_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
-							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_QW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_FLOW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_FLOW_ID_IN_COL) + 1)))	
+							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), WY_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(FLOW_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), FLOW_IN_COL) + 1)))
 							.buildFilterStage())
 				.buildFilter());
@@ -328,8 +322,8 @@ public class TabularDownloadService {
 		//drop constit and modtype columns
 		List<Column> finalColList = new ArrayList<>();
 		List<Column> allCols = renameColsStep.getExpectedColumns().getColumns();
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_IN_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, WY_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, FLOW_OUT_COL)));
 		
@@ -341,12 +335,12 @@ public class TabularDownloadService {
 		steps.add(removeUnusedColsStep);
 
 		//convert date to WY
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), siteFeatures))
-				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new WaterYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
-				.buildFilterStage())
-		.buildFilter()));
+//		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
+//				.addFilterStage(new FilterStageBuilder(finalCols)
+//				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_OUT_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_OUT_COL)), siteFeatures))
+//				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new WaterYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
+//				.buildFilterStage())
+//		.buildFilter()));
 
 		return steps;
 	}

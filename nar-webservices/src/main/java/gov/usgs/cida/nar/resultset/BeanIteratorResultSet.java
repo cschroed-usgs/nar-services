@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.resultset;
 
+import gov.usgs.cida.nude.column.ColumnGrouping;
 import gov.usgs.cida.nude.resultset.inmemory.PeekingResultSet;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import gov.usgs.cida.nude.util.NudeUtils;
@@ -10,12 +11,13 @@ import java.util.Iterator;
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class BeanResultSet extends PeekingResultSet {
+public class BeanIteratorResultSet extends PeekingResultSet {
 
 	private Iterator iterator;
 	
-	public BeanResultSet(Iterator iterator) {
+	public BeanIteratorResultSet(Iterator iterator, ColumnGrouping colGroups) {
 		this.iterator = iterator;
+		this.columns = colGroups;
 	}
 	
 	@Override
@@ -28,11 +30,12 @@ public class BeanResultSet extends PeekingResultSet {
 		if (row != null) {
 			this.nextRows.add(row);
 		}
+		
 	}
 
 	@Override
 	public String getCursorName() throws SQLException {
-		return "IteratorWrappingResultSet";
+		return "BeanIteratorResultSet";
 	}
 
 }
