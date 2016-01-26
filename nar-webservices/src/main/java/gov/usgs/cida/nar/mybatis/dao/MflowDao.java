@@ -16,7 +16,7 @@ public class MflowDao extends BaseDao {
 
 	private static final Logger log = LoggerFactory.getLogger(MflowDao.class);
 	
-	public List<Mflow> getMflow(String siteQwId, Integer startWy, Integer endWy) {
+	public List<Mflow> getMflow(List<String> siteQwId, Integer startWy, Integer endWy) {
 		List<Mflow> result = null;
 		
 		Map<String, Object> params = new HashMap<>(7);

@@ -33,12 +33,8 @@
 		FROM
 			discqw
 		<where>
-			<if test="null != siteQwId">
-				AND site_qw_id = #{siteQwId}
-			</if>
-			<if test="null != constit">
-				AND constit = #{constit}
-			</if>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn"/>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.dateWithin" />
 		</where>
 	ORDER BY site_qw_id, site_flow_id, constit, date ASC

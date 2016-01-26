@@ -2,11 +2,14 @@ package gov.usgs.cida.nar.service;
 
 import gov.usgs.cida.nar.connector.AflowConnector;
 import gov.usgs.cida.nar.connector.AloadsConnector;
+import gov.usgs.cida.nar.connector.DflowConnector;
+import gov.usgs.cida.nar.connector.DiscqwConnector;
+import gov.usgs.cida.nar.connector.MflowConnector;
+import gov.usgs.cida.nar.connector.MloadsConnector;
 import gov.usgs.cida.nar.connector.MyBatisConnector;
 import gov.usgs.cida.nar.transform.FourDigitYearTransform;
 import gov.usgs.cida.nar.transform.PrefixStripTransform;
 import gov.usgs.cida.nar.transform.QwIdToFlowIdTransform;
-import gov.usgs.cida.nar.transform.RemarkedValueTransform;
 import gov.usgs.cida.nar.transform.ToDayDateTransform;
 import gov.usgs.cida.nar.transform.ToMonthNumberTransform;
 import gov.usgs.cida.nar.transform.WaterYearTransform;
@@ -49,6 +52,7 @@ public class TabularDownloadService {
 	private static final Logger log = LoggerFactory.getLogger(TabularDownloadService.class);
 
 	private static final String DATE_IN_COL = "date";
+	private static final String MONTH_IN_COL= "month";
 	private static final String WY_IN_COL = "wy";
 	private static final String SITE_QW_ID_IN_COL = "siteQwId";
 	private static final String SITE_FLOW_ID_IN_COL = "siteFlowId";
@@ -56,6 +60,7 @@ public class TabularDownloadService {
 	private static final String QW_CONSTIT_IN_COL = "constit";
 	private static final String MOD_TYPE_IN_COL = "modtype";
 	private static final String QW_CONCENTRATION_IN_COL = "concentration";
+	private static final String REMARK_IN_COL = "remark";
 
 	private static final String FLOW_IN_COL = "flow";
 	
@@ -72,6 +77,7 @@ public class TabularDownloadService {
 	
 	private static final String SITE_FLOW_ID_OUT_COL = "SITE_FLOW_ID";
 	private static final String SITE_QW_ID_OUT_COL = "SITE_QW_ID";
+	private static final String DATE_OUT_COL = "DATE";
 	private static final String WY_OUT_COL = "WY";
 	private static final String FLOW_OUT_COL = "FLOW";
 
@@ -244,9 +250,12 @@ public class TabularDownloadService {
 		ColumnGrouping originals = prevSteps.get(prevSteps.size()-1).getExpectedColumns();
 		FilterStep renameColsStep = new FilterStep(new NudeFilterBuilder(originals)
 						.addFilterStage(new FilterStageBuilder(originals)
-							.addTransform(new SimpleColumn(SITE_FLOW_ID_IN_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
-							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
-							.addTransform(new SimpleColumn(MONTH_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_QW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_FLOW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_FLOW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), WY_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(MONTH_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MONTH_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(QW_CONSTIT_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), QW_CONSTIT_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(MOD_TYPE_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MOD_TYPE_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(MON_MASS_LOWER_95_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MON_MASS_LOWER_95_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(MON_MASS_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MON_MASS_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(MON_MASS_UPPER_95_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MON_MASS_UPPER_95_IN_COL) + 1)))
@@ -257,9 +266,9 @@ public class TabularDownloadService {
 		//drop constit and modtype columns
 		List<Column> finalColList = new ArrayList<>();
 		List<Column> allCols = renameColsStep.getExpectedColumns().getColumns();
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONSTIT_IN_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONSTIT_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, WY_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, MONTH_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, MOD_TYPE_OUT_COL)));
@@ -273,23 +282,6 @@ public class TabularDownloadService {
 						.buildFilterStage())
 				.buildFilter());
 		steps.add(removeUnusedColsStep);
-		
-		//convert date to WY
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), siteFeatures))
-				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new WaterYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
-				.addTransform(finalColList.get(indexOfCol(finalColList, MONTH_OUT_COL)), new ToMonthNumberTransform(finalColList.get(indexOfCol(finalColList, MONTH_OUT_COL))))
-				.buildFilterStage())
-		.buildFilter()));
-		
-		//Strip out the constituent prefix
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, QW_CONSTIT_IN_COL)), 
-						new PrefixStripTransform(finalColList.get(indexOfCol(finalColList, QW_CONSTIT_IN_COL)), PROPERTY_PREFIX))
-				.buildFilterStage())
-		.buildFilter()));
 		
 		return steps;
 	}
@@ -334,9 +326,10 @@ public class TabularDownloadService {
 		ColumnGrouping originals = prevSteps.get(prevSteps.size()-1).getExpectedColumns();
 		FilterStep renameColsStep = new FilterStep(new NudeFilterBuilder(originals)
 						.addFilterStage(new FilterStageBuilder(originals)
-							.addTransform(new SimpleColumn(SITE_FLOW_ID_IN_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
-							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
-							.addTransform(new SimpleColumn(MONTH_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_QW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_FLOW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_FLOW_ID_IN_COL) + 1)))	
+							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), WY_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(MONTH_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MONTH_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(MON_FLOW_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MON_FLOW_IN_COL) + 1)))
 							.buildFilterStage())
 				.buildFilter());
@@ -358,15 +351,6 @@ public class TabularDownloadService {
 				.buildFilter());
 		steps.add(removeUnusedColsStep);
 
-		//convert date to WY
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), siteFeatures))
-				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new FourDigitYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
-				.addTransform(finalColList.get(indexOfCol(finalColList, MONTH_OUT_COL)), new ToMonthNumberTransform(finalColList.get(indexOfCol(finalColList, MONTH_OUT_COL))))
-				.buildFilterStage())
-		.buildFilter()));
-
 		return steps;
 	}
 	
@@ -377,9 +361,11 @@ public class TabularDownloadService {
 		ColumnGrouping originals = prevSteps.get(prevSteps.size()-1).getExpectedColumns();
 		FilterStep renameColsStep = new FilterStep(new NudeFilterBuilder(originals)
 						.addFilterStage(new FilterStageBuilder(originals)
-							.addTransform(new SimpleColumn(SITE_FLOW_ID_IN_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_QW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_FLOW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_FLOW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(DATE_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(FLOW_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), FLOW_IN_COL) + 1)))
-							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), WY_IN_COL) + 1)))
 							.buildFilterStage())
 				.buildFilter());
 		steps.add(renameColsStep);
@@ -387,9 +373,9 @@ public class TabularDownloadService {
 		//drop constit and modtype columns
 		List<Column> finalColList = new ArrayList<>();
 		List<Column> allCols = renameColsStep.getExpectedColumns().getColumns();
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, DATE_IN_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, DATE_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, WY_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, FLOW_OUT_COL)));
 		
@@ -403,9 +389,7 @@ public class TabularDownloadService {
 		//convert dates to WY and day
 		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
 				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), siteFeatures))
-				.addTransform(finalColList.get(indexOfCol(finalColList, DATE_IN_COL)), new ToDayDateTransform(finalColList.get(indexOfCol(finalColList, DATE_IN_COL))))
-				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new WaterYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
+				.addTransform(finalColList.get(indexOfCol(finalColList, DATE_OUT_COL)), new ToDayDateTransform(finalColList.get(indexOfCol(finalColList, DATE_OUT_COL))))
 				.buildFilterStage())
 		.buildFilter()));
 
@@ -419,10 +403,13 @@ public class TabularDownloadService {
 		ColumnGrouping originals = prevSteps.get(prevSteps.size()-1).getExpectedColumns();
 		FilterStep renameColsStep = new FilterStep(new NudeFilterBuilder(originals)
 			.addFilterStage(new FilterStageBuilder(originals)
-			.addTransform(new SimpleColumn(SITE_FLOW_ID_IN_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
-			.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
+			.addTransform(new SimpleColumn(SITE_QW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
+			.addTransform(new SimpleColumn(SITE_FLOW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_FLOW_ID_IN_COL) + 1)))
+			.addTransform(new SimpleColumn(QW_CONSTIT_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), QW_CONSTIT_IN_COL) + 1)))
+			.addTransform(new SimpleColumn(DATE_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
+			.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), WY_IN_COL) + 1)))
 			.addTransform(new SimpleColumn(QW_CONCENTRATION_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), QW_CONCENTRATION_IN_COL) + 1)))
-			.addTransform(new SimpleColumn(REMARK_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), QW_CONCENTRATION_IN_COL) + 1)))
+			.addTransform(new SimpleColumn(REMARK_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), REMARK_IN_COL) + 1)))
 			.buildFilterStage())
 			.buildFilter());
 		steps.add(renameColsStep);
@@ -430,10 +417,10 @@ public class TabularDownloadService {
 		//missing cols commented out until available 
 		List<Column> finalColList = new ArrayList<>();
 		List<Column> allCols = renameColsStep.getExpectedColumns().getColumns();
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONSTIT_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, DATE_IN_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONSTIT_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, DATE_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, WY_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONCENTRATION_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, REMARK_OUT_COL)));
@@ -448,27 +435,7 @@ public class TabularDownloadService {
 		//convert dates to WY and day
 		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
 				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), siteFeatures))
-				.addTransform(finalColList.get(indexOfCol(finalColList, DATE_IN_COL)), new ToDayDateTransform(finalColList.get(indexOfCol(finalColList, DATE_IN_COL))))
-				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new WaterYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
-				.buildFilterStage())
-		.buildFilter()));
-		
-		//Strip out the constituent prefix
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, QW_CONSTIT_IN_COL)), 
-						new PrefixStripTransform(finalColList.get(indexOfCol(finalColList, QW_CONSTIT_IN_COL)), PROPERTY_PREFIX))
-				.buildFilterStage())
-		.buildFilter()));
-		
-		//Strip out remark from value field and value from remark field
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, QW_CONCENTRATION_OUT_COL)), 
-						new RemarkedValueTransform(finalColList.get(indexOfCol(finalColList, QW_CONCENTRATION_OUT_COL)), false))
-				.addTransform(finalColList.get(indexOfCol(finalColList, REMARK_OUT_COL)), 
-						new RemarkedValueTransform(finalColList.get(indexOfCol(finalColList, REMARK_OUT_COL)), true))
+				.addTransform(finalColList.get(indexOfCol(finalColList, DATE_OUT_COL)), new ToDayDateTransform(finalColList.get(indexOfCol(finalColList, DATE_OUT_COL))))
 				.buildFilterStage())
 		.buildFilter()));
 		
@@ -506,7 +473,12 @@ public class TabularDownloadService {
 				connector = new AloadsConnector(aloadsService);
 				break;
 			case mayLoad:
-				// TODO build service
+				MloadsService mloadsService = new MloadsService();
+				mloadsService.setSiteQwId(sites);
+				mloadsService.setConstit(constituent);
+				mloadsService.setStartDate(startDateTime);
+				mloadsService.setEndDate(endDateTime);
+				connector = new MloadsConnector(mloadsService);
 				break;
 			case annualFlow:
 				AflowService aflowService = new AflowService();
@@ -516,13 +488,26 @@ public class TabularDownloadService {
 				connector = new AflowConnector(aflowService);
 				break;
 			case mayFlow:
-				// TODO build service
+				MflowService mflowService = new MflowService();
+				mflowService.setSiteQwId(sites);
+				mflowService.setStartDate(startDateTime);
+				mflowService.setEndDate(endDateTime);
+				connector = new MflowConnector(mflowService);
 				break;
 			case dailyFlow:
-				// TODO build service
+				DflowService dflowService = new DflowService();
+				dflowService.setSiteQwId(sites);
+				dflowService.setStartDate(startDateTime);
+				dflowService.setEndDate(endDateTime);
+				connector = new DflowConnector(dflowService);
 				break;
 			case sampleConcentrations:
-				// TODO build service
+				DiscqwService discqwService = new DiscqwService();
+				discqwService.setSiteQwId(sites);
+				discqwService.setConstit(constituent);
+				discqwService.setStartDate(startDateTime);
+				discqwService.setEndDate(endDateTime);
+				connector = new DiscqwConnector(discqwService);
 				break;
 			default: //nothing
 		}

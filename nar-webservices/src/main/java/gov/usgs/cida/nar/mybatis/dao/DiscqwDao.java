@@ -17,7 +17,7 @@ public class DiscqwDao extends BaseDao {
 
 	private static final Logger log = LoggerFactory.getLogger(DiscqwDao.class);
 	
-	public List<Discqw> getDiscqw(String siteQwId, String constit, Date startDate, Date endDate) {
+	public List<Discqw> getDiscqw(List<String> siteQwId, List<String> constit, Date startDate, Date endDate) {
 		List<Discqw> result = null;
 		
 		Map<String, Object> params = new HashMap<>(11);

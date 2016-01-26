@@ -27,13 +27,8 @@
 		FROM
 			aflow
 		<where>
-			<if test="null != siteQwId and siteQwId.size() &gt; 0">
-				AND site_qw_id IN
-				<foreach item="qwId" collection="siteQwId" open="(" close=")" separator=",">
-					#{qwId}
-				</foreach>
-			</if>
-			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin"/>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin" />
 		</where>
 	ORDER BY site_qw_id, site_flow_id, wy ASC
 	</select>

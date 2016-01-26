@@ -25,6 +25,11 @@ public class AloadsService implements NARService<Aloads>{
 	
 	public AloadsService(AloadsDao dao) {
 		this.dao = dao;
+		this.siteQwId = null;
+		this.constit = null;
+		this.modtypeExcludes = null;
+		this.startDate = null;
+		this.endDate = null;
 	}
 	
 	public List<Aloads> request(List<String> siteQwId, List<String> constit, List<String> modtypeExcludes,
