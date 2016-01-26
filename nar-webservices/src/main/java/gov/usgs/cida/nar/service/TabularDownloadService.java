@@ -1,6 +1,7 @@
 package gov.usgs.cida.nar.service;
 
 import gov.usgs.cida.nar.connector.AflowConnector;
+import gov.usgs.cida.nar.connector.AloadsConnector;
 import gov.usgs.cida.nar.connector.MyBatisConnector;
 import gov.usgs.cida.nar.transform.FourDigitYearTransform;
 import gov.usgs.cida.nar.transform.PrefixStripTransform;
@@ -47,32 +48,34 @@ import org.slf4j.LoggerFactory;
 public class TabularDownloadService {
 	private static final Logger log = LoggerFactory.getLogger(TabularDownloadService.class);
 
-	private static final String DATE_IN_COL = "DATE";
+	private static final String DATE_IN_COL = "date";
 	private static final String WY_IN_COL = "wy";
 	private static final String SITE_QW_ID_IN_COL = "siteQwId";
 	private static final String SITE_FLOW_ID_IN_COL = "siteFlowId";
 
-	private static final String QW_CONSTIT_IN_COL = "CONSTIT";
-	private static final String QW_CONCENTRATION_IN_COL = "procedure";
+	private static final String QW_CONSTIT_IN_COL = "constit";
+	private static final String MOD_TYPE_IN_COL = "modtype";
+	private static final String QW_CONCENTRATION_IN_COL = "concentration";
 
 	private static final String FLOW_IN_COL = "flow";
 	
-	private static final String AN_MASS_UPPER_95_IN_COL = "annual_mass_upper_95";
-	private static final String AN_MASS_LOWER_95_IN_COL = "annual_mass_lower_95";
-	private static final String AN_MASS_IN_COL = "annual_mass";
-	private static final String AN_YIELD_IN_COL = "annual_yield";
-	private static final String AN_CONC_FLOW_WEIGHTED_IN_COL = "annual_concentration_flow_weighted";
+	private static final String AN_MASS_UPPER_95_IN_COL = "tonsU95";
+	private static final String AN_MASS_LOWER_95_IN_COL = "tonsL95";
+	private static final String AN_MASS_IN_COL = "tons";
+	private static final String AN_YIELD_IN_COL = "yield";
+	private static final String AN_CONC_FLOW_WEIGHTED_IN_COL = "fwc";
 	
-	private static final String MON_MASS_UPPER_95_IN_COL = "monthly_mass_upper_95";
-	private static final String MON_MASS_IN_COL = "monthly_mass";
-	private static final String MON_FLOW_IN_COL = "procedure";
-	private static final String MON_MASS_LOWER_95_IN_COL= "monthly_mass_lower_95";
+	private static final String MON_MASS_UPPER_95_IN_COL = "tonsU95";
+	private static final String MON_MASS_IN_COL = "tons";
+	private static final String MON_FLOW_IN_COL = "flow";
+	private static final String MON_MASS_LOWER_95_IN_COL= "tonsL95";
 	
 	private static final String SITE_FLOW_ID_OUT_COL = "SITE_FLOW_ID";
 	private static final String SITE_QW_ID_OUT_COL = "SITE_QW_ID";
 	private static final String WY_OUT_COL = "WY";
 	private static final String FLOW_OUT_COL = "FLOW";
 
+	private static final String QW_CONSTIT_OUT_COL = "CONSTIT";
 	private static final String QW_CONCENTRATION_OUT_COL = "CONCENTRATION"; 
 	private static final String MOD_TYPE_OUT_COL = "MODTYPE"; 
 	private static final String REMARK_OUT_COL = "REMARK";
@@ -196,8 +199,11 @@ public class TabularDownloadService {
 		ColumnGrouping originals = prevSteps.get(prevSteps.size()-1).getExpectedColumns();
 		FilterStep renameColsStep = new FilterStep(new NudeFilterBuilder(originals)
 						.addFilterStage(new FilterStageBuilder(originals)
-							.addTransform(new SimpleColumn(SITE_FLOW_ID_IN_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
-							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), DATE_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_QW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_QW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(SITE_FLOW_ID_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), SITE_FLOW_ID_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(QW_CONSTIT_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), QW_CONSTIT_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(WY_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), WY_IN_COL) + 1)))
+							.addTransform(new SimpleColumn(MOD_TYPE_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), MOD_TYPE_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(AN_CONC_FLOW_WEIGHTED_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), AN_CONC_FLOW_WEIGHTED_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(AN_MASS_LOWER_95_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), AN_MASS_LOWER_95_IN_COL) + 1)))
 							.addTransform(new SimpleColumn(AN_MASS_OUT_COL), new ColumnAlias(originals.get(indexOfCol(originals.getColumns(), AN_MASS_IN_COL) + 1)))
@@ -210,9 +216,9 @@ public class TabularDownloadService {
 		//drop columns
 		List<Column> finalColList = new ArrayList<>();
 		List<Column> allCols = renameColsStep.getExpectedColumns().getColumns();
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_IN_COL)));
-		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONSTIT_IN_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_QW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, SITE_FLOW_ID_OUT_COL)));
+		finalColList.add(allCols.get(indexOfCol(allCols, QW_CONSTIT_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, WY_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, MOD_TYPE_OUT_COL)));
 		finalColList.add(allCols.get(indexOfCol(allCols, AN_MASS_OUT_COL)));
@@ -227,23 +233,7 @@ public class TabularDownloadService {
 						.buildFilterStage())
 				.buildFilter());
 		steps.add(removeUnusedColsStep);
-		
-		//convert date to WY
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_IN_COL)), siteFeatures))
-				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new WaterYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
-				.buildFilterStage())
-		.buildFilter()));
-		
-		//Strip out the constituent prefix
-		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-				.addFilterStage(new FilterStageBuilder(finalCols)
-				.addTransform(finalColList.get(indexOfCol(finalColList, QW_CONSTIT_IN_COL)), 
-						new PrefixStripTransform(finalColList.get(indexOfCol(finalColList, QW_CONSTIT_IN_COL)), PROPERTY_PREFIX))
-				.buildFilterStage())
-		.buildFilter()));
-		
+
 		return steps;
 	}
 	
@@ -333,14 +323,6 @@ public class TabularDownloadService {
 						.buildFilterStage())
 				.buildFilter());
 		steps.add(removeUnusedColsStep);
-
-		//convert date to WY
-//		steps.add(new FilterStep(new NudeFilterBuilder(finalCols)
-//				.addFilterStage(new FilterStageBuilder(finalCols)
-//				.addTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_OUT_COL)), new QwIdToFlowIdTransform(finalColList.get(indexOfCol(finalColList, SITE_FLOW_ID_OUT_COL)), siteFeatures))
-//				.addTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL)), new WaterYearTransform(finalColList.get(indexOfCol(finalColList, WY_OUT_COL))))
-//				.buildFilterStage())
-//		.buildFilter()));
 
 		return steps;
 	}
@@ -516,7 +498,12 @@ public class TabularDownloadService {
 		List<String> sites = SiteInformationService.getStationIdsFromFeatureCollection(siteFeatures);
 		switch(this.type) {
 			case annualLoad:
-				// TODO build service
+				AloadsService aloadsService = new AloadsService();
+				aloadsService.setSiteQwId(sites);
+				aloadsService.setConstit(constituent);
+				aloadsService.setStartDate(startDateTime);
+				aloadsService.setEndDate(endDateTime);
+				connector = new AloadsConnector(aloadsService);
 				break;
 			case mayLoad:
 				// TODO build service

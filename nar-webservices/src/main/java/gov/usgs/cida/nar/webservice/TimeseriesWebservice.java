@@ -49,11 +49,11 @@ public class TimeseriesWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/aloads/site/{siteQwId}")
 	public Response getAloadsBySite(@PathParam("siteQwId")String siteQwId,
-			@QueryParam("constit")String constit, @QueryParam("excludeModtype")List<String> excludeModtype,
+			@QueryParam("constit")List<String> constit, @QueryParam("excludeModtype")List<String> excludeModtype,
 			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Aloads requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
 		AloadsService service = new AloadsService();
-		List<Aloads> aloads = service.request(siteQwId, constit, excludeModtype, startTime, endTime);
+		List<Aloads> aloads = service.request(Lists.newArrayList(siteQwId), constit, excludeModtype, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(aloads)).build();
 	}
 	
