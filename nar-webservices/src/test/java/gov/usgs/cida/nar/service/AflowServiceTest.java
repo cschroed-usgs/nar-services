@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.service;
 
+import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.mybatis.dao.AflowDao;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import java.util.ArrayList;
@@ -43,11 +44,11 @@ public class AflowServiceTest {
 		String startDate = "1990-01-01";
 		String endDate = "2000-01-01";
 		AflowService instance = new AflowService(mockedDao);
-		when(mockedDao.getAflow(siteQwId, 1990, 2000)).thenReturn(expectedAflow);
+		when(mockedDao.getAflow(Lists.newArrayList(siteQwId), 1990, 2000)).thenReturn(expectedAflow);
 		List<Aflow> expResult = expectedAflow;
-		List<Aflow> result = instance.request(siteQwId, startDate, endDate);
+		List<Aflow> result = instance.request(Lists.newArrayList(siteQwId), startDate, endDate);
 		assertEquals(expResult, result);
-		verify(mockedDao).getAflow(siteQwId, 1990, 2000);
+		verify(mockedDao).getAflow(Lists.newArrayList(siteQwId), 1990, 2000);
 	}
 	
 }

@@ -123,7 +123,7 @@ public class SosAggregationService {
 		final List<SOSConnector> sosConnectors = getSosConnectors(
 				sosUrl,
 				constituent,
-				SiteInformationService.getStationIdsFromFeatureCollectoin(siteFeatures),
+				SiteInformationService.getStationIdsFromFeatureCollection(siteFeatures),
 				startDateTime,
 				endDateTime);
 		

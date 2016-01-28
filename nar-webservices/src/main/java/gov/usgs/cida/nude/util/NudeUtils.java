@@ -7,12 +7,15 @@ import gov.usgs.cida.nude.column.SimpleColumn;
 import gov.usgs.cida.nude.resultset.inmemory.TableRow;
 import gov.usgs.cida.nude.time.DateRange;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.beanutils.BeanMap;
 import org.apache.commons.beanutils.BeanUtils;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,6 +85,7 @@ public class NudeUtils {
 				obj instanceof Character ||
 				obj instanceof Boolean ||
 				obj instanceof Number ||
+				obj instanceof Date ||
 				obj instanceof DateTime ||
 				obj instanceof DateRange);
 	}
@@ -106,8 +110,10 @@ public class NudeUtils {
 		String result = "";
 		if (obj instanceof DateRange) {
 			result = makeDateRangeString((DateRange)obj);
+		} else if (obj instanceof Date) {
+			result = new DateTime(obj, DateTimeZone.UTC).toString(ISODateTimeFormat.dateTime());
 		} else {
-			result = obj.toString();
+			result = String.valueOf(obj);
 		}
 		return result;
 	}

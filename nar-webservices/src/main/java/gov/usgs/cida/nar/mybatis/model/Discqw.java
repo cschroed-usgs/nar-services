@@ -6,7 +6,7 @@ import java.util.Date;
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class Discqw {
+public class Discqw extends NARData {
 
 	private String siteAbb;
 	private String siteQwId;

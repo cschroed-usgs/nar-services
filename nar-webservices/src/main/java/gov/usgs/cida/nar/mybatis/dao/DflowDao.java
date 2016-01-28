@@ -17,7 +17,7 @@ public class DflowDao extends BaseDao {
 
 	private static final Logger log = LoggerFactory.getLogger(DflowDao.class);
 	
-	public List<Dflow> getDflow(String siteQwId, Date startDate, Date endDate) {
+	public List<Dflow> getDflow(List<String> siteQwId, Date startDate, Date endDate) {
 		List<Dflow> result = null;
 		
 		Map<String, Object> params = new HashMap<>(7);

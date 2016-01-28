@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.webservice;
 
+import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.Aloads;
 import gov.usgs.cida.nar.mybatis.model.Dflow;
@@ -40,7 +41,7 @@ public class TimeseriesWebservice {
 			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Aflow requested from {} for {} to {}", siteQwId, startTime, endTime);
 		AflowService service = new AflowService();
-		List<Aflow> aflows = service.request(siteQwId, startTime, endTime);
+		List<Aflow> aflows = service.request(Lists.newArrayList(siteQwId), startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(aflows)).build();
 	}
 	
@@ -48,11 +49,11 @@ public class TimeseriesWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/aloads/site/{siteQwId}")
 	public Response getAloadsBySite(@PathParam("siteQwId")String siteQwId,
-			@QueryParam("constit")String constit, @QueryParam("excludeModtype")List<String> excludeModtype,
+			@QueryParam("constit")List<String> constit, @QueryParam("excludeModtype")List<String> excludeModtype,
 			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Aloads requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
 		AloadsService service = new AloadsService();
-		List<Aloads> aloads = service.request(siteQwId, constit, excludeModtype, startTime, endTime);
+		List<Aloads> aloads = service.request(Lists.newArrayList(siteQwId), constit, excludeModtype, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(aloads)).build();
 	}
 	
@@ -63,7 +64,7 @@ public class TimeseriesWebservice {
 			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Dflow requested from {} from {} to {}", siteQwId, startTime, endTime);
 		DflowService service = new DflowService();
-		List<Dflow> dflow = service.request(siteQwId, startTime, endTime);
+		List<Dflow> dflow = service.request(Lists.newArrayList(siteQwId), startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(dflow)).build();
 	}
 	
@@ -71,10 +72,10 @@ public class TimeseriesWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/discqw/site/{siteQwId}")
 	public Response getDiscqwBySite(@PathParam("siteQwId")String siteQwId,
-			@QueryParam("constit")String constit, @QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+			@QueryParam("constit")List<String> constit, @QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Discqw requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
 		DiscqwService service = new DiscqwService();
-		List<Discqw> discqw = service.request(siteQwId, constit, startTime, endTime);
+		List<Discqw> discqw = service.request(Lists.newArrayList(siteQwId), constit, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(discqw)).build();
 	}
 	
@@ -85,7 +86,7 @@ public class TimeseriesWebservice {
 			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Aflow requested from {} from {} to {}", siteQwId, startTime, endTime);
 		MflowService service = new MflowService();
-		List<Mflow> mflow = service.request(siteQwId, startTime, endTime);
+		List<Mflow> mflow = service.request(Lists.newArrayList(siteQwId), startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(mflow)).build();
 	}
 	
@@ -93,11 +94,11 @@ public class TimeseriesWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/mloads/site/{siteQwId}")
 	public Response getMloadsBySite(@PathParam("siteQwId")String siteQwId,
-			@QueryParam("constit")String constit, @QueryParam("excludeModtype")List<String> excludeModtype,
+			@QueryParam("constit")List<String> constit, @QueryParam("excludeModtype")List<String> excludeModtype,
 			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
 		log.debug("Aflow requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
 		MloadsService service = new MloadsService();
-		List<Mloads> mloads = service.request(siteQwId, constit, excludeModtype, startTime, endTime);
+		List<Mloads> mloads = service.request(Lists.newArrayList(siteQwId), constit, excludeModtype, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(mloads)).build();
 	}
 }

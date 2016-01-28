@@ -16,7 +16,7 @@ public class MloadsDao extends BaseDao {
 
 	private static final Logger log = LoggerFactory.getLogger(MloadsDao.class);
 	
-	public List<Mloads> getMloads(String siteQwId, String constit, List<String> modtypeExcludes,
+	public List<Mloads> getMloads(List<String> siteQwId, List<String> constit, List<String> modtypeExcludes,
 			Integer startWy, Integer endWy) {
 		List<Mloads> result = null;
 		

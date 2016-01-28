@@ -6,7 +6,7 @@ import java.util.Date;
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class Dflow {
+public class Dflow extends NARData {
 
 	private String siteAbb;
 	private String siteQwId;

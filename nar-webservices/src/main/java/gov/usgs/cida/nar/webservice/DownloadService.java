@@ -1,12 +1,13 @@
 package gov.usgs.cida.nar.webservice;
 
 import gov.usgs.cida.nar.service.DownloadServiceParameters;
+
 import static gov.usgs.cida.nar.service.DownloadServiceParameters.*;
+
 import gov.usgs.cida.nar.service.DownloadType;
 import gov.usgs.cida.nar.service.SiteInformationService;
-import gov.usgs.cida.nar.service.SosAggregationService;
+import gov.usgs.cida.nar.service.TabularDownloadService;
 import gov.usgs.cida.nar.util.DescriptionLoaderSingleton;
-import gov.usgs.cida.nar.util.JNDISingleton;
 import gov.usgs.cida.nar.util.ServiceParameterUtils;
 import gov.usgs.webservices.framework.basic.MimeType;
 
@@ -34,8 +35,6 @@ import org.slf4j.LoggerFactory;
 @Path("/download")
 public class DownloadService {
 	private final static Logger LOG = LoggerFactory.getLogger(DownloadService.class);
-	private static final String OBSERVED_PROPERTY_PREFIX = "http://cida.usgs.gov/def/NAR/property/";
-	private static final String SOS_URL_JNDI_NAME = "nar.endpoint.sos";
 	//This list is needed to mimic the "get all" when no constituents are chosen from the front end
 	private static final List<String> CONSTITUENT_LIST = Arrays.asList(
 			"NO3_NO2", "SSC", "TN", "TP"
@@ -258,12 +257,10 @@ public class DownloadService {
 			headerText = DescriptionLoaderSingleton.getDescription(downloadType.getTitle());
 		}
 		
-		new SosAggregationService(
-				downloadType, 
-				JNDISingleton.getInstance().getProperty(SOS_URL_JNDI_NAME),
-				OBSERVED_PROPERTY_PREFIX,
+		new TabularDownloadService(
+				downloadType,
 				siteInformationService.getStationFeatures(siteType, inStationId, state)
-				).streamData(zip, 
+				).streamData(zip,
 					mimeType,
 					constituentsToUse,
 					startDateTime,

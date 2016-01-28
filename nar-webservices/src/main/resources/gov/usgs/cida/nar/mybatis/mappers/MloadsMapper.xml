@@ -37,19 +37,10 @@
 		FROM
 			mloads
 		<where>
-			<if test="null != siteQwId">
-				AND site_qw_id = #{siteQwId}
-			</if>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin"/>
-			<if test="null != modtypeExcludes and modtypeExcludes.size() &gt; 0">
-				AND modtype NOT IN
-				<foreach item="exclude" collection="modtypeExcludes" open="(" close=")" separator=",">
-					#{exclude}
-				</foreach>
-			</if>
-			<if test="null != constit">
-				AND constit = #{constit}
-			</if>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.excludeModtype"/>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn"/>
 		</where>
 	ORDER BY site_qw_id, site_flow_id, constit, modtype, wy, month ASC
 	</select>

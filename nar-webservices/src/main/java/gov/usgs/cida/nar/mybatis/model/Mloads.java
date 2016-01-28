@@ -4,7 +4,7 @@ package gov.usgs.cida.nar.mybatis.model;
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class Mloads {
+public class Mloads extends NARData {
 
 	private String siteAbb;
 	private String siteQwId;

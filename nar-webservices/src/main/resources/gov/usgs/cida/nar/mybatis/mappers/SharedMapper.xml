@@ -22,4 +22,31 @@
 			 AND date &lt;= #{endDate,jdbcType=DATE}
 		</if>
 	</sql>
+	
+	<sql id="siteQwIdIn">
+		<if test="null != siteQwId and siteQwId.size() &gt; 0">
+			AND site_qw_id IN
+			<foreach item="qwId" collection="siteQwId" open="(" close=")" separator=",">
+				#{qwId}
+			</foreach>
+		</if>
+	</sql>
+	
+	<sql id="excludeModtype">
+		<if test="null != modtypeExcludes and modtypeExcludes.size() &gt; 0">
+			AND modtype NOT IN
+			<foreach item="exclude" collection="modtypeExcludes" open="(" close=")" separator=",">
+				#{exclude}
+			</foreach>
+		</if>
+	</sql>
+	
+	<sql id="constitIn">
+		<if test="null != constit and constit.size() &gt; 0">
+			AND constit IN
+			<foreach item="con" collection="constit" open="(" close=")" separator=",">
+				#{con}
+			</foreach>
+		</if>
+	</sql>
 </mapper>
