@@ -43,7 +43,7 @@ public class AvailabilityService {
 	}
 
 	
-	public List<String> request() {
+	public List<TimeSeriesDensityCategoryPair> request() {
 		return request(siteQwId, constit, modtypeExcludes);
 	}
 
