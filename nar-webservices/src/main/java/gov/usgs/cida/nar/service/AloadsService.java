@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.TimeSeriesCategory;
+import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.AloadsDao;
 import gov.usgs.cida.nar.mybatis.model.Aloads;
 import gov.usgs.cida.nar.util.DateUtil;
@@ -9,7 +11,7 @@ import java.util.List;
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class AloadsService implements NARService<Aloads>{
+public class AloadsService implements NARService<Aloads>, IConstituentFilterable, IModtypeFilterable{
 
 	private AloadsDao dao;
 	
@@ -45,14 +47,17 @@ public class AloadsService implements NARService<Aloads>{
 		return request(siteQwId, constit, modtypeExcludes, startDate, endDate);
 	}
 
+	@Override
 	public void setSiteQwId(List<String> siteQwId) {
 		this.siteQwId = siteQwId;
 	}
 
+	@Override
 	public void setConstit(List<String> constit) {
 		this.constit = constit;
 	}
 
+	@Override
 	public void setModtypeExcludes(List<String> modtypeExcludes) {
 		this.modtypeExcludes = modtypeExcludes;
 	}
@@ -63,6 +68,21 @@ public class AloadsService implements NARService<Aloads>{
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	@Override
+	public TimeStepDensity getTimeStepDensity() {
+		return TimeStepDensity.ANNUAL;
+	}
+
+	@Override
+	public TimeSeriesCategory getTimeSeriesCategory() {
+		return TimeSeriesCategory.LOAD;
+	}
+
+	@Override
+	public boolean isAvailable() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 	
 }

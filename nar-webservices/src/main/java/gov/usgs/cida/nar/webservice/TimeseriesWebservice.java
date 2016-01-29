@@ -101,4 +101,16 @@ public class TimeseriesWebservice {
 		List<Mloads> mloads = service.request(Lists.newArrayList(siteQwId), constit, excludeModtype, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(mloads)).build();
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/availability")
+	public Response getAvailability(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("constit")List<String> constit, 
+			@QueryParam("excludeModtype")List<String> excludeModtype
+			) {
+		log.debug("Data availability requested from {} for {}", siteQwId, constit);
+		
+		return Response.ok(JSONUtil.toJSON(mloads)).build();
+	}
 }

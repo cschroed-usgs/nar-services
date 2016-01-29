@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.TimeSeriesCategory;
+import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.DflowDao;
 import gov.usgs.cida.nar.mybatis.model.Dflow;
 import gov.usgs.cida.nar.util.DateUtil;
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
-public class DflowService implements NARService {
+public class DflowService implements NARService<Dflow> {
 
 	private DflowDao dao;
 	
@@ -40,10 +42,6 @@ public class DflowService implements NARService {
 		return request(siteQwId, startDate, endDate);
 	}
 
-	public void setSiteQwId(List<String> siteQwId) {
-		this.siteQwId = siteQwId;
-	}
-
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
@@ -51,6 +49,25 @@ public class DflowService implements NARService {
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
-	
+
+	@Override
+	public TimeStepDensity getTimeStepDensity() {
+		return TimeStepDensity.DAILY;
+	}
+
+	@Override
+	public TimeSeriesCategory getTimeSeriesCategory() {
+		return TimeSeriesCategory.FLOW;
+	}
+
+	@Override
+	public boolean isAvailable() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setSiteQwId(List<String> siteQwId) {
+		this.siteQwId = siteQwId;
+	}
 	
 }

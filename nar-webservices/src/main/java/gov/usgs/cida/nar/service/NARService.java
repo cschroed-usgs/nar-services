@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.TimeSeriesCategory;
+import gov.usgs.cida.nar.domain.TimeStepDensity;
 import java.util.List;
 
 /**
@@ -10,5 +12,8 @@ import java.util.List;
 public interface NARService<NARData> {
 
 	List<? extends NARData> request();
-
+	TimeStepDensity getTimeStepDensity();
+	TimeSeriesCategory getTimeSeriesCategory();
+	boolean isAvailable();
+	void setSiteQwId(List<String> siteQwId);
 }

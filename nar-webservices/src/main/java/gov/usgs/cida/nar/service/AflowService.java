@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.TimeSeriesCategory;
+import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.AflowDao;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.util.DateUtil;
@@ -38,6 +40,7 @@ public class AflowService implements NARService<Aflow> {
 		return request(siteQwId, startDate, endDate);
 	}
 
+	@Override
 	public void setSiteQwId(List<String> siteQwId) {
 		this.siteQwId = siteQwId;
 	}
@@ -48,6 +51,21 @@ public class AflowService implements NARService<Aflow> {
 
 	public void setEndDate(String endDate) {
 		this.endDate = endDate;
+	}
+
+	@Override
+	public TimeStepDensity getTimeStepDensity() {
+		return TimeStepDensity.ANNUAL;
+	}
+
+	@Override
+	public TimeSeriesCategory getTimeSeriesCategory() {
+		return TimeSeriesCategory.FLOW;
+	}
+
+	@Override
+	public boolean isAvailable() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
 }
