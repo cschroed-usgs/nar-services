@@ -1,7 +1,7 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
 import gov.usgs.cida.nar.mybatis.model.Aflow;
-import gov.usgs.cida.nar.mybatis.model.StringTimeInterval;
+import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +33,8 @@ public class AflowDao extends BaseDao {
 		return result;
 	}
 	
-	public StringTimeInterval getAvailability(String siteQwId){
-		StringTimeInterval result = null;
+	public WaterYearInterval getAvailability(String siteQwId){
+		WaterYearInterval result = null;
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put(SITE_QW, siteQwId);

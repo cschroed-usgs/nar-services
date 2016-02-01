@@ -1,9 +1,12 @@
 package gov.usgs.cida.nar.service;
 
 import com.google.common.collect.Lists;
+import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
+import gov.usgs.cida.nar.domain.TimeSeriesCategory;
+import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.AflowDao;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
-import gov.usgs.cida.nar.mybatis.model.StringTimeInterval;
+import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,15 +70,19 @@ public class AflowServiceTest {
 	 */
 	@Test
 	public void testGetAvailability() {
-		StringTimeInterval expectedStringTimeInterval = new StringTimeInterval(""+START_YEAR, ""+END_YEAR);
+		WaterYearInterval daoInterval = new WaterYearInterval(START_YEAR, END_YEAR);
 		
-		Interval expectedInterval = new Interval(
+		TimeSeriesAvailability expectedAvailability = new TimeSeriesAvailability(
+			TimeSeriesCategory.FLOW, 
+			TimeStepDensity.ANNUAL, 
 			new DateTime(START_YEAR, 1, 1, 0, 0),
-			new DateTime(END_YEAR, 1, 1, 0, 0)
+			new DateTime(END_YEAR, 1, 1, 0, 0),
+			null
 		);
+		
 		instance.setSiteQwId(Lists.newArrayList(SITE_QW_ID));
-		when(mockedDao.getAvailability(SITE_QW_ID)).thenReturn(expectedStringTimeInterval);
-		Interval result = instance.getAvailability();
-		assertEquals(expectedInterval, result);
+		when(mockedDao.getAvailability(SITE_QW_ID)).thenReturn(daoInterval);
+		List<TimeSeriesAvailability> result = instance.getAvailability();
+		assertEquals(expectedAvailability, result.get(0));
 	}
 }

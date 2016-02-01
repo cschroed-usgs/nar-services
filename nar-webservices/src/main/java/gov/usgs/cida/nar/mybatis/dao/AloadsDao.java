@@ -29,6 +29,7 @@ public class AloadsDao extends BaseDao {
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectList(QUERY_PACKAGE + ".AloadsMapper.getAloads", params);
+			session.selectMap()
 		}
 		
 		return result;

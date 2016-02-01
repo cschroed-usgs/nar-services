@@ -76,7 +76,7 @@ public class DiscqwService implements NARService<Discqw>, IConstituentFilterable
 	}
 
 	@Override
-	public Interval getAvailability() {
+	public List<TimeSeriesAvailability> getAvailability() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

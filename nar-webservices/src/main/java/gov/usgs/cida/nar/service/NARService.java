@@ -18,10 +18,10 @@ public interface NARService<NARData> {
 	TimeSeriesCategory getTimeSeriesCategory();
 	
 	/**
-	 * Based on criteria in the instance variables, find the time range
-	 * for this data type
-	 * @return null if no data available, an Interval otherwise
+	 * Based on criteria in the instance variables, find the availability
+	 * of data for this data type
+	 * @return an empty list if no data available, an Interval otherwise
 	 */
-	Interval getAvailability();
+	List<TimeSeriesAvailability> getAvailability();
 	void setSiteQwId(List<String> siteQwId);
 }
