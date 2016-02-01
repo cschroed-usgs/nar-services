@@ -1,11 +1,16 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.AflowDao;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
+import gov.usgs.cida.nar.mybatis.model.StringTimeInterval;
 import gov.usgs.cida.nar.util.DateUtil;
 import java.util.List;
+import java.util.Map;
+import org.joda.time.DateTime;
+import org.joda.time.Interval;
 
 /**
  *
@@ -64,8 +69,13 @@ public class AflowService implements NARService<Aflow> {
 	}
 
 	@Override
-	public boolean isAvailable() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public Interval getAvailability() {
+		StringTimeInterval strInterval = this.dao.getAvailability(this.siteQwId.get(0));
+		return new Interval(
+			new DateTime(Integer.parseInt(strInterval.getStart()),1, 1, 0, 0),
+			new DateTime(Integer.parseInt(strInterval.getEnd()),1, 1, 0, 0)
+		);
 	}
+	
 
 }

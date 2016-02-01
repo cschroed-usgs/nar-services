@@ -1,10 +1,11 @@
 package gov.usgs.cida.nar.service;
 
-import gov.usgs.cida.nar.domain.TimeSeriesDensityCategoryPair;
+import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ServiceLoader;
+import org.joda.time.Interval;
 
 public class AvailabilityService {
 
@@ -20,9 +21,12 @@ public class AvailabilityService {
 
 	}
 	
-	public List<TimeSeriesDensityCategoryPair> request(String siteQwId, String constit, List<String> modtypeExcludes) {
-		ArrayList<TimeSeriesDensityCategoryPair> availabilityPairs = new ArrayList<>();
+	public List<TimeSeriesAvailability> request(String siteQwId, String constit, List<String> modtypeExcludes) {
+		ArrayList<TimeSeriesAvailability> overallAvailability = new ArrayList<>();
 		for (NARService narService : serviceLoader ){
+			LinkedList<String> siteQwIds = new LinkedList<>();
+			siteQwIds.add(siteQwId);
+			narService.setSiteQwId(siteQwIds);
 			if(narService instanceof IConstituentFilterable){
 				LinkedList<String> constituents = new LinkedList<>();
 				constituents.add(constit);
@@ -31,19 +35,22 @@ public class AvailabilityService {
 			if(narService instanceof IModtypeFilterable){
 				((IModtypeFilterable)narService).setModtypeExcludes(modtypeExcludes);
 			}
-			if(narService.isAvailable()){
-				TimeSeriesDensityCategoryPair pair = new TimeSeriesDensityCategoryPair(
+			Interval oneTimeSeriesInterval = narService.getAvailability();
+			if(null != oneTimeSeriesInterval){
+				TimeSeriesAvailability tsa = new TimeSeriesAvailability(
+					narService.getTimeSeriesCategory(),
 					narService.getTimeStepDensity(),
-					narService.getTimeSeriesCategory()
+					oneTimeSeriesInterval.getStart(),
+					oneTimeSeriesInterval.getEnd()
 				);
-				availabilityPairs.add(pair);
+				overallAvailability.add(tsa);
 			}
 		}
-		return availabilityPairs;
+		return overallAvailability;
 	}
 
 	
-	public List<TimeSeriesDensityCategoryPair> request() {
+	public List<TimeSeriesAvailability> request() {
 		return request(siteQwId, constit, modtypeExcludes);
 	}
 

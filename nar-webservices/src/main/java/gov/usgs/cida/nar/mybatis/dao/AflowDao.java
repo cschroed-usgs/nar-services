@@ -1,10 +1,12 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
 import gov.usgs.cida.nar.mybatis.model.Aflow;
+import gov.usgs.cida.nar.mybatis.model.StringTimeInterval;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.session.SqlSession;
+import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,4 +33,16 @@ public class AflowDao extends BaseDao {
 		return result;
 	}
 	
+	public StringTimeInterval getAvailability(String siteQwId){
+		StringTimeInterval result = null;
+		
+		Map<String, Object> params = new HashMap<>();
+		params.put(SITE_QW, siteQwId);
+		
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			result = session.selectOne(QUERY_PACKAGE + ".AflowMapper.getAvailability", params);
+		}
+		
+		return result;
+	}
 }

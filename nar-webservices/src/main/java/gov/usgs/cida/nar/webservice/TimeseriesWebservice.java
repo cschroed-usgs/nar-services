@@ -1,7 +1,7 @@
 package gov.usgs.cida.nar.webservice;
 
 import com.google.common.collect.Lists;
-import gov.usgs.cida.nar.domain.TimeSeriesDensityCategoryPair;
+import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.Aloads;
 import gov.usgs.cida.nar.mybatis.model.Dflow;
@@ -113,7 +113,7 @@ public class TimeseriesWebservice {
 			) {
 		log.debug("Data availability requested from {} for {}, excluding {}", siteQwId, constit, excludeModtype);
 		AvailabilityService availServ = new AvailabilityService();
-		List<TimeSeriesDensityCategoryPair> availabilityPairs = availServ.request(siteQwId, siteQwId, excludeModtype);
+		List<TimeSeriesAvailability> availabilityPairs = availServ.request(siteQwId, siteQwId, excludeModtype);
 		
 		return Response.ok(JSONUtil.toJSON(availabilityPairs)).build();
 	}

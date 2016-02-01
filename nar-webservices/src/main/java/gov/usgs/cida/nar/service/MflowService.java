@@ -1,11 +1,14 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.MflowDao;
 import gov.usgs.cida.nar.mybatis.model.Mflow;
 import gov.usgs.cida.nar.util.DateUtil;
 import java.util.List;
+import java.util.Map;
+import org.joda.time.Interval;
 
 /**
  *
@@ -65,7 +68,7 @@ public class MflowService implements NARService<Mflow> {
 	}
 
 	@Override
-	public boolean isAvailable() {
+	public Interval getAvailability() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 

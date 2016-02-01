@@ -13,6 +13,7 @@
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Discqw' alias='Discqw'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mflow' alias='Mflow'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mloads' alias='Mloads'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.StringTimeInterval' alias='StringTimeInterval'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>
@@ -30,5 +31,6 @@
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MflowMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MloadsMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/SharedMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/StringTimeIntervalMapper.xml' />
 	</mappers>
 </configuration>

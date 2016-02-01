@@ -33,4 +33,16 @@
 	ORDER BY site_qw_id, site_flow_id, wy ASC
 	</select>
 	
+	<select id="getAvailability" parameterType="map" resultMap="gov.usgs.cida.nar.mybatis.mappers.StringTimeIntervalMapper.stringTimeInterval">
+		SELECT min(wy) AS start and max(wy) AS end FROM
+		SELECT
+			wy
+		FROM
+			aflow
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin" />
+		</where>
+	</select>
+	
 </mapper>
