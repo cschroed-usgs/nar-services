@@ -7,12 +7,9 @@ import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.AflowDao;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
-import org.joda.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import org.joda.time.DateTime;
-import org.joda.time.Interval;
-import org.joda.time.format.DateTimeFormat;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -27,8 +24,8 @@ import static org.mockito.Mockito.when;
  */
 public class AflowServiceTest {
 	
-	private AflowDao mockedDao;
-	private List<Aflow> expectedAflow;
+	private final AflowDao mockedDao;
+	private final List<Aflow> expectedAflow;
 	private AflowService instance;
 	private static final String SITE_QW_ID = "100";
 	private static final int START_YEAR = 1990;

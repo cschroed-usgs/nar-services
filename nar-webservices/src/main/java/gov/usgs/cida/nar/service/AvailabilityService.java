@@ -35,15 +35,9 @@ public class AvailabilityService {
 			if(narService instanceof IModtypeFilterable){
 				((IModtypeFilterable)narService).setModtypeExcludes(modtypeExcludes);
 			}
-			Interval oneTimeSeriesInterval = narService.getAvailability();
-			if(null != oneTimeSeriesInterval){
-				TimeSeriesAvailability tsa = new TimeSeriesAvailability(
-					narService.getTimeSeriesCategory(),
-					narService.getTimeStepDensity(),
-					oneTimeSeriesInterval.getStart(),
-					oneTimeSeriesInterval.getEnd()
-				);
-				overallAvailability.add(tsa);
+			List<TimeSeriesAvailability> availabilityForOneDataType = narService.getAvailability();
+			if(null != availabilityForOneDataType && !availabilityForOneDataType.isEmpty()){
+				overallAvailability.addAll(availabilityForOneDataType);
 			}
 		}
 		return overallAvailability;
