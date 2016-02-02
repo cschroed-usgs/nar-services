@@ -44,7 +44,7 @@ public class TimeSeriesAvailability {
 		} else {
 			final TimeSeriesAvailability other = (TimeSeriesAvailability)obj;
 			equal = 
-				Objects.equal(this.getTimeSeriesCategory(), other.getTimeSeriesCategory())
+				Objects.equal(this.timeSeriesCategory, other.timeSeriesCategory)
 				&& Objects.equal(this.timeStepDensity, other.timeStepDensity)
 				&& Objects.equal(this.startTime, other.startTime)
 				&& Objects.equal(this.endTime, other.endTime)
