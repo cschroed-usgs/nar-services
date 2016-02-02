@@ -6,11 +6,13 @@ import org.joda.time.DateTime;
 
 
 public class TimeSeriesAvailability {
-	public final TimeSeriesCategory timeSeriesCategory;
-	public final TimeStepDensity timeStepDensity;
-	public final DateTime startTime;
-	public final DateTime endTime;
-	public final String constit;
+	private TimeSeriesCategory timeSeriesCategory;
+	public TimeStepDensity timeStepDensity;
+	public DateTime startTime;
+	public DateTime endTime;
+	public String constit;
+	
+	public TimeSeriesAvailability(){}
 	
 	public TimeSeriesAvailability(TimeSeriesCategory timeSeriesCategory, TimeStepDensity timeStepDensity, DateTime startTime, DateTime endTime, String constit){
 		this.timeSeriesCategory = timeSeriesCategory;
@@ -23,7 +25,7 @@ public class TimeSeriesAvailability {
 	@Override
 	public int hashCode(){
 		HashCodeBuilder hcb = new HashCodeBuilder();
-		hcb.append(this.timeSeriesCategory)
+		hcb.append(this.getTimeSeriesCategory())
 			.append(timeStepDensity)
 			.append(startTime)
 			.append(endTime)
@@ -42,7 +44,7 @@ public class TimeSeriesAvailability {
 		} else {
 			final TimeSeriesAvailability other = (TimeSeriesAvailability)obj;
 			equal = 
-				Objects.equal(this.timeSeriesCategory, other.timeSeriesCategory)
+				Objects.equal(this.getTimeSeriesCategory(), other.getTimeSeriesCategory())
 				&& Objects.equal(this.timeStepDensity, other.timeStepDensity)
 				&& Objects.equal(this.startTime, other.startTime)
 				&& Objects.equal(this.endTime, other.endTime)
@@ -51,5 +53,19 @@ public class TimeSeriesAvailability {
 		}
 		
 		return equal;
+	}
+
+	/**
+	 * @return the timeSeriesCategory
+	 */
+	public TimeSeriesCategory getTimeSeriesCategory() {
+		return timeSeriesCategory;
+	}
+
+	/**
+	 * @param timeSeriesCategory the timeSeriesCategory to set
+	 */
+	public void setTimeSeriesCategory(TimeSeriesCategory timeSeriesCategory) {
+		this.timeSeriesCategory = timeSeriesCategory;
 	}
 }
