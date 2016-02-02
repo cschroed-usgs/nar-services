@@ -37,7 +37,7 @@ public class TimeSeriesAvailability {
 		boolean equal = true;
 		if(obj == null){
 			equal = false;
-		} else if (this.getClass().equals(obj.getClass())){
+		} else if (!this.getClass().equals(obj.getClass())){
 			equal = false;
 		} else {
 			final TimeSeriesAvailability other = (TimeSeriesAvailability)obj;
