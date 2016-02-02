@@ -5,10 +5,11 @@ import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.AloadsDao;
 import gov.usgs.cida.nar.mybatis.model.Aloads;
+import gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent;
 import gov.usgs.cida.nar.util.DateUtil;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import org.joda.time.Interval;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -84,8 +85,31 @@ public class AloadsService implements NARService<Aloads>, IConstituentFilterable
 	}
 
 	@Override
+	/**
+	 * using this instance's site qw id and excluded modtypes, determine the
+	 * availability of data
+	 */
 	public List<TimeSeriesAvailability> getAvailability() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return getAvailability(this.siteQwId.get(0), this.modtypeExcludes);
 	}
 	
+	public List<TimeSeriesAvailability> getAvailability(String siteQwId, List<String> excludedModtypes) {
+		List<TimeSeriesAvailability> availability = new ArrayList<>();
+		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes);
+		if(null != wyIntervalsWithConstits && !wyIntervalsWithConstits.isEmpty()){
+			for(WaterYearIntervalWithConstituent wyIntervalWithConstit : wyIntervalsWithConstits){
+				DateTime start = new DateTime(wyIntervalWithConstit.getStart(), 1, 1, 0, 0);
+				DateTime end = new DateTime(wyIntervalWithConstit.getEnd(), 1, 1, 0, 0);
+				TimeSeriesAvailability tsa = new TimeSeriesAvailability(
+					this.getTimeSeriesCategory(),
+					this.getTimeStepDensity(),
+					start,
+					end,
+					wyIntervalWithConstit.getConstit()
+				);
+				availability.add(tsa);
+			}
+		}
+		return availability;
+	}
 }

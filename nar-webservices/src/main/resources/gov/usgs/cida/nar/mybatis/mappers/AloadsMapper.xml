@@ -19,6 +19,12 @@
 		<result property="yield" column="yield"/>
 	</resultMap>
 	
+	<resultMap id="aloadsAvailability" type="WaterYearIntervalWithConstituent">
+		<result property="start" column="start"/>
+		<result property="end" column="end"/>
+		<result property="constit" column="constit"/>
+	</resultMap>
+	
 	<sql id="columns">
 		site_abb,
 		site_qw_id,

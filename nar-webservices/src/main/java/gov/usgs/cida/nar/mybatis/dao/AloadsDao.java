@@ -1,6 +1,8 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
 import gov.usgs.cida.nar.mybatis.model.Aloads;
+import gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +35,28 @@ public class AloadsDao extends BaseDao {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * 
+	 * @param siteQwId
+	 * @param modtypeExclusions ignore these modtypes in calculating the range
+	 * @return empty list if nothing available, or a list of 
+	 * constituent-tagged intervals of water years that excludes the 
+	 * parameterized modtypes
+	 */
+	public List<WaterYearIntervalWithConstituent> getAvailability(String siteQwId, List<String> modtypeExclusions) {
+		List<WaterYearIntervalWithConstituent> availability = new ArrayList<>();
+		
+		Map<String, Object> params = new HashMap<>(11);
+		params.put(SITE_QW, siteQwId);
+		params.put(MODTYPE_EXCLUDE, modtypeExclusions);
+		
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			availability = session.selectList(QUERY_PACKAGE + ".AloadsMapper.getAvailability", params);
+			
+		}
+		return availability;
 	}
 	
 }
