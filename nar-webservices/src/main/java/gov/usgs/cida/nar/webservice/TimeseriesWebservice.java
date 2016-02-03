@@ -106,7 +106,7 @@ public class TimeseriesWebservice {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/availability")
+	@Path("/availability/{siteQwId}")
 	public Response getAvailability(@PathParam("siteQwId")String siteQwId,
 			@QueryParam("constit")List<String> constit, 
 			@QueryParam("excludeModtype")List<String> excludeModtype
