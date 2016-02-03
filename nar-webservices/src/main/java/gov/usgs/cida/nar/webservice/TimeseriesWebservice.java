@@ -113,8 +113,8 @@ public class TimeseriesWebservice {
 			) {
 		log.debug("Data availability requested from {} for {}, excluding {}", siteQwId, constit, excludeModtype);
 		AvailabilityService availServ = new AvailabilityService();
-		List<TimeSeriesAvailability> availabilityPairs = availServ.request(siteQwId, siteQwId, excludeModtype);
+		List<TimeSeriesAvailability> tsas = availServ.request(siteQwId, siteQwId, excludeModtype);
 		
-		return Response.ok(JSONUtil.toJSON(availabilityPairs)).build();
+		return Response.ok(JSONUtil.toJSON(tsas)).build();
 	}
 }

@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
+import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import java.util.HashMap;
@@ -32,12 +33,18 @@ public class AflowDao extends BaseDao {
 		
 		return result;
 	}
-	
+	/**
+	 * 
+	 * @param siteQwId
+	 * @return null if unavailable, otherwise return a fully-formed 
+	 * WaterYearInterval
+	 */
 	public WaterYearInterval getAvailability(String siteQwId){
 		WaterYearInterval result = null;
 		
 		Map<String, Object> params = new HashMap<>();
-		params.put(SITE_QW, siteQwId);
+		//Must put the Site QW ID in a list to re-use retrieval queries
+		params.put(SITE_QW, Lists.newArrayList(siteQwId));
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectOne(QUERY_PACKAGE + ".AflowMapper.getAvailability", params);

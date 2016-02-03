@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jersey.repackaged.com.google.common.collect.Lists;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,8 @@ public class AloadsDao extends BaseDao {
 		List<WaterYearIntervalWithConstituent> availability = new ArrayList<>();
 		
 		Map<String, Object> params = new HashMap<>(11);
-		params.put(SITE_QW, siteQwId);
+		//Must put the Site QW ID in a list to re-use retrieval queries
+		params.put(SITE_QW, Lists.newArrayList(siteQwId));
 		params.put(MODTYPE_EXCLUDE, modtypeExclusions);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {

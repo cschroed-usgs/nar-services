@@ -17,7 +17,6 @@ public class AvailabilityService {
 		this.siteQwId = null;
 		this.constit = null;
 		this.modtypeExcludes = null;
-
 	}
 	
 	public List<TimeSeriesAvailability> request(String siteQwId, String constit, List<String> modtypeExcludes) {

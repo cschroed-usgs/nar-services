@@ -2,6 +2,8 @@ package gov.usgs.cida.nar.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.joda.time.DateTime;
+import gov.usgs.cida.nar.util.DateTimeJsonSerializer;
 
 /**
  *
@@ -19,6 +21,8 @@ public class JSONUtil {
 	}
 
 	public static Gson getBuilder() {
-		return new GsonBuilder().create();
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(DateTime.class, new DateTimeJsonSerializer());
+		return builder.create();
 	}
 }
