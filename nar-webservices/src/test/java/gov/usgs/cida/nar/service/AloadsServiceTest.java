@@ -17,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
@@ -37,36 +38,16 @@ public class AloadsServiceTest {
 	private static final String CONSTIT_2 = "SSC";
 	private static final String SITE_ABB = "foo";
 	
-	private Aloads getExcludedModtypeForYear(int year, String constit) {
-		Aloads aloadWithExcludedModtype = new Aloads();
-			aloadWithExcludedModtype.setWy(year);
-			aloadWithExcludedModtype.setSiteAbb(SITE_ABB);
-			aloadWithExcludedModtype.setSiteQwId(SITE_FLOW_ID);
-			aloadWithExcludedModtype.setSiteFlowId("100");
-			aloadWithExcludedModtype.setTonsL95(1.0);
-			aloadWithExcludedModtype.setTons(2.0);
-			aloadWithExcludedModtype.setTonsU95(3.0);
-			aloadWithExcludedModtype.setFwc(1.5);
-			aloadWithExcludedModtype.setYield(2.5);
-			aloadWithExcludedModtype.setConstit(constit);
-			aloadWithExcludedModtype.setModtype(EXCLUDED_MODTYPE);
-		return aloadWithExcludedModtype;
-	}
-	
 	public AloadsServiceTest() {
 		mockedDao = mock(AloadsDao.class);
 		expectedAloads = new ArrayList<>();
 		
-		expectedAloads.add(getExcludedModtypeForYear(START_YEAR-2, CONSTIT_1));
-		expectedAloads.add(getExcludedModtypeForYear(START_YEAR-1, CONSTIT_2));
-		//add records with excluded modtypes earlier in time than the start 
-		//year to test modtype exclusion filtering in getAvailability
 		for (int i=0; i<=10; i++) {
 			Aloads aloads = new Aloads();
 			aloads.setWy(START_YEAR + i);
 			aloads.setSiteAbb(SITE_ABB);
-			aloads.setSiteQwId(SITE_FLOW_ID);
-			aloads.setSiteFlowId("100");
+			aloads.setSiteQwId(SITE_QW_ID);
+			aloads.setSiteFlowId(SITE_FLOW_ID);
 			aloads.setTonsL95(1.0 * i);
 			aloads.setTons(2.0 * i);
 			aloads.setTonsU95(3.0 * i);
@@ -77,9 +58,6 @@ public class AloadsServiceTest {
 			
 			expectedAloads.add(aloads);
 		}
-		
-		expectedAloads.add(getExcludedModtypeForYear(END_YEAR+1, CONSTIT_1));
-		expectedAloads.add(getExcludedModtypeForYear(END_YEAR+2, CONSTIT_2));
 	}
 	
 	@Before
@@ -87,6 +65,19 @@ public class AloadsServiceTest {
 		instance = new AloadsService(mockedDao);
 	}
 
+	@Test
+	public void testRequest() {
+		List<String> siteQwIds = Lists.newArrayList(SITE_QW_ID);
+		List<String> constits = Lists.newArrayList(CONSTIT_1, CONSTIT_2);
+		List<String> excludedModtypes = Lists.newArrayList(EXCLUDED_MODTYPE);
+		
+		when(mockedDao.getAloads(siteQwIds, constits, excludedModtypes, START_YEAR, END_YEAR)).thenReturn(expectedAloads);
+		List<Aloads> expResult = expectedAloads;
+		List<Aloads> result = instance.request(siteQwIds, constits, excludedModtypes, "" + START_YEAR, "" + END_YEAR);
+		assertEquals(expResult, result);
+		verify(mockedDao).getAloads(siteQwIds, constits, excludedModtypes, START_YEAR, END_YEAR);
+	}
+	
 	/**
 	 * Test of getAvailability method, of class AloadsService.
 	 */
