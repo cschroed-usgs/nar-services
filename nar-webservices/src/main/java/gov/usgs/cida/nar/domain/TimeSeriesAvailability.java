@@ -2,19 +2,19 @@ package gov.usgs.cida.nar.domain;
 
 import com.google.common.base.Objects;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 
 public class TimeSeriesAvailability {
 	private TimeSeriesCategory timeSeriesCategory;
 	public TimeStepDensity timeStepDensity;
-	public DateTime startTime;
-	public DateTime endTime;
+	public LocalDateTime startTime;
+	public LocalDateTime endTime;
 	public String constit;
 	
 	public TimeSeriesAvailability(){}
 	
-	public TimeSeriesAvailability(TimeSeriesCategory timeSeriesCategory, TimeStepDensity timeStepDensity, DateTime startTime, DateTime endTime, String constit){
+	public TimeSeriesAvailability(TimeSeriesCategory timeSeriesCategory, TimeStepDensity timeStepDensity, LocalDateTime startTime, LocalDateTime endTime, String constit){
 		this.timeSeriesCategory = timeSeriesCategory;
 		this.timeStepDensity = timeStepDensity;
 		this.startTime = startTime;

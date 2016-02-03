@@ -12,7 +12,7 @@ import gov.usgs.cida.nar.mybatis.model.Aloads;
 import gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent;
 import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -87,8 +87,8 @@ public class AloadsServiceTest {
 		TimeSeriesAvailability expectedAvailabilityForConstit1 = new TimeSeriesAvailability(
 			instance.getTimeSeriesCategory(),
 			instance.getTimeStepDensity(),
-			new DateTime(START_YEAR, 1, 1, 0, 0),
-			new DateTime(END_YEAR, 1, 1, 0, 0),
+			new LocalDateTime(START_YEAR, 1, 1, 0, 0),
+			new LocalDateTime(END_YEAR, 1, 1, 0, 0),
 			CONSTIT_1
 		);
 		
@@ -100,8 +100,8 @@ public class AloadsServiceTest {
 		TimeSeriesAvailability expectedAvailabilityForConstit2 = new TimeSeriesAvailability(
 			instance.getTimeSeriesCategory(),
 			instance.getTimeStepDensity(),
-			new DateTime(START_YEAR+1, 1, 1, 0, 0),
-			new DateTime(END_YEAR-1, 1, 1, 0, 0),
+			new LocalDateTime(START_YEAR+1, 1, 1, 0, 0),
+			new LocalDateTime(END_YEAR-1, 1, 1, 0, 0),
 			CONSTIT_2
 		);
 		

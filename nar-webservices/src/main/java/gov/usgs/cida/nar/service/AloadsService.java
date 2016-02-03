@@ -9,7 +9,7 @@ import gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent;
 import gov.usgs.cida.nar.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 
 /**
  *
@@ -98,8 +98,8 @@ public class AloadsService implements NARService<Aloads>, IConstituentFilterable
 		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes);
 		if(null != wyIntervalsWithConstits && !wyIntervalsWithConstits.isEmpty()){
 			for(WaterYearIntervalWithConstituent wyIntervalWithConstit : wyIntervalsWithConstits){
-				DateTime start = new DateTime(wyIntervalWithConstit.getStart(), 1, 1, 0, 0);
-				DateTime end = new DateTime(wyIntervalWithConstit.getEnd(), 1, 1, 0, 0);
+				LocalDateTime start = new LocalDateTime(wyIntervalWithConstit.getStart(), 1, 1, 0, 0);
+				LocalDateTime end = new LocalDateTime(wyIntervalWithConstit.getEnd(), 1, 1, 0, 0);
 				TimeSeriesAvailability tsa = new TimeSeriesAvailability(
 					this.getTimeSeriesCategory(),
 					this.getTimeStepDensity(),

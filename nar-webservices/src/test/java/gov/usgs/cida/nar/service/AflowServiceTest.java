@@ -9,7 +9,7 @@ import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import java.util.ArrayList;
 import java.util.List;
-import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -72,8 +72,8 @@ public class AflowServiceTest {
 		TimeSeriesAvailability expectedAvailability = new TimeSeriesAvailability(
 			TimeSeriesCategory.FLOW, 
 			TimeStepDensity.ANNUAL, 
-			new DateTime(START_YEAR, 1, 1, 0, 0),
-			new DateTime(END_YEAR, 1, 1, 0, 0),
+			new LocalDateTime(START_YEAR, 1, 1, 0, 0),
+			new LocalDateTime(END_YEAR, 1, 1, 0, 0),
 			null
 		);
 		

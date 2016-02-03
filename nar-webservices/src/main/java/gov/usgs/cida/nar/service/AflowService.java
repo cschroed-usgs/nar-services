@@ -9,10 +9,7 @@ import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import gov.usgs.cida.nar.util.DateUtil;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import jersey.repackaged.com.google.common.collect.Lists;
-import org.joda.time.DateTime;
-import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 
 /**
  *
@@ -75,8 +72,8 @@ public class AflowService implements NARService<Aflow> {
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
 		WaterYearInterval intTimeInterval = this.dao.getAvailability(this.siteQwId.get(0));
 		if( null != intTimeInterval && null != intTimeInterval.getStart() && null != intTimeInterval.getEnd()){
-			DateTime startTime = new DateTime(intTimeInterval.getStart(),1, 1, 0, 0);
-			DateTime endTime = new DateTime(intTimeInterval.getEnd(),1, 1, 0, 0);
+			LocalDateTime startTime = new LocalDateTime(intTimeInterval.getStart(),1, 1, 0, 0);
+			LocalDateTime endTime = new LocalDateTime(intTimeInterval.getEnd(),1, 1, 0, 0);
 			TimeSeriesAvailability tsa = new TimeSeriesAvailability(
 				this.getTimeSeriesCategory(),
 				this.getTimeStepDensity(),
