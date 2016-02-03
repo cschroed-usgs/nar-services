@@ -39,7 +39,7 @@
 	</select>
 	
 	<select id="getAvailability" parameterType="map" resultMap="waterYearInterval">
-		SELECT min(wy) AS start and max(wy) AS end FROM
+		SELECT min(wy) AS start, max(wy) AS end FROM
 			aflow
 		<where>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
