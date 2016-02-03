@@ -1,18 +1,17 @@
 package gov.usgs.cida.nar.service;
 
+import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
+import gov.usgs.cida.nar.mybatis.model.NARData;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ServiceLoader;
-import org.joda.time.Interval;
 
 public class AvailabilityService {
 
 	private String siteQwId;
 	private String constit;
 	private List<String> modtypeExcludes;
-	private static final ServiceLoader<NARService> serviceLoader = ServiceLoader.load(NARService.class);
 	
 	public AvailabilityService() {
 		this.siteQwId = null;
@@ -23,7 +22,11 @@ public class AvailabilityService {
 	
 	public List<TimeSeriesAvailability> request(String siteQwId, String constit, List<String> modtypeExcludes) {
 		ArrayList<TimeSeriesAvailability> overallAvailability = new ArrayList<>();
-		for (NARService narService : serviceLoader ){
+		ArrayList<NARService<? extends NARData>> narServices = Lists.newArrayList(
+			new AflowService(),
+			new AloadsService()
+		);
+		for (NARService narService : narServices ){
 			LinkedList<String> siteQwIds = new LinkedList<>();
 			siteQwIds.add(siteQwId);
 			narService.setSiteQwId(siteQwIds);
