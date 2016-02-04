@@ -49,4 +49,7 @@
 	<logger name="org.apache.http" level="INFO" />
 	<logger name="org.apache.commons.beanutils" level="ERROR" />
 	<logger name="gov.usgs.cida.nude.resultset.inmemory" level="ERROR" />
+	
+	<!-- uncomment the following to see sql statements from nar's mappers -->
+	<!--<logger name="gov.usgs.cida.nar.mybatis.mappers" level="DEBUG"/>-->
 </configuration>
