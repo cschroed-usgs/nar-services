@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="gov.usgs.cida.nar.mybatis.mappers.PestSitesMapper">
+	
+	<resultMap id="pestSitesResult" type="PestSites">
+		<result property="siteQwId" column="site_qw_id" />
+		<result property="siteQwName" column="site_qw_name" />
+		<result property="siteFlowId" column="site_flow_id" />
+		<result property="siteFlowName" column="site_flow_name" />
+		<result property="siteAbb" column="site_abb" />
+		<result property="da" column="da" />
+		<result property="siteType" column="site_type" />
+		<result property="state" column="state" />
+		<result property="minSamp" column="min_samp" />
+		<result property="herbSamp" column="herb_samp" />
+		<result property="nonherbSamp" column="nonherb_samp" />
+		<result property="aq1" column="aq1" />
+		<result property="aq2" column="aq2" />
+		<result property="aq3" column="aq3" />
+		<result property="percHh" column="perc_hh" />
+		<result property="percAq" column="perc_aq" />
+		<result property="percHh3" column="perc_hh3" />
+		<result property="percAq3" column="perc_aq3" />
+		<result property="percHhOld" column="perc_hh_old" />
+		<result property="percAqOld" column="perc_aq_old" />
+		<result property="nNew" column="n_new" />
+		<result property="npestNewHh" column="npest_new_hh" />
+		<result property="n3" column="n_3" />
+		<result property="npest3Hh" column="npest_3_hh" />
+		<result property="nOldAve" column="n_old_ave" />
+		<result property="nYrs" column="n_yrs" />
+		<result property="nOldHh" column="n_old_hh" />
+		<result property="nNewAq" column="n_new_aq" />
+		<result property="nAq3" column="n_aq3" />
+		<result property="nOldAq" column="n_old_aq" />
+		<result property="nHhOld" column="n_hh_old" />
+		<result property="nAqOld" column="n_aq_old" />
+		<result property="pestNewExceedHh" column="pest_new_exceed_hh" />
+		<result property="pestNewExceedAq" column="pest_new_exceed_aq" />
+		<result property="pest3ExceedHh" column="pest_3_exceed_hh" />
+		<result property="pest3ExceedAq" column="pest_3_exceed_aq" />
+		<result property="pestOldExceedHh" column="pest_old_exceed_hh" />
+		<result property="pestOldExceedAq" column="pest_old_exceed_aq" />
+		<result property="hh1" column="hh1" />
+		<result property="hh2" column="hh2" />
+		<result property="hh3" column="hh3" />
+		<result property="ndet1Pname" column="ndet1_pname" />
+		<result property="perc1New" column="perc1_new" />
+		<result property="perc13" column="perc1_3" />
+		<result property="perc1Old" column="perc1_old" />
+		<result property="perc1NewCom" column="perc1_new_com" />
+		<result property="perc13Com" column="perc1_3_com" />
+		<result property="perc1OldCom" column="perc1_old_com" />
+		<result property="nsamp1New" column="nsamp1_new" />
+		<result property="nsamp13" column="nsamp1_3" />
+		<result property="nsamp1Old" column="nsamp1_old" />
+		<result property="ndet2Pname" column="ndet2_pname" />
+		<result property="perc2New" column="perc2_new" />
+		<result property="perc23" column="perc2_3" />
+		<result property="perc2Old" column="perc2_old" />
+		<result property="perc2NewCom" column="perc2_new_com" />
+		<result property="perc23Com" column="perc2_3_com" />
+		<result property="perc2OldCom" column="perc2_old_com" />
+		<result property="nsamp2New" column="nsamp2_new" />
+		<result property="nsamp23" column="nsamp2_3" />
+		<result property="nsamp2Old" column="nsamp2_old" />
+		<result property="ndet3Pname" column="ndet3_pname" />
+		<result property="perc3New" column="perc3_new" />
+		<result property="perc33" column="perc3_3" />
+		<result property="perc3Old" column="perc3_old" />
+		<result property="perc3NewCom" column="perc3_new_com" />
+		<result property="perc33Com" column="perc3_3_com" />
+		<result property="perc3OldCom" column="perc3_old_com" />
+		<result property="nsamp3New" column="nsamp3_new" />
+		<result property="nsamp33" column="nsamp3_3" />
+		<result property="nsamp3Old" column="nsamp3_old" />
+		<result property="ndet4Pname" column="ndet4_pname" />
+		<result property="perc4New" column="perc4_new" />
+		<result property="perc43" column="perc4_3" />
+		<result property="perc4Old" column="perc4_old" />
+		<result property="perc4NewCom" column="perc4_new_com" />
+		<result property="perc43Com" column="perc4_3_com" />
+		<result property="perc4OldCom" column="perc4_old_com" />
+		<result property="nsamp4New" column="nsamp4_new" />
+		<result property="nsamp43" column="nsamp4_3" />
+		<result property="nsamp4Old" column="nsamp4_old" />
+		<result property="ndet5Pname" column="ndet5_pname" />
+		<result property="perc5New" column="perc5_new" />
+		<result property="perc53" column="perc5_3" />
+		<result property="perc5Old" column="perc5_old" />
+		<result property="perc5NewCom" column="perc5_new_com" />
+		<result property="perc53Com" column="perc5_3_com" />
+		<result property="perc5OldCom" column="perc5_old_com" />
+		<result property="nsamp5New" column="nsamp5_new" />
+		<result property="nsamp53" column="nsamp5_3" />
+		<result property="nsamp5Old" column="nsamp5_old" />
+		<result property="ndet6Pname" column="ndet6_pname" />
+		<result property="perc6New" column="perc6_new" />
+		<result property="perc63" column="perc6_3" />
+		<result property="perc6Old" column="perc6_old" />
+		<result property="perc6NewCom" column="perc6_new_com" />
+		<result property="perc63Com" column="perc6_3_com" />
+		<result property="perc6OldCom" column="perc6_old_com" />
+		<result property="nsamp6New" column="nsamp6_new" />
+		<result property="nsamp63" column="nsamp6_3" />
+		<result property="nsamp6Old" column="nsamp6_old" />
+		<result property="ndet7Pname" column="ndet7_pname" />
+		<result property="perc7New" column="perc7_new" />
+		<result property="perc73" column="perc7_3" />
+		<result property="perc7Old" column="perc7_old" />
+		<result property="perc7NewCom" column="perc7_new_com" />
+		<result property="perc73Com" column="perc7_3_com" />
+		<result property="perc7OldCom" column="perc7_old_com" />
+		<result property="nsamp7New" column="nsamp7_new" />
+		<result property="nsamp73" column="nsamp7_3" />
+		<result property="nsamp7Old" column="nsamp7_old" />
+		<result property="ndet8Pname" column="ndet8_pname" />
+		<result property="perc8New" column="perc8_new" />
+		<result property="perc83" column="perc8_3" />
+		<result property="perc8Old" column="perc8_old" />
+		<result property="perc8NewCom" column="perc8_new_com" />
+		<result property="perc83Com" column="perc8_3_com" />
+		<result property="perc8OldCom" column="perc8_old_com" />
+		<result property="nsamp8New" column="nsamp8_new" />
+		<result property="nsamp83" column="nsamp8_3" />
+		<result property="nsamp8Old" column="nsamp8_old" />
+		<result property="ndet9Pname" column="ndet9_pname" />
+		<result property="perc9New" column="perc9_new" />
+		<result property="perc93" column="perc9_3" />
+		<result property="perc9Old" column="perc9_old" />
+		<result property="perc9NewCom" column="perc9_new_com" />
+		<result property="perc93Com" column="perc9_3_com" />
+		<result property="perc9OldCom" column="perc9_old_com" />
+		<result property="nsamp9New" column="nsamp9_new" />
+		<result property="nsamp93" column="nsamp9_3" />
+		<result property="nsamp9Old" column="nsamp9_old" />
+		<result property="ndet10Pname" column="ndet10_pname" />
+		<result property="perc10New" column="perc10_new" />
+		<result property="perc103" column="perc10_3" />
+		<result property="perc10Old" column="perc10_old" />
+		<result property="perc10NewCom" column="perc10_new_com" />
+		<result property="perc103Com" column="perc10_3_com" />
+		<result property="perc10OldCom" column="perc10_old_com" />
+		<result property="nsamp10New" column="nsamp10_new" />
+		<result property="nsamp103" column="nsamp10_3" />
+		<result property="nsamp10Old" column="nsamp10_old" />
+		<result property="npestNew" column="npest_new" />
+		<result property="npest3" column="npest_3" />
+		<result property="ndetsNew" column="ndets_new" />
+		<result property="ndets3" column="ndets_3" />
+		<result property="ndetsHh" column="ndets_hh" />
+		<result property="ndetsAq" column="ndets_aq" />
+		<result property="nHh" column="n_hh" />
+		<result property="nAq" column="n_aq" />
+		<result property="ndetsHh3" column="ndets_hh3" />
+		<result property="ndetsAq3" column="ndets_aq3" />
+		<result property="nHh3" column="n_hh3" />
+		<result property="nNuts" column="n_nuts" />
+		<result property="nNutsDet" column="n_nuts_det" />
+		<result property="nNutsDetHh" column="n_nuts_det_hh" />
+		<result property="nNutsDetAq" column="n_nuts_det_aq" />
+		<result property="nNutHh" column="n_nut_hh" />
+		<result property="plot" column="plot" />
+	</resultMap>
+	
+	<sql id="columns">
+		site_qw_id,
+		site_qw_name,
+		site_flow_id,
+		site_flow_name,
+		site_abb,
+		da,
+		site_type,
+		state,
+		min_samp,
+		herb_samp,
+		nonherb_samp,
+		aq1,
+		aq2,
+		aq3,
+		perc_hh,
+		perc_aq,
+		perc_hh3,
+		perc_aq3,
+		perc_hh_old,
+		perc_aq_old,
+		n_new,
+		npest_new_hh,
+		n_3,
+		npest_3_hh,
+		n_old_ave,
+		n_yrs,
+		n_old_hh,
+		n_new_aq,
+		n_aq3,
+		n_old_aq,
+		n_hh_old,
+		n_aq_old,
+		pest_new_exceed_hh,
+		pest_new_exceed_aq,
+		pest_3_exceed_hh,
+		pest_3_exceed_aq,
+		pest_old_exceed_hh,
+		pest_old_exceed_aq,
+		hh1,
+		hh2,
+		hh3,
+		ndet1_pname,
+		perc1_new,
+		perc1_3,
+		perc1_old,
+		perc1_new_com,
+		perc1_3_com,
+		perc1_old_com,
+		nsamp1_new,
+		nsamp1_3,
+		nsamp1_old,
+		ndet2_pname,
+		perc2_new,
+		perc2_3,
+		perc2_old,
+		perc2_new_com,
+		perc2_3_com,
+		perc2_old_com,
+		nsamp2_new,
+		nsamp2_3,
+		nsamp2_old,
+		ndet3_pname,
+		perc3_new,
+		perc3_3,
+		perc3_old,
+		perc3_new_com,
+		perc3_3_com,
+		perc3_old_com,
+		nsamp3_new,
+		nsamp3_3,
+		nsamp3_old,
+		ndet4_pname,
+		perc4_new,
+		perc4_3,
+		perc4_old,
+		perc4_new_com,
+		perc4_3_com,
+		perc4_old_com,
+		nsamp4_new,
+		nsamp4_3,
+		nsamp4_old,
+		ndet5_pname,
+		perc5_new,
+		perc5_3,
+		perc5_old,
+		perc5_new_com,
+		perc5_3_com,
+		perc5_old_com,
+		nsamp5_new,
+		nsamp5_3,
+		nsamp5_old,
+		ndet6_pname,
+		perc6_new,
+		perc6_3,
+		perc6_old,
+		perc6_new_com,
+		perc6_3_com,
+		perc6_old_com,
+		nsamp6_new,
+		nsamp6_3,
+		nsamp6_old,
+		ndet7_pname,
+		perc7_new,
+		perc7_3,
+		perc7_old,
+		perc7_new_com,
+		perc7_3_com,
+		perc7_old_com,
+		nsamp7_new,
+		nsamp7_3,
+		nsamp7_old,
+		ndet8_pname,
+		perc8_new,
+		perc8_3,
+		perc8_old,
+		perc8_new_com,
+		perc8_3_com,
+		perc8_old_com,
+		nsamp8_new,
+		nsamp8_3,
+		nsamp8_old,
+		ndet9_pname,
+		perc9_new,
+		perc9_3,
+		perc9_old,
+		perc9_new_com,
+		perc9_3_com,
+		perc9_old_com,
+		nsamp9_new,
+		nsamp9_3,
+		nsamp9_old,
+		ndet10_pname,
+		perc10_new,
+		perc10_3,
+		perc10_old,
+		perc10_new_com,
+		perc10_3_com,
+		perc10_old_com,
+		nsamp10_new,
+		nsamp10_3,
+		nsamp10_old,
+		npest_new,
+		npest_3,
+		ndets_new,
+		ndets_3,
+		ndets_hh,
+		ndets_aq,
+		n_hh,
+		n_aq,
+		ndets_hh3,
+		ndets_aq3,
+		n_hh3,
+		n_nuts,
+		n_nuts_det,
+		n_nuts_det_hh,
+		n_nuts_det_aq,
+		n_nut_hh,
+		plot
+	</sql>
+	
+	<select id="getPestSites" parameterType="map" resultMap="pestSitesResult">
+		SELECT
+			<include refid="columns"/>
+		FROM
+			pestsites
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+		</where>
+	ORDER BY site_qw_id, site_flow_id ASC
+	</select>
+	
+</mapper>
