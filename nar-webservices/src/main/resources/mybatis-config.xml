@@ -15,6 +15,7 @@
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mloads' alias='Mloads'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearInterval' alias='WaterYearInterval'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent' alias='WaterYearIntervalWithConstituent'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearAndMonthInterval' alias='WaterYearAndMonthInterval'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>
