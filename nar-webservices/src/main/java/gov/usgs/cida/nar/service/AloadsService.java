@@ -98,8 +98,8 @@ public class AloadsService implements NARService<Aloads>, IConstituentFilterable
 		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes);
 		if(null != wyIntervalsWithConstits && !wyIntervalsWithConstits.isEmpty()){
 			for(WaterYearIntervalWithConstituent wyIntervalWithConstit : wyIntervalsWithConstits){
-				LocalDateTime start = new LocalDateTime(wyIntervalWithConstit.getStart(), 1, 1, 0, 0);
-				LocalDateTime end = new LocalDateTime(wyIntervalWithConstit.getEnd(), 1, 1, 0, 0);
+				LocalDateTime start = new LocalDateTime(wyIntervalWithConstit.getStartYear(), 1, 1, 0, 0);
+				LocalDateTime end = new LocalDateTime(wyIntervalWithConstit.getEndYear(), 1, 1, 0, 0);
 				TimeSeriesAvailability tsa = new TimeSeriesAvailability(
 					this.getTimeSeriesCategory(),
 					this.getTimeStepDensity(),

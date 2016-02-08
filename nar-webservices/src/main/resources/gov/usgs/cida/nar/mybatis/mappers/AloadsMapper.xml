@@ -20,8 +20,8 @@
 	</resultMap>
 	
 	<resultMap id="aloadsAvailability" type="WaterYearIntervalWithConstituent">
-		<result property="start" column="start"/>
-		<result property="end" column="end"/>
+		<result property="startYear" column="startYear"/>
+		<result property="endYear" column="endYear"/>
 		<result property="constit" column="constit"/>
 	</resultMap>
 	
@@ -54,7 +54,7 @@
 	</select>
 	
 	<select id="getAvailability" parameterType="map" resultMap="aloadsAvailability">
-		SELECT min(wy) AS start, max(wy) AS end, constit FROM
+		SELECT min(wy) AS startYear, max(wy) AS endYear, constit FROM
 			aloads
 		<where>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />

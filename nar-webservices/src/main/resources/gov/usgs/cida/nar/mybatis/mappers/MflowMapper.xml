@@ -14,6 +14,13 @@
 		<result property="flow" column="flow"/>
 	</resultMap>
 	
+	<resultMap id="waterYearAndMonthInterval" type="WaterYearAndMonthInterval">
+		<result property="startYear" column="startYear"/>
+		<result property="endYear" column="endYear"/>
+		<result property="startMonth" column="startMonth"/>
+		<result property="endMonth" column="endMonth"/>
+	</resultMap>
+	
 	<sql id="columns">
 		site_abb,
 		site_qw_id,
@@ -35,4 +42,30 @@
 	ORDER BY site_qw_id, site_flow_id, wy, month ASC
 	</select>
 	
+	<select id="getAvailability" parameterType="map" resultMap="waterYearAndMonthInterval">
+		with subquery as (SELECT wy, min(month) as minMonth, max(month) maxMonth FROM mflow 
+		JOIN (
+			SELECT site_qw_id, min(wy) minWY, max(wy) maxWY FROM mflow as extremes
+			WHERE
+			site_qw_id=#{single_site_qw_id}
+			GROUP BY site_qw_id
+		) as extremes
+		ON
+			mflow.site_qw_id = extremes.site_qw_id
+			AND 
+			(mflow.wy = extremes.minWY OR mflow.wy = extremes.maxWY)
+		GROUP BY wy) 
+		SELECT q1.wy as endYear, q1.maxMonth as endMonth , q2.wy as startYear, q2.minMonth as startMonth from subquery q1
+		
+		--below join condition in combination with ordering and limit ensures
+		--that the water (year,month) mins and maxes are returned 
+		--whether there is one row for the site, or multiple rows for 
+		--the site
+		join subquery q2 on 
+		(q1.wy &gt;= q2.wy) 
+		order by endYear DESC, startYear ASC LIMIT 1
+	</select>
+	<!--
+		
+	-->
 </mapper>

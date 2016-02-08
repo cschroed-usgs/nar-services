@@ -6,39 +6,39 @@ package gov.usgs.cida.nar.mybatis.model;
  */
 public class WaterYearInterval extends NARData {
 
-	private Integer start;
-	private Integer end;
+	private Integer startYear;
+	private Integer endYear;
 
 	public WaterYearInterval(Integer start, Integer end) {
-		this.start = start;
-		this.end = end;
+		this.startYear = start;
+		this.endYear = end;
 	}
 	/**
-	 * @return the start
+	 * @return the startYear
 	 */
-	public Integer getStart() {
-		return start;
-	}
-
-	/**
-	 * @param start the start to set
-	 */
-	public void setStart(Integer start) {
-		this.start = start;
+	public Integer getStartYear() {
+		return startYear;
 	}
 
 	/**
-	 * @return the end
+	 * @param startYear the startYear to set
 	 */
-	public Integer getEnd() {
-		return end;
+	public void setStartYear(Integer startYear) {
+		this.startYear = startYear;
 	}
 
 	/**
-	 * @param end the end to set
+	 * @return the endYear
 	 */
-	public void setEnd(Integer end) {
-		this.end = end;
+	public Integer getEndYear() {
+		return endYear;
+	}
+
+	/**
+	 * @param endYear the endYear to set
+	 */
+	public void setEndYear(Integer endYear) {
+		this.endYear = endYear;
 	}
 	
 }

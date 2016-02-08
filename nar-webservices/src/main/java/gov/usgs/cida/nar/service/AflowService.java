@@ -71,9 +71,9 @@ public class AflowService implements NARService<Aflow> {
 	public List<TimeSeriesAvailability> getAvailability() {
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
 		WaterYearInterval intTimeInterval = this.dao.getAvailability(this.siteQwId.get(0));
-		if( null != intTimeInterval && null != intTimeInterval.getStart() && null != intTimeInterval.getEnd()){
-			LocalDateTime startTime = new LocalDateTime(intTimeInterval.getStart(),1, 1, 0, 0);
-			LocalDateTime endTime = new LocalDateTime(intTimeInterval.getEnd(),1, 1, 0, 0);
+		if( null != intTimeInterval && null != intTimeInterval.getStartYear() && null != intTimeInterval.getEndYear()){
+			LocalDateTime startTime = new LocalDateTime(intTimeInterval.getStartYear(),1, 1, 0, 0);
+			LocalDateTime endTime = new LocalDateTime(intTimeInterval.getEndYear(),1, 1, 0, 0);
 			TimeSeriesAvailability tsa = new TimeSeriesAvailability(
 				this.getTimeSeriesCategory(),
 				this.getTimeStepDensity(),

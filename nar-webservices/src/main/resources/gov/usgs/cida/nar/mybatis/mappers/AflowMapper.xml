@@ -14,8 +14,8 @@
 	</resultMap>
 	
 	<resultMap id="waterYearInterval" type="WaterYearInterval">
-		<result property="start" column="start"/>
-		<result property="end" column="end"/>
+		<result property="startYear" column="startYear"/>
+		<result property="endYear" column="endYear"/>
 	</resultMap>
 	
 	<sql id="columns">
@@ -39,7 +39,7 @@
 	</select>
 	
 	<select id="getAvailability" parameterType="map" resultMap="waterYearInterval">
-		SELECT min(wy) AS start, max(wy) AS end FROM
+		SELECT min(wy) AS startYear, max(wy) AS endYear FROM
 			aflow
 		<where>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
