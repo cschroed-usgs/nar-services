@@ -46,8 +46,7 @@ public class MflowDao extends BaseDao {
 		WaterYearAndMonthInterval result = null;
 		
 		Map<String, Object> params = new HashMap<>();
-		//Must put the Site QW ID in a list to re-use retrieval queries
-		params.put(SITE_QW, Lists.newArrayList(siteQwId));
+		params.put("single_site_qw_id", siteQwId);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectOne(QUERY_PACKAGE + ".MflowMapper.getAvailability", params);
