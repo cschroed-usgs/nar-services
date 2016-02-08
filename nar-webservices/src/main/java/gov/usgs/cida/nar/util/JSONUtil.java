@@ -2,6 +2,7 @@ package gov.usgs.cida.nar.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.joda.time.LocalDateTime;
 
 /**
  *
@@ -19,6 +20,8 @@ public class JSONUtil {
 	}
 
 	public static Gson getBuilder() {
-		return new GsonBuilder().create();
+		GsonBuilder builder = new GsonBuilder();
+		builder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeJsonSerializer());
+		return builder.create();
 	}
 }

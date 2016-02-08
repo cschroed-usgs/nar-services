@@ -13,6 +13,11 @@
 		<result property="flow" column="flow"/>
 	</resultMap>
 	
+	<resultMap id="waterYearInterval" type="WaterYearInterval">
+		<result property="start" column="start"/>
+		<result property="end" column="end"/>
+	</resultMap>
+	
 	<sql id="columns">
 		site_abb,
 		site_qw_id,
@@ -31,6 +36,15 @@
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin" />
 		</where>
 	ORDER BY site_qw_id, site_flow_id, wy ASC
+	</select>
+	
+	<select id="getAvailability" parameterType="map" resultMap="waterYearInterval">
+		SELECT min(wy) AS start, max(wy) AS end FROM
+			aflow
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin" />
+		</where>
 	</select>
 	
 </mapper>

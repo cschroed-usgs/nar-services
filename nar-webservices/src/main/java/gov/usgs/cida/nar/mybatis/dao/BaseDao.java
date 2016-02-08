@@ -25,6 +25,9 @@ public class BaseDao {
 	}
 
 	public BaseDao(SqlSessionFactory sqlSessionFactory) {
+		if(null == sqlSessionFactory){
+			throw new NullPointerException("Could not acquire an sql session factory");
+		}
 		this.sqlSessionFactory = sqlSessionFactory;
 	}
 

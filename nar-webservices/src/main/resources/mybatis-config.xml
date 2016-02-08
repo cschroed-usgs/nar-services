@@ -13,6 +13,8 @@
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Discqw' alias='Discqw'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mflow' alias='Mflow'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mloads' alias='Mloads'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearInterval' alias='WaterYearInterval'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent' alias='WaterYearIntervalWithConstituent'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>

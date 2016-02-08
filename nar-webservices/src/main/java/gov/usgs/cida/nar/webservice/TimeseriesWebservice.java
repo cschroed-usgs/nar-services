@@ -1,6 +1,7 @@
 package gov.usgs.cida.nar.webservice;
 
 import com.google.common.collect.Lists;
+import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.Aloads;
 import gov.usgs.cida.nar.mybatis.model.Dflow;
@@ -9,6 +10,7 @@ import gov.usgs.cida.nar.mybatis.model.Mflow;
 import gov.usgs.cida.nar.mybatis.model.Mloads;
 import gov.usgs.cida.nar.service.AflowService;
 import gov.usgs.cida.nar.service.AloadsService;
+import gov.usgs.cida.nar.service.AvailabilityService;
 import gov.usgs.cida.nar.service.DflowService;
 import gov.usgs.cida.nar.service.DiscqwService;
 import gov.usgs.cida.nar.service.MflowService;
@@ -100,5 +102,19 @@ public class TimeseriesWebservice {
 		MloadsService service = new MloadsService();
 		List<Mloads> mloads = service.request(Lists.newArrayList(siteQwId), constit, excludeModtype, startTime, endTime);
 		return Response.ok(JSONUtil.toJSON(mloads)).build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/availability/{siteQwId}")
+	public Response getAvailability(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("constit")List<String> constit, 
+			@QueryParam("excludeModtype")List<String> excludeModtype
+			) {
+		log.debug("Data availability requested from {} for {}, excluding {}", siteQwId, constit, excludeModtype);
+		AvailabilityService availServ = new AvailabilityService();
+		List<TimeSeriesAvailability> tsas = availServ.request(siteQwId, siteQwId, excludeModtype);
+		
+		return Response.ok(JSONUtil.toJSON(tsas)).build();
 	}
 }
