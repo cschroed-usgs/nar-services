@@ -23,8 +23,8 @@ public class AvailabilityService {
 	public List<TimeSeriesAvailability> request(String siteQwId, String constit, List<String> modtypeExcludes) {
 		ArrayList<TimeSeriesAvailability> overallAvailability = new ArrayList<>();
 		ArrayList<NARService<? extends NARData>> narServices = new ArrayList<NARService<? extends NARData>>(Arrays.asList(
-//			new AflowService(),
-//			new AloadsService(),
+			new AflowService(),
+			new AloadsService(),
 			new MflowService()
 		));
 		for (NARService narService : narServices ){
