@@ -335,7 +335,7 @@
 		<where>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
 		</where>
-	ORDER BY site_qw_id, site_flow_id ASC
+		ORDER BY site_qw_id, site_flow_id ASC
 	</select>
 	
 </mapper>

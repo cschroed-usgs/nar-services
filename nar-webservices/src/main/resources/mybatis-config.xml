@@ -13,6 +13,7 @@
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Discqw' alias='Discqw'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mflow' alias='Mflow'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.Mloads' alias='Mloads'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.PestSites' alias='PestSites'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearInterval' alias='WaterYearInterval'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent' alias='WaterYearIntervalWithConstituent'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearAndMonthInterval' alias='WaterYearAndMonthInterval'></typeAlias>
@@ -32,6 +33,7 @@
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/DiscqwMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MflowMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MloadsMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/PestSitesMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/SharedMapper.xml' />
 	</mappers>
 </configuration>
