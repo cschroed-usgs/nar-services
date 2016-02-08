@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.mybatis.model.NARData;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,10 +22,11 @@ public class AvailabilityService {
 	
 	public List<TimeSeriesAvailability> request(String siteQwId, String constit, List<String> modtypeExcludes) {
 		ArrayList<TimeSeriesAvailability> overallAvailability = new ArrayList<>();
-		ArrayList<NARService<? extends NARData>> narServices = Lists.newArrayList(
-			new AflowService(),
-			new AloadsService()
-		);
+		ArrayList<NARService<? extends NARData>> narServices = new ArrayList<NARService<? extends NARData>>(Arrays.asList(
+//			new AflowService(),
+//			new AloadsService(),
+			new MflowService()
+		));
 		for (NARService narService : narServices ){
 			LinkedList<String> siteQwIds = new LinkedList<>();
 			siteQwIds.add(siteQwId);

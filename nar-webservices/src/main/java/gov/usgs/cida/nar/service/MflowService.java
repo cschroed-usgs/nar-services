@@ -5,10 +5,14 @@ import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.MflowDao;
 import gov.usgs.cida.nar.mybatis.model.Mflow;
+import gov.usgs.cida.nar.mybatis.model.WaterYearAndMonthInterval;
+import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import gov.usgs.cida.nar.util.DateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 
 /**
  *
@@ -66,10 +70,32 @@ public class MflowService implements NARService<Mflow> {
 	public TimeSeriesCategory getTimeSeriesCategory() {
 		return TimeSeriesCategory.FLOW;
 	}
-
+	private boolean allTimeIntervalFieldsInitialized(WaterYearAndMonthInterval interval) {
+		return !(
+			null == interval
+			|| null == interval.getStartYear()
+			|| null == interval.getEndYear()
+			|| null == interval.getStartMonth()
+			|| null == interval.getEndMonth()
+			);
+	}
+	
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		List<TimeSeriesAvailability> availability = new ArrayList<>();
+		WaterYearAndMonthInterval timeInterval = this.dao.getAvailability(this.siteQwId.get(0));
+		if(allTimeIntervalFieldsInitialized(timeInterval)) {
+			LocalDateTime startTime = new LocalDateTime(timeInterval.getStartYear(),timeInterval.getStartMonth(), 1, 0, 0);
+			LocalDateTime endTime = new LocalDateTime(timeInterval.getEndYear(),timeInterval.getEndMonth(), 1, 0, 0);
+			TimeSeriesAvailability tsa = new TimeSeriesAvailability(
+				this.getTimeSeriesCategory(),
+				this.getTimeStepDensity(),
+				startTime,
+				endTime,
+				null
+			);
+			availability.add(tsa);
+		}
+		return availability;
 	}
-
 }
