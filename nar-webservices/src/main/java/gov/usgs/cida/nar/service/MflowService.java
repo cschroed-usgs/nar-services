@@ -70,21 +70,12 @@ public class MflowService implements NARService<Mflow> {
 	public TimeSeriesCategory getTimeSeriesCategory() {
 		return TimeSeriesCategory.FLOW;
 	}
-	private boolean allTimeIntervalFieldsInitialized(WaterYearAndMonthInterval interval) {
-		return !(
-			null == interval
-			|| null == interval.getStartYear()
-			|| null == interval.getEndYear()
-			|| null == interval.getStartMonth()
-			|| null == interval.getEndMonth()
-			);
-	}
 	
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
 		WaterYearAndMonthInterval timeInterval = this.dao.getAvailability(this.siteQwId.get(0));
-		if(allTimeIntervalFieldsInitialized(timeInterval)) {
+		if(null!= timeInterval && timeInterval.isInitialized()) {
 			LocalDateTime startTime = new LocalDateTime(timeInterval.getStartYear(),timeInterval.getStartMonth(), 1, 0, 0);
 			LocalDateTime endTime = new LocalDateTime(timeInterval.getEndYear(),timeInterval.getEndMonth(), 1, 0, 0);
 			TimeSeriesAvailability tsa = new TimeSeriesAvailability(

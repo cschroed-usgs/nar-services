@@ -39,4 +39,12 @@ public class WaterYearAndMonthInterval extends WaterYearInterval {
 		this.endMonth = endMonth;
 	}
 	
+	public boolean isInitialized(){
+		return !(
+			null == this.getStartYear()
+			|| null == this.getEndYear()
+			|| null == this.getStartMonth()
+			|| null == this.getEndMonth()
+			);
+	}
 }
