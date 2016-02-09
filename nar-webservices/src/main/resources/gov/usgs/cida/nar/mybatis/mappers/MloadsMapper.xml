@@ -45,4 +45,14 @@
 	ORDER BY site_qw_id, site_flow_id, constit, modtype, wy, month ASC
 	</select>
 	
+	<select id="getAvailability" parameterType="map" resultMap="mloadsAvailability">
+		SELECT min(wy) AS startYear, max(wy) AS endYear, constit FROM
+			aloads
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+		</where>
+		GROUP BY
+			constit
+	</select>
+	
 </mapper>
