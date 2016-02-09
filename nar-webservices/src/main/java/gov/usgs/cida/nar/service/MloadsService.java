@@ -46,7 +46,11 @@ public class MloadsService implements NARService<Mloads>, IConstituentFilterable
 		
 		Integer startWy = DateUtil.getWaterYear(startDate);
 		Integer endWy = DateUtil.getWaterYear(endDate);
-		return dao.getMloads(siteQwId, constit, modtypeExcludes, startWy, endWy);
+		List<Mloads> mloads = dao.getMloads(siteQwId, constit, modtypeExcludes, startWy, endWy);
+		for(Mloads mload : mloads){
+			mload.setMonth(MAY);
+		}
+		return mloads;
 	}
 
 	@Override

@@ -28,12 +28,9 @@ public class MflowServiceTest {
 	private static final String SITE_QW_ID = "100";
 	private static final String SITE_FLOW_ID = "100";
 	private static final int START_YEAR = 1990;
-	private static final int START_MONTH = 3;
-	private static final String STRING_START_DATE = START_YEAR + "-01-01";
+	private static final String STRING_START_DATE = START_YEAR + "-05-01";
 	private static final int END_YEAR = 2000;
-	private static final int END_MONTH = 9;
-	private static final String STRING_END_DATE = END_YEAR + "-01-01";
-	
+	private static final String STRING_END_DATE = END_YEAR + "-05-01";
 	private final Random rand = new Random(42L);
 	private Double randNum(int min, int max) {
 		int randomNum = this.rand.nextInt((max - min) + 1) + min;
@@ -43,29 +40,16 @@ public class MflowServiceTest {
 	public MflowServiceTest() {
 		mockedDao = mock(MflowDao.class);
 		expectedMflow = new ArrayList<>();
-		int monthLoopStart, monthLoopEnd;
 		for (int year=START_YEAR; year<=END_YEAR; year++) {
-			if(year == START_YEAR){
-				monthLoopStart = START_MONTH;
-			} else {
-				monthLoopStart = 1;
-			}
-			if(year == END_YEAR){
-				monthLoopEnd = END_MONTH;
-			} else {
-				monthLoopEnd = 12;
-			}
-			
-			for(int month = monthLoopStart; month <= monthLoopEnd; month++){
-				Mflow mflow = new Mflow();
-				mflow.setWy(year);
-				mflow.setMonth(month);
-				mflow.setSiteAbb("foo");
-				mflow.setSiteQwId(SITE_QW_ID);
-				mflow.setSiteFlowId(SITE_FLOW_ID);
-				mflow.setFlow(randNum(1, 4242));
-				expectedMflow.add(mflow);
-			}
+			Mflow mflow = new Mflow();
+			mflow.setWy(year);
+			mflow.setMonth(MflowService.MAY);
+			mflow.setSiteAbb("foo");
+			mflow.setSiteQwId(SITE_QW_ID);
+			mflow.setSiteFlowId(SITE_FLOW_ID);
+			mflow.setFlow(randNum(1, 4242));
+			expectedMflow.add(mflow);
+
 		}
 	}
 	@Before

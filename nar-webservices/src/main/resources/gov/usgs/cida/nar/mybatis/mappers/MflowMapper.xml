@@ -10,7 +10,6 @@
 		<result property="siteQwId" column="site_qw_id"/>
 		<result property="siteFlowId" column="site_flow_id"/>
 		<result property="wy" column="wy"/>
-		<result property="month" column="month"/>
 		<result property="flow" column="flow"/>
 	</resultMap>
 	
@@ -24,7 +23,6 @@
 		site_qw_id,
 		site_flow_id,
 		wy,
-		month,
 		flow
 	</sql>
 	
@@ -37,7 +35,7 @@
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin"/>
 		</where>
-	ORDER BY site_qw_id, site_flow_id, wy, month ASC
+	ORDER BY site_qw_id, site_flow_id, wy ASC
 	</select>
 	
 	<select id="getAvailability" parameterType="map" resultMap="waterYearInterval">
@@ -47,7 +45,4 @@
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
 		</where>
 	</select>
-	<!--
-		
-	-->
 </mapper>

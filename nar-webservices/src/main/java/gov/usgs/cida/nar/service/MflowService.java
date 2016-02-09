@@ -39,7 +39,11 @@ public class MflowService implements NARService<Mflow> {
 	public List<Mflow> request(List<String> siteQwId, String startDate, String endDate) {
 		Integer startWy = DateUtil.getWaterYear(startDate);
 		Integer endWy = DateUtil.getWaterYear(endDate);
-		return dao.getMflow(siteQwId, startWy, endWy);
+		List<Mflow> mflows = dao.getMflow(siteQwId, startWy, endWy);
+		for(Mflow mflow : mflows){
+			mflow.setMonth(MAY);
+		}
+		return mflows;
 	}
 
 	@Override

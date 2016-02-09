@@ -11,7 +11,6 @@
 		<result property="siteFlowId" column="site_flow_id"/>
 		<result property="constit" column="constit"/>
 		<result property="wy" column="wy"/>
-		<result property="month" column="month"/>
 		<result property="modtype" column="modtype"/>
 		<result property="tons" column="tons"/>
 		<result property="tonsL95" column="tons_l95"/>
@@ -30,7 +29,6 @@
 		site_flow_id,
 		constit,
 		wy,
-		month,
 		modtype,
 		tons,
 		tons_l95,
@@ -48,7 +46,7 @@
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.excludeModtype"/>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn"/>
 		</where>
-	ORDER BY site_qw_id, site_flow_id, constit, modtype, wy, month ASC
+	ORDER BY site_qw_id, site_flow_id, constit, modtype, wy ASC
 	</select>
 	
 	<select id="getAvailability" parameterType="map" resultMap="mloadsAvailability">
