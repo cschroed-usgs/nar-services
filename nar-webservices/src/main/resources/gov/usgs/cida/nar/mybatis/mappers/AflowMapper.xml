@@ -43,7 +43,6 @@
 			aflow
 		<where>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
-			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.wyWithin" />
 		</where>
 	</select>
 	
