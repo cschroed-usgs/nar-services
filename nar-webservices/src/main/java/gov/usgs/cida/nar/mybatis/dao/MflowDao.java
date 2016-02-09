@@ -45,7 +45,7 @@ public class MflowDao extends BaseDao {
 		WaterYearInterval result = null;
 		
 		Map<String, Object> params = new HashMap<>();
-		params.put("single_site_qw_id", siteQwId);
+		params.put(SITE_QW, Lists.newArrayList(siteQwId));
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectOne(QUERY_PACKAGE + ".MflowMapper.getAvailability", params);
