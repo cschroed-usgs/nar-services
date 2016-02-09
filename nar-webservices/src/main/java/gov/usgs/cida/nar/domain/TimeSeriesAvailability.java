@@ -1,16 +1,21 @@
 package gov.usgs.cida.nar.domain;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 
 public class TimeSeriesAvailability {
 	private TimeSeriesCategory timeSeriesCategory;
-	public TimeStepDensity timeStepDensity;
-	public LocalDateTime startTime;
-	public LocalDateTime endTime;
-	public String constit;
+	private TimeStepDensity timeStepDensity;
+	private LocalDateTime startTime;
+	private LocalDateTime endTime;
+	private String constit;
 	
 	public TimeSeriesAvailability(){}
 	
@@ -26,10 +31,10 @@ public class TimeSeriesAvailability {
 	public int hashCode(){
 		HashCodeBuilder hcb = new HashCodeBuilder();
 		hcb.append(this.getTimeSeriesCategory())
-			.append(timeStepDensity)
-			.append(startTime)
-			.append(endTime)
-			.append(constit);
+			.append(getTimeStepDensity())
+			.append(getStartTime())
+			.append(getEndTime())
+			.append(getConstit());
 		
 		return hcb.toHashCode();
 	}
@@ -44,11 +49,11 @@ public class TimeSeriesAvailability {
 		} else {
 			final TimeSeriesAvailability other = (TimeSeriesAvailability)obj;
 			equal = 
-				Objects.equal(this.timeSeriesCategory, other.timeSeriesCategory)
-				&& Objects.equal(this.timeStepDensity, other.timeStepDensity)
-				&& Objects.equal(this.startTime, other.startTime)
-				&& Objects.equal(this.endTime, other.endTime)
-				&& Objects.equal(this.constit, other.constit)
+				Objects.equal(this.getTimeSeriesCategory(), other.getTimeSeriesCategory())
+				&& Objects.equal(this.getTimeStepDensity(), other.getTimeStepDensity())
+				&& Objects.equal(this.getStartTime(), other.getStartTime())
+				&& Objects.equal(this.getEndTime(), other.getEndTime())
+				&& Objects.equal(this.getConstit(), other.getConstit())
 				;
 		}
 		
@@ -67,5 +72,73 @@ public class TimeSeriesAvailability {
 	 */
 	public void setTimeSeriesCategory(TimeSeriesCategory timeSeriesCategory) {
 		this.timeSeriesCategory = timeSeriesCategory;
+	}
+	
+	@Override
+	public String toString(){
+		ToStringHelper tsh = MoreObjects.toStringHelper(TimeSeriesAvailability.class);
+		tsh.add("timestepDensity", this.timeStepDensity)
+			.add("timeseriesCategory", this.timeSeriesCategory)
+			.add("startTime", this.startTime == null ? null : this.getStartTime().toString(ISODateTimeFormat.dateTime()))
+			.add("endTime", this.endTime == null ? null : this.getEndTime().toString(ISODateTimeFormat.dateTime()))
+			.add("constit", this.constit)
+		;
+		return tsh.toString();
+	}
+
+	/**
+	 * @return the timeStepDensity
+	 */
+	public TimeStepDensity getTimeStepDensity() {
+		return timeStepDensity;
+	}
+
+	/**
+	 * @param timeStepDensity the timeStepDensity to set
+	 */
+	public void setTimeStepDensity(TimeStepDensity timeStepDensity) {
+		this.timeStepDensity = timeStepDensity;
+	}
+
+	/**
+	 * @return the startTime
+	 */
+	public LocalDateTime getStartTime() {
+		return startTime;
+	}
+
+	/**
+	 * @param startTime the startTime to set
+	 */
+	public void setStartTime(LocalDateTime startTime) {
+		this.startTime = startTime;
+	}
+
+	/**
+	 * @return the endTime
+	 */
+	public LocalDateTime getEndTime() {
+		return endTime;
+	}
+
+	/**
+	 * @param endTime the endTime to set
+	 */
+	public void setEndTime(LocalDateTime endTime) {
+		this.endTime = endTime;
+	}
+
+	/**
+	 * @return the constit
+	 */
+	public String getConstit() {
+		return constit;
+	}
+
+	/**
+	 * @param constit the constit to set
+	 */
+	public void setConstit(String constit) {
+		this.constit = constit;
 	}
 }

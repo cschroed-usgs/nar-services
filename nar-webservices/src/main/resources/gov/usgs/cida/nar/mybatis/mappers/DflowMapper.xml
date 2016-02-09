@@ -14,6 +14,11 @@
 		<result property="wy" column="wy"/>
 	</resultMap>
 	
+	<resultMap id="dateInterval" type="DateInterval">
+		<result property="start" column="start"/>
+		<result property="end" column="end"/>
+	</resultMap>
+	
 	<sql id="columns">
 		site_abb,
 		site_qw_id,
@@ -33,6 +38,14 @@
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.dateWithin" />
 		</where>
 	ORDER BY site_qw_id, site_flow_id, date ASC
+	</select>
+	
+	<select id="getAvailability" parameterType="map" resultMap="dateInterval">
+		SELECT min(date) AS start, max(date) AS end FROM
+			dflow
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+		</where>
 	</select>
 	
 </mapper>
