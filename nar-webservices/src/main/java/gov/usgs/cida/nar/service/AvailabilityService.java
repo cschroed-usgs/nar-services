@@ -25,7 +25,8 @@ public class AvailabilityService {
 		ArrayList<NARService<? extends NARData>> narServices = new ArrayList<NARService<? extends NARData>>(Arrays.asList(
 			new AflowService(),
 			new AloadsService(),
-			new MflowService()
+			new MflowService(),
+			new MloadsService()
 		));
 		for (NARService narService : narServices ){
 			LinkedList<String> siteQwIds = new LinkedList<>();
