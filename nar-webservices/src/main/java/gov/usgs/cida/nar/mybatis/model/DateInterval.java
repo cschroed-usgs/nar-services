@@ -10,7 +10,12 @@ public class DateInterval extends NARData {
 
 	private Date start;
 	private Date end;
-
+	
+	public DateInterval(java.sql.Date start, java.sql.Date end) {
+		this.start = start;
+		this.end = end;
+	}
+	
 	public DateInterval(Date start, Date end) {
 		this.start = start;
 		this.end = end;

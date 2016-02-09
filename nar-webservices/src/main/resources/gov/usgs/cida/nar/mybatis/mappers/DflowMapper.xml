@@ -40,7 +40,7 @@
 	ORDER BY site_qw_id, site_flow_id, date ASC
 	</select>
 	
-	<select id="getAvailability" parameterType="map" resultMap="DateInterval">
+	<select id="getAvailability" parameterType="map" resultMap="dateInterval">
 		SELECT min(date) AS start, max(date) AS end FROM
 			dflow
 		<where>
