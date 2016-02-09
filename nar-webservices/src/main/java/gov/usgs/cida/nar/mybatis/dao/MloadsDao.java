@@ -44,6 +44,7 @@ public class MloadsDao extends BaseDao {
 	 * 
 	 * @param siteQwId
 	 * @param modtypeExclusions ignore these modtypes in calculating the range
+	 * @param constit optionally restrict availability query to this constiuent
 	 * @return empty list if nothing available, or a list of 
 	 * constituent-tagged intervals of water years that excludes the 
 	 * parameterized modtypes
