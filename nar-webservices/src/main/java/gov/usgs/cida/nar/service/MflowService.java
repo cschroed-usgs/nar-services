@@ -5,7 +5,6 @@ import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.MflowDao;
 import gov.usgs.cida.nar.mybatis.model.Mflow;
-import gov.usgs.cida.nar.mybatis.model.WaterYearAndMonthInterval;
 import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import gov.usgs.cida.nar.util.DateUtil;
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class MflowService implements NARService<Mflow> {
 	private List<String> siteQwId;
 	private String startDate;
 	private String endDate;
-	
+	public static final Integer MAY = 5;
 	public MflowService() {
 		this(new MflowDao());
 	}
@@ -74,10 +73,10 @@ public class MflowService implements NARService<Mflow> {
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
-		WaterYearAndMonthInterval timeInterval = this.dao.getAvailability(this.siteQwId.get(0));
-		if(null!= timeInterval && timeInterval.isInitialized()) {
-			LocalDateTime startTime = new LocalDateTime(timeInterval.getStartYear(),timeInterval.getStartMonth(), 1, 0, 0);
-			LocalDateTime endTime = new LocalDateTime(timeInterval.getEndYear(),timeInterval.getEndMonth(), 1, 0, 0);
+		WaterYearInterval interval = this.dao.getAvailability(this.siteQwId.get(0));
+		if(WaterYearInterval.isInitialized(interval)) {
+			LocalDateTime startTime = new LocalDateTime(interval.getStartYear(),MAY, 1, 0, 0);
+			LocalDateTime endTime = new LocalDateTime(interval.getEndYear(),MAY, 1, 0, 0);
 			TimeSeriesAvailability tsa = new TimeSeriesAvailability(
 				this.getTimeSeriesCategory(),
 				this.getTimeStepDensity(),

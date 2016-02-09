@@ -8,7 +8,6 @@ import gov.usgs.cida.nar.mybatis.dao.AflowDao;
 import gov.usgs.cida.nar.mybatis.dao.MflowDao;
 import gov.usgs.cida.nar.mybatis.model.Aflow;
 import gov.usgs.cida.nar.mybatis.model.Mflow;
-import gov.usgs.cida.nar.mybatis.model.WaterYearAndMonthInterval;
 import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,13 +89,13 @@ public class MflowServiceTest {
 	 */
 	@Test
 	public void testGetAvailability() {
-		WaterYearAndMonthInterval daoInterval = new WaterYearAndMonthInterval(START_YEAR, START_MONTH, END_YEAR, END_MONTH);
+		WaterYearInterval daoInterval = new WaterYearInterval(START_YEAR, END_YEAR);
 		
 		TimeSeriesAvailability expectedAvailability = new TimeSeriesAvailability(
 			TimeSeriesCategory.FLOW, 
 			TimeStepDensity.MONTHLY, 
-			new LocalDateTime(START_YEAR, START_MONTH, 1, 0, 0),
-			new LocalDateTime(END_YEAR, END_MONTH, 1, 0, 0),
+			new LocalDateTime(START_YEAR, MflowService.MAY, 1, 0, 0),
+			new LocalDateTime(END_YEAR, MflowService.MAY, 1, 0, 0),
 			null
 		);
 		
