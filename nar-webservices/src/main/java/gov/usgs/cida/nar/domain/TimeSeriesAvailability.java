@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.domain;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
 import com.google.common.base.Objects;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.LocalDateTime;
@@ -74,13 +76,14 @@ public class TimeSeriesAvailability {
 	
 	@Override
 	public String toString(){
-		return "{" 
-			+ "\ntimestepDensity:" + this.getTimeStepDensity().toString()
-			+ "\n timeseriesCategory:" + this.getTimeSeriesCategory().toString()
-			+ "\n startTime:" + this.getStartTime().toString(ISODateTimeFormat.dateTime())
-			+ "\n endTime:" + this.getEndTime().toString(ISODateTimeFormat.dateTime())
-			+ "\n constit:" + this.getConstit() +
-			"\n}";
+		ToStringHelper tsh = MoreObjects.toStringHelper(TimeSeriesAvailability.class);
+		tsh.add("timestepDensity", this.timeStepDensity)
+			.add("timeseriesCategory", this.timeSeriesCategory)
+			.add("startTime", this.startTime == null ? null : this.getStartTime().toString(ISODateTimeFormat.dateTime()))
+			.add("endTime", this.endTime == null ? null : this.getEndTime().toString(ISODateTimeFormat.dateTime()))
+			.add("constit", this.constit)
+		;
+		return tsh.toString();
 	}
 
 	/**
