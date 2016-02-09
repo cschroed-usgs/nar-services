@@ -108,12 +108,12 @@ public class TimeseriesWebservice {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/availability/{siteQwId}")
 	public Response getAvailability(@PathParam("siteQwId")String siteQwId,
-			@QueryParam("constit")List<String> constit, 
+			@QueryParam("constit")String constit, 
 			@QueryParam("excludeModtype")List<String> excludeModtype
 			) {
 		log.debug("Data availability requested from {} for {}, excluding {}", siteQwId, constit, excludeModtype);
 		AvailabilityService availServ = new AvailabilityService();
-		List<TimeSeriesAvailability> tsas = availServ.request(siteQwId, siteQwId, excludeModtype);
+		List<TimeSeriesAvailability> tsas = availServ.request(siteQwId, constit, excludeModtype);
 		
 		return Response.ok(JSONUtil.toJSON(tsas)).build();
 	}

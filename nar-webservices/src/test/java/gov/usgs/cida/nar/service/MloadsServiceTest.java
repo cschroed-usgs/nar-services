@@ -99,8 +99,8 @@ public class MloadsServiceTest {
 		
 		List<String> excludedModtypes = Lists.newArrayList(EXCLUDED_MODTYPE);
 		
-		when(mockedDao.getAvailability(SITE_QW_ID, excludedModtypes)).thenReturn(Lists.newArrayList(intervalForConstit1, intervalForConstit2));
-		List<TimeSeriesAvailability> result = instance.getAvailability(SITE_QW_ID, excludedModtypes);
+		when(mockedDao.getAvailability(SITE_QW_ID, excludedModtypes, null)).thenReturn(Lists.newArrayList(intervalForConstit1, intervalForConstit2));
+		List<TimeSeriesAvailability> result = instance.getAvailability(SITE_QW_ID, excludedModtypes, null);
 		TimeSeriesAvailability resultTsaForConstit1 = result.get(0);
 		TimeSeriesAvailability resultTsaForConstit2 = result.get(1);
 		assertEquals(expectedAvailabilityForConstit1, resultTsaForConstit1);

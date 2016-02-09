@@ -48,17 +48,19 @@ public class MloadsDao extends BaseDao {
 	 * constituent-tagged intervals of water years that excludes the 
 	 * parameterized modtypes
 	 */
-	public List<WaterYearIntervalWithConstituent> getAvailability(String siteQwId, List<String> modtypeExclusions) {
+	public List<WaterYearIntervalWithConstituent> getAvailability(String siteQwId, List<String> modtypeExclusions, String constit) {
 		List<WaterYearIntervalWithConstituent> availability = new ArrayList<>();
 		
 		Map<String, Object> params = new HashMap<>(11);
-		//Must put the Site QW ID in a list to re-use retrieval queries
+		//Must put the Site QW ID and constit in a list to re-use retrieval queries
 		params.put(SITE_QW, Lists.newArrayList(siteQwId));
 		params.put(MODTYPE_EXCLUDE, modtypeExclusions);
+		if(null != constit){
+			params.put(CONSTIT, Lists.newArrayList(constit));
+		}
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			availability = session.selectList(QUERY_PACKAGE + ".MloadsMapper.getAvailability", params);
-			
 		}
 		return availability;
 	}

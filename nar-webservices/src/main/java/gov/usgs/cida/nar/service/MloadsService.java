@@ -89,12 +89,12 @@ public class MloadsService implements NARService<Mloads>, IConstituentFilterable
 
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
-		return getAvailability(this.startDate, this.modtypeExcludes);
+		return getAvailability(this.siteQwId.get(0), this.modtypeExcludes, this.constit.get(0));
 	}
 	
-	public List<TimeSeriesAvailability> getAvailability(String siteQwId, List<String> excludedModtypes) {
+	public List<TimeSeriesAvailability> getAvailability(String siteQwId, List<String> excludedModtypes, String constit) {
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
-		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes);
+		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes, constit);
 		if(null != wyIntervalsWithConstits && !wyIntervalsWithConstits.isEmpty()){
 			for(WaterYearIntervalWithConstituent wyIntervalWithConstit : wyIntervalsWithConstits){
 				LocalDateTime start = new LocalDateTime(wyIntervalWithConstit.getStartYear(), MAY, 1, 0, 0);
@@ -107,8 +107,8 @@ public class MloadsService implements NARService<Mloads>, IConstituentFilterable
 					wyIntervalWithConstit.getConstit()
 				);
 				availability.add(tsa);
+				}
 			}
-		}
 		return availability;
 	}
 }
