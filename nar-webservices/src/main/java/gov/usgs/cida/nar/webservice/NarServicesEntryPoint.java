@@ -18,7 +18,7 @@ public class NarServicesEntryPoint extends Application {
 
 		// webservices
 		classes.add(DownloadService.class);
-		classes.add(TimeseriesWebservice.class);
+		classes.add(TimeSeriesWebservice.class);
 		classes.add(PesticidesWebservice.class);
 
 		return classes;
