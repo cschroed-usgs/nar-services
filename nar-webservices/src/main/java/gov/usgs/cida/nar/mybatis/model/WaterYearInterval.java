@@ -40,5 +40,12 @@ public class WaterYearInterval extends NARData {
 	public void setEndYear(Integer endYear) {
 		this.endYear = endYear;
 	}
-	
+
+	public static boolean isInitialized(WaterYearInterval interval) {
+		return !(
+			null == interval
+			|| null == interval.getEndYear()
+			|| null == interval.getStartYear()
+		);
+	}
 }

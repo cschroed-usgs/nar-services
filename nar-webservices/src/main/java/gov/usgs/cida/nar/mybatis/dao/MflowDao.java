@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.QUERY_PACKAGE;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.SITE_QW;
 import gov.usgs.cida.nar.mybatis.model.Mflow;
-import gov.usgs.cida.nar.mybatis.model.WaterYearAndMonthInterval;
 import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +41,8 @@ public class MflowDao extends BaseDao {
 	 * @return null if unavailable, otherwise return a fully-formed 
 	 * WaterYearInterval
 	 */
-	public WaterYearAndMonthInterval getAvailability(String siteQwId){
-		WaterYearAndMonthInterval result = null;
+	public WaterYearInterval getAvailability(String siteQwId){
+		WaterYearInterval result = null;
 		
 		Map<String, Object> params = new HashMap<>();
 		params.put("single_site_qw_id", siteQwId);
