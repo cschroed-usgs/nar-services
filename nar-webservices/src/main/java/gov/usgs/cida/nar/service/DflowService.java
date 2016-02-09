@@ -4,12 +4,16 @@ import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.DflowDao;
+import gov.usgs.cida.nar.mybatis.model.DateInterval;
 import gov.usgs.cida.nar.mybatis.model.Dflow;
+import gov.usgs.cida.nar.mybatis.model.WaterYearInterval;
 import gov.usgs.cida.nar.util.DateUtil;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 
 /**
  *
@@ -65,7 +69,21 @@ public class DflowService implements NARService<Dflow> {
 
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		List<TimeSeriesAvailability> availability = new ArrayList<>();
+		DateInterval interval = this.dao.getAvailability(this.siteQwId.get(0));
+		if( null!= interval){
+			LocalDateTime startTime = new LocalDateTime(interval.getStart());
+			LocalDateTime endTime = new LocalDateTime(interval.getEnd());
+			TimeSeriesAvailability tsa = new TimeSeriesAvailability(
+				this.getTimeSeriesCategory(),
+				this.getTimeStepDensity(),
+				startTime,
+				endTime,
+				null
+			);
+			availability.add(tsa);
+		}
+		return availability;
 	}
 
 	@Override

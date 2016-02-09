@@ -16,6 +16,7 @@
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.PestSites' alias='PestSites'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearInterval' alias='WaterYearInterval'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent' alias='WaterYearIntervalWithConstituent'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.DateInterval' alias='DateInterval'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>
