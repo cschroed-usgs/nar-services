@@ -5,10 +5,13 @@ import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.MloadsDao;
 import gov.usgs.cida.nar.mybatis.model.Mloads;
+import gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent;
 import gov.usgs.cida.nar.util.DateUtil;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 
 /**
  *
@@ -23,6 +26,7 @@ public class MloadsService implements NARService<Mloads>, IConstituentFilterable
 	private List<String> modtypeExcludes;
 	private String startDate;
 	private String endDate;
+	public static final Integer MAY = 5;
 	
 	public MloadsService() {
 		this(new MloadsDao());
@@ -85,7 +89,26 @@ public class MloadsService implements NARService<Mloads>, IConstituentFilterable
 
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return getAvailability(this.siteQwId.get(0), this.modtypeExcludes, this.constit.get(0));
 	}
-
+	
+	public List<TimeSeriesAvailability> getAvailability(String siteQwId, List<String> excludedModtypes, String constit) {
+		List<TimeSeriesAvailability> availability = new ArrayList<>();
+		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes, constit);
+		if(null != wyIntervalsWithConstits && !wyIntervalsWithConstits.isEmpty()){
+			for(WaterYearIntervalWithConstituent wyIntervalWithConstit : wyIntervalsWithConstits){
+				LocalDateTime start = new LocalDateTime(wyIntervalWithConstit.getStartYear(), MAY, 1, 0, 0);
+				LocalDateTime end = new LocalDateTime(wyIntervalWithConstit.getEndYear(), MAY, 1, 0, 0);
+				TimeSeriesAvailability tsa = new TimeSeriesAvailability(
+					this.getTimeSeriesCategory(),
+					this.getTimeStepDensity(),
+					start,
+					end,
+					wyIntervalWithConstit.getConstit()
+				);
+				availability.add(tsa);
+				}
+			}
+		return availability;
+	}
 }

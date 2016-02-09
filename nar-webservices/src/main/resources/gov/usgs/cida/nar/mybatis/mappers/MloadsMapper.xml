@@ -18,6 +18,12 @@
 		<result property="tonsU95" column="tons_u95"/>
 	</resultMap>
 	
+	<resultMap id="mloadsAvailability" type="WaterYearIntervalWithConstituent">
+		<result property="startYear" column="startYear"/>
+		<result property="endYear" column="endYear"/>
+		<result property="constit" column="constit"/>
+	</resultMap>
+	
 	<sql id="columns">
 		site_abb,
 		site_qw_id,
@@ -43,6 +49,17 @@
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn"/>
 		</where>
 	ORDER BY site_qw_id, site_flow_id, constit, modtype, wy, month ASC
+	</select>
+	
+	<select id="getAvailability" parameterType="map" resultMap="mloadsAvailability">
+		SELECT min(wy) AS startYear, max(wy) AS endYear, constit FROM
+			mloads
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn"/>
+		</where>
+		GROUP BY
+			constit
 	</select>
 	
 </mapper>
