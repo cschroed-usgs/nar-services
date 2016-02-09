@@ -40,7 +40,6 @@ public class MflowServiceTest {
 	public MflowServiceTest() {
 		mockedDao = mock(MflowDao.class);
 		expectedMflow = new ArrayList<>();
-		int monthLoopStart, monthLoopEnd;
 		for (int year=START_YEAR; year<=END_YEAR; year++) {
 			Mflow mflow = new Mflow();
 			mflow.setWy(year);

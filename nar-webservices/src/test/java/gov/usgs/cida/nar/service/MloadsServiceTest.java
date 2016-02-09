@@ -36,6 +36,7 @@ public class MloadsServiceTest {
 		for (int i=0; i<=10; i++) {
 			Mloads mloads = new Mloads();
 			mloads.setWy(START_YEAR + i);
+			mloads.setMonth(MloadsService.MAY);
 			mloads.setSiteAbb(SITE_ABB);
 			mloads.setSiteQwId(SITE_QW_ID);
 			mloads.setSiteFlowId(SITE_FLOW_ID);
