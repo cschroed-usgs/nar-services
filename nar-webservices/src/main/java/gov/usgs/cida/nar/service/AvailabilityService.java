@@ -27,7 +27,8 @@ public class AvailabilityService {
 			new AloadsService(),
 			new MflowService(),
 			new MloadsService(),
-			new DflowService()
+			new DflowService(),
+			new DiscqwService()
 		));
 		for (NARService narService : narServices ){
 			LinkedList<String> siteQwIds = new LinkedList<>();

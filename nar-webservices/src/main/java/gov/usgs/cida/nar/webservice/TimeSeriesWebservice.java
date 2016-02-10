@@ -34,9 +34,9 @@ import org.slf4j.LoggerFactory;
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
 @Path("/timeseries")
-public class TimeseriesWebservice {
+public class TimeSeriesWebservice {
 
-	private final static Logger log = LoggerFactory.getLogger(TimeseriesWebservice.class);
+	private final static Logger log = LoggerFactory.getLogger(TimeSeriesWebservice.class);
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
