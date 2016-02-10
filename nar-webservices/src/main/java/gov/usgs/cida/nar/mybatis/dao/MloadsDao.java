@@ -43,8 +43,8 @@ public class MloadsDao extends BaseDao {
 	/**
 	 * 
 	 * @param siteQwId
-	 * @param modtypeExclusions ignore these modtypes in calculating the range
-	 * @param constit optionally restrict availability query to this constiuent
+	 * @param modtypeExclusions optional list of modtypes to ignore in calculating the availability range
+	 * @param constit optionally restrict availability query to this constituent
 	 * @return empty list if nothing available, or a list of 
 	 * constituent-tagged intervals of water years that excludes the 
 	 * parameterized modtypes
@@ -53,10 +53,12 @@ public class MloadsDao extends BaseDao {
 		List<WaterYearIntervalWithConstituent> availability = new ArrayList<>();
 		
 		Map<String, Object> params = new HashMap<>(11);
-		//Must put the Site QW ID and constit in a list to re-use retrieval queries
+		//Must put the params into a list to re-use retrieval queries
 		params.put(SITE_QW, Lists.newArrayList(siteQwId));
-		params.put(MODTYPE_EXCLUDE, modtypeExclusions);
-		if(null != constit){
+		if(null != modtypeExclusions && !modtypeExclusions.isEmpty()){
+			params.put(MODTYPE_EXCLUDE, modtypeExclusions);
+		}
+		if(null != constit && 0 != constit.length()){
 			params.put(CONSTIT, Lists.newArrayList(constit));
 		}
 		
