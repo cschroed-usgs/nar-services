@@ -90,12 +90,19 @@ public class AloadsService implements NARService<Aloads>, IConstituentFilterable
 	 * availability of data
 	 */
 	public List<TimeSeriesAvailability> getAvailability() {
-		return getAvailability(this.siteQwId.get(0), this.modtypeExcludes);
+		return getAvailability(this.siteQwId.get(0), this.modtypeExcludes, this.constit.get(0));
 	}
 	
-	public List<TimeSeriesAvailability> getAvailability(String siteQwId, List<String> excludedModtypes) {
+	/**
+	 * 
+	 * @param siteQwId mandatory site id
+	 * @param excludedModtypes optional list of excluded modtypes
+	 * @param constit optional constituent to filter on
+	 * @return 
+	 */
+	public List<TimeSeriesAvailability> getAvailability(String siteQwId, List<String> excludedModtypes, String constit) {
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
-		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes);
+		List<WaterYearIntervalWithConstituent> wyIntervalsWithConstits = this.dao.getAvailability(siteQwId, excludedModtypes, constit);
 		if(null != wyIntervalsWithConstits && !wyIntervalsWithConstits.isEmpty()){
 			for(WaterYearIntervalWithConstituent wyIntervalWithConstit : wyIntervalsWithConstits){
 				LocalDateTime start = new LocalDateTime(wyIntervalWithConstit.getStartYear(), 1, 1, 0, 0);
