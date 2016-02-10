@@ -41,22 +41,28 @@ public class AloadsDao extends BaseDao {
 	/**
 	 * 
 	 * @param siteQwId
-	 * @param modtypeExclusions ignore these modtypes in calculating the range
+	 * @param modtypeExclusions an optional list of modtypes to ignore when calculating the range
+	 * @param constit an optional constituent on which to filter
 	 * @return empty list if nothing available, or a list of 
 	 * constituent-tagged intervals of water years that excludes the 
 	 * parameterized modtypes
 	 */
-	public List<WaterYearIntervalWithConstituent> getAvailability(String siteQwId, List<String> modtypeExclusions) {
+	public List<WaterYearIntervalWithConstituent> getAvailability(String siteQwId, List<String> modtypeExclusions, String constit) {
 		List<WaterYearIntervalWithConstituent> availability = new ArrayList<>();
 		
 		Map<String, Object> params = new HashMap<>(11);
-		//Must put the Site QW ID in a list to re-use retrieval queries
+		//Must put all params in a list to re-use retrieval queries
 		params.put(SITE_QW, Lists.newArrayList(siteQwId));
-		params.put(MODTYPE_EXCLUDE, modtypeExclusions);
+		
+		if(null != modtypeExclusions && !modtypeExclusions.isEmpty()){
+			params.put(MODTYPE_EXCLUDE, modtypeExclusions);
+		}
+		if(null != constit && 0 != constit.length()){
+			params.put(CONSTIT, Lists.newArrayList(constit));
+		}
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			availability = session.selectList(QUERY_PACKAGE + ".AloadsMapper.getAvailability", params);
-			
 		}
 		return availability;
 	}
