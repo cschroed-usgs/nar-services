@@ -4,12 +4,16 @@ import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.DiscqwDao;
+import gov.usgs.cida.nar.mybatis.model.DateInterval;
+import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
 import gov.usgs.cida.nar.mybatis.model.Discqw;
 import gov.usgs.cida.nar.util.DateUtil;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.Interval;
+import org.joda.time.LocalDateTime;
 
 /**
  *
@@ -77,8 +81,32 @@ public class DiscqwService implements NARService<Discqw>, IConstituentFilterable
 
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		return getAvailability(this.siteQwId.get(0), this.constit.get(0));
 	}
 
-	
+	/**
+	 * 
+	 * @param siteQwId non-optional site id
+	 * @param constit optional constituent to filter by
+	 * @return list of availability for the specified filter params
+	 */
+	public List<TimeSeriesAvailability> getAvailability(String siteQwId, String constit) {
+		List<TimeSeriesAvailability> availability = new ArrayList<>();
+		List<DateIntervalWithConstituent> intervals = this.dao.getAvailability(siteQwId, constit);
+		for(DateIntervalWithConstituent interval : intervals) {
+			if( null!= interval){
+				LocalDateTime startTime = new LocalDateTime(interval.getStart());
+				LocalDateTime endTime = new LocalDateTime(interval.getEnd());
+				TimeSeriesAvailability tsa = new TimeSeriesAvailability(
+					this.getTimeSeriesCategory(),
+					this.getTimeStepDensity(),
+					startTime,
+					endTime,
+					interval.getConstit()
+				);
+				availability.add(tsa);
+			}
+		}
+		return availability;
+	}
 }
