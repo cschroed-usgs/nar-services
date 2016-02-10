@@ -1,11 +1,9 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
-import static gov.usgs.cida.nar.mybatis.dao.BaseDao.MODTYPE_EXCLUDE;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.QUERY_PACKAGE;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.SITE_QW;
 import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
 import gov.usgs.cida.nar.mybatis.model.Discqw;
-import gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,7 +50,7 @@ public class DiscqwDao extends BaseDao {
 		List<DateIntervalWithConstituent> availability = new ArrayList<>();
 		
 		Map<String, Object> params = new HashMap<>(11);
-		//Must put the Site QW ID in a list to re-use retrieval queries
+		//Must put the Site QW ID and CONSTIT in a list to re-use retrieval queries
 		params.put(SITE_QW, Lists.newArrayList(siteQwId));
 		if(constit != null){
 			params.put(CONSTIT, Lists.newArrayList(constit));
