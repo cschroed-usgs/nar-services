@@ -50,7 +50,7 @@
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.excludeModtype"/>
 			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn"/>
 		</where>
-	ORDER BY site_qw_id, site_flow_id, constit, modtype, wy ASC
+	ORDER BY site_qw_id, site_flow_id, constit, wy ASC
 	</select>
 	
 	<select id="getAvailability" parameterType="map" resultMap="aloadsAvailability">
