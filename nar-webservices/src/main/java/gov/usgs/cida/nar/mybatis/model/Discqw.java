@@ -14,8 +14,9 @@ public class Discqw extends NARData {
 	private String constit;
 	private Date date;
 	private Integer wy;
-	private Double concentration;
+	private String concentration;
 	private String remark;
+
 
 	public String getSiteAbb() {
 		return siteAbb;
@@ -65,11 +66,11 @@ public class Discqw extends NARData {
 		this.wy = wy;
 	}
 
-	public Double getConcentration() {
+	public String getConcentration() {
 		return concentration;
 	}
 
-	public void setConcentration(Double concentration) {
+	public void setConcentration(String concentration) {
 		this.concentration = concentration;
 	}
 
