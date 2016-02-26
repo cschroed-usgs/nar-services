@@ -40,9 +40,9 @@ public class MloadsServiceTest {
 			mloads.setSiteAbb(SITE_ABB);
 			mloads.setSiteQwId(SITE_QW_ID);
 			mloads.setSiteFlowId(SITE_FLOW_ID);
-			mloads.setTonsL95(1.0 * i);
-			mloads.setTons(2.0 * i);
-			mloads.setTonsU95(3.0 * i);
+			mloads.setTonsL95(""+1.0 * i);
+			mloads.setTons(""+2.0 * i);
+			mloads.setTonsU95(""+3.0 * i);
 			mloads.setConstit( i % 2 == 0 ? CONSTIT_1 : CONSTIT_2);
 			mloads.setModtype(INCLUDED_MODTYPE);
 			

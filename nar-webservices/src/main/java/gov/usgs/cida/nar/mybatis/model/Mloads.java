@@ -13,9 +13,9 @@ public class Mloads extends NARData {
 	private Integer wy;
 	private Integer month;
 	private String modtype;
-	private Double tons;
-	private Double tonsL95;
-	private Double tonsU95;
+	private String tons;
+	private String tonsL95;
+	private String tonsU95;
 
 	public String getSiteAbb() {
 		return siteAbb;
@@ -73,27 +73,27 @@ public class Mloads extends NARData {
 		this.modtype = modtype;
 	}
 
-	public Double getTons() {
+	public String getTons() {
 		return tons;
 	}
 
-	public void setTons(Double tons) {
+	public void setTons(String tons) {
 		this.tons = tons;
 	}
 
-	public Double getTonsL95() {
+	public String getTonsL95() {
 		return tonsL95;
 	}
 
-	public void setTonsL95(Double tonsL95) {
+	public void setTonsL95(String tonsL95) {
 		this.tonsL95 = tonsL95;
 	}
 
-	public Double getTonsU95() {
+	public String getTonsU95() {
 		return tonsU95;
 	}
 
-	public void setTonsU95(Double tonsU95) {
+	public void setTonsU95(String tonsU95) {
 		this.tonsU95 = tonsU95;
 	}
 	
