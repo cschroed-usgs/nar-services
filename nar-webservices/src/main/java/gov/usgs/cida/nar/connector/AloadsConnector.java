@@ -20,16 +20,16 @@ public class AloadsConnector extends MyBatisConnector {
 		// Setting up a dummy bean for bean typing (TODO do proper reflection)
 		Aloads aloads = new Aloads();
 		aloads.setConstit("");
-		aloads.setFwc(Double.NaN);
+		aloads.setFwc("");
 		aloads.setModtype("");
 		aloads.setSiteAbb("");
 		aloads.setSiteFlowId("");
 		aloads.setSiteQwId("");
-		aloads.setTons(Double.NaN);
-		aloads.setTonsL95(Double.NaN);
-		aloads.setTonsU95(Double.NaN);
+		aloads.setTons("");
+		aloads.setTonsL95("");
+		aloads.setTonsU95("");
 		aloads.setWy(-1);
-		aloads.setYield(Double.NaN);
+		aloads.setYield("");
 		return NudeUtils.makeColumnGrouping(aloads);
 	}
 }
