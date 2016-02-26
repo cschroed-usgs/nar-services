@@ -25,7 +25,7 @@ public class DiscqwConnector extends MyBatisConnector {
 		discqw.setSiteAbb("");
 		discqw.setWy(-1);
 		discqw.setDate(new Date());
-		discqw.setConcentration(Double.NaN);
+		discqw.setConcentration("");
 		discqw.setConstit("");
 		discqw.setRemark("");
 		return NudeUtils.makeColumnGrouping(discqw);

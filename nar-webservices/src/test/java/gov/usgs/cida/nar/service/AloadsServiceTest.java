@@ -48,11 +48,11 @@ public class AloadsServiceTest {
 			aloads.setSiteAbb(SITE_ABB);
 			aloads.setSiteQwId(SITE_QW_ID);
 			aloads.setSiteFlowId(SITE_FLOW_ID);
-			aloads.setTonsL95(1.0 * i);
-			aloads.setTons(2.0 * i);
-			aloads.setTonsU95(3.0 * i);
-			aloads.setFwc(1.5 * i);
-			aloads.setYield(2.5 * i);
+			aloads.setTonsL95(""+1.0 * i);
+			aloads.setTons(""+2.0 * i);
+			aloads.setTonsU95(""+3.0 * i);
+			aloads.setFwc(""+1.5 * i);
+			aloads.setYield(""+2.5 * i);
 			aloads.setConstit( i % 2 == 0 ? CONSTIT_1 : CONSTIT_2);
 			aloads.setModtype(INCLUDED_MODTYPE);
 			

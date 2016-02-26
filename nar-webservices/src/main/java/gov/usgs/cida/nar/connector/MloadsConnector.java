@@ -27,9 +27,9 @@ public class MloadsConnector extends MyBatisConnector {
 		mloads.setConstit("");
 		mloads.setModtype("");
 		mloads.setMonth(-1);
-		mloads.setTons(Double.NaN);
-		mloads.setTonsL95(Double.NaN);
-		mloads.setTonsU95(Double.NaN);
+		mloads.setTons("");
+		mloads.setTonsL95("");
+		mloads.setTonsU95("");
 		return NudeUtils.makeColumnGrouping(mloads);
 	}
 }

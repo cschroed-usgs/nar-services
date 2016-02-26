@@ -55,7 +55,7 @@ public class PestSites extends NARData {
 	private double perc13Com;
 	private double perc1OldCom;
 	private int nsamp1New;
-	private int nsamp13;
+	private double nsamp13;
 	private double nsamp1Old;
 	private String ndet2Pname;
 	private double perc2New;
@@ -65,7 +65,7 @@ public class PestSites extends NARData {
 	private double perc23Com;
 	private double perc2OldCom;
 	private int nsamp2New;
-	private int nsamp23;
+	private double nsamp23;
 	private double nsamp2Old;
 	private String ndet3Pname;
 	private double perc3New;
@@ -75,7 +75,7 @@ public class PestSites extends NARData {
 	private double perc33Com;
 	private double perc3OldCom;
 	private int nsamp3New;
-	private int nsamp33;
+	private double nsamp33;
 	private double nsamp3Old;
 	private String ndet4Pname;
 	private double perc4New;
@@ -85,7 +85,7 @@ public class PestSites extends NARData {
 	private double perc43Com;
 	private double perc4OldCom;
 	private int nsamp4New;
-	private int nsamp43;
+	private double nsamp43;
 	private double nsamp4Old;
 	private String ndet5Pname;
 	private double perc5New;
@@ -95,7 +95,7 @@ public class PestSites extends NARData {
 	private double perc53Com;
 	private double perc5OldCom;
 	private int nsamp5New;
-	private int nsamp53;
+	private double nsamp53;
 	private double nsamp5Old;
 	private String ndet6Pname;
 	private double perc6New;
@@ -105,7 +105,7 @@ public class PestSites extends NARData {
 	private double perc63Com;
 	private double perc6OldCom;
 	private int nsamp6New;
-	private int nsamp63;
+	private double nsamp63;
 	private double nsamp6Old;
 	private String ndet7Pname;
 	private double perc7New;
@@ -115,7 +115,7 @@ public class PestSites extends NARData {
 	private double perc73Com;
 	private double perc7OldCom;
 	private int nsamp7New;
-	private int nsamp73;
+	private double nsamp73;
 	private double nsamp7Old;
 	private String ndet8Pname;
 	private double perc8New;
@@ -125,7 +125,7 @@ public class PestSites extends NARData {
 	private double perc83Com;
 	private double perc8OldCom;
 	private int nsamp8New;
-	private int nsamp83;
+	private double nsamp83;
 	private double nsamp8Old;
 	private String ndet9Pname;
 	private double perc9New;
@@ -135,7 +135,7 @@ public class PestSites extends NARData {
 	private double perc93Com;
 	private double perc9OldCom;
 	private int nsamp9New;
-	private int nsamp93;
+	private double nsamp93;
 	private double nsamp9Old;
 	private String ndet10Pname;
 	private double perc10New;
@@ -145,7 +145,7 @@ public class PestSites extends NARData {
 	private double perc103Com;
 	private double perc10OldCom;
 	private int nsamp10New;
-	private int nsamp103;
+	private double nsamp103;
 	private double nsamp10Old;
 	private int npestNew;
 	private int npest3;
@@ -557,7 +557,7 @@ public class PestSites extends NARData {
 		this.nsamp1New = nsamp1New;
 	}
 
-	public int getNsamp13() {
+	public double getNsamp13() {
 		return nsamp13;
 	}
 
@@ -637,7 +637,7 @@ public class PestSites extends NARData {
 		this.nsamp2New = nsamp2New;
 	}
 
-	public int getNsamp23() {
+	public double getNsamp23() {
 		return nsamp23;
 	}
 
@@ -717,7 +717,7 @@ public class PestSites extends NARData {
 		this.nsamp3New = nsamp3New;
 	}
 
-	public int getNsamp33() {
+	public double getNsamp33() {
 		return nsamp33;
 	}
 
@@ -797,7 +797,7 @@ public class PestSites extends NARData {
 		this.nsamp4New = nsamp4New;
 	}
 
-	public int getNsamp43() {
+	public double getNsamp43() {
 		return nsamp43;
 	}
 
@@ -877,7 +877,7 @@ public class PestSites extends NARData {
 		this.nsamp5New = nsamp5New;
 	}
 
-	public int getNsamp53() {
+	public double getNsamp53() {
 		return nsamp53;
 	}
 
@@ -957,7 +957,7 @@ public class PestSites extends NARData {
 		this.nsamp6New = nsamp6New;
 	}
 
-	public int getNsamp63() {
+	public double getNsamp63() {
 		return nsamp63;
 	}
 
@@ -1037,7 +1037,7 @@ public class PestSites extends NARData {
 		this.nsamp7New = nsamp7New;
 	}
 
-	public int getNsamp73() {
+	public double getNsamp73() {
 		return nsamp73;
 	}
 
@@ -1117,7 +1117,7 @@ public class PestSites extends NARData {
 		this.nsamp8New = nsamp8New;
 	}
 
-	public int getNsamp83() {
+	public double getNsamp83() {
 		return nsamp83;
 	}
 
@@ -1197,7 +1197,7 @@ public class PestSites extends NARData {
 		this.nsamp9New = nsamp9New;
 	}
 
-	public int getNsamp93() {
+	public double getNsamp93() {
 		return nsamp93;
 	}
 
@@ -1277,7 +1277,7 @@ public class PestSites extends NARData {
 		this.nsamp10New = nsamp10New;
 	}
 
-	public int getNsamp103() {
+	public double getNsamp103() {
 		return nsamp103;
 	}
 

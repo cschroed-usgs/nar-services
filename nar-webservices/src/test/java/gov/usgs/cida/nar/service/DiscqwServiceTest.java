@@ -50,7 +50,7 @@ public class DiscqwServiceTest {
 			discqw.setSiteFlowId(SITE_FLOW_ID);
 			discqw.setConstit( i % 2 == 0 ? CONSTIT_1 : CONSTIT_2);
 			
-			discqw.setConcentration(i * 7.0);
+			discqw.setConcentration(""+i * 7.0);
 			discqw.setRemark(i % 2 == 0 ? ">" : "");
 			
 			expectedDiscqws.add(discqw);
