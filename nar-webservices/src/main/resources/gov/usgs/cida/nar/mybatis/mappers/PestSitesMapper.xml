@@ -338,8 +338,14 @@
 		ORDER BY site_qw_id, site_flow_id ASC
 	</select>
 
-	<select id="getMostDetectedPesticides" parameterType="String" resultType="String">
-		SELECT HERB_SAMP, NONHERB_SAMP FROM pestsites WHERE site_qw_id =  '#{qwId}'
+
+	<resultMap id="mostCommonPesticides" type="MostCommonPesticides">
+		<result property="herbicide" column="HERB_SAMP" />
+		<result property="nonHerbicide" column="NONHERB_SAMP" />
+	</resultMap>
+
+	<select id="getMostDetectedPesticides" parameterType="map" resultMap="mostCommonPesticides">
+		SELECT HERB_SAMP, NONHERB_SAMP FROM pestsites WHERE site_qw_id = #{siteQwId}
 	</select>
 	
 </mapper>

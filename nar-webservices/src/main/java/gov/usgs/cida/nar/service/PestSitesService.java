@@ -4,6 +4,7 @@ import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.PestSitesDao;
+import gov.usgs.cida.nar.mybatis.model.MostCommonPesticides;
 import gov.usgs.cida.nar.mybatis.model.PestSites;
 import java.util.List;
 
@@ -55,9 +56,9 @@ public class PestSitesService implements NARService<PestSites> {
 	
 	/**
 	 * 
-	 * @return a list of the names of the most-detected pesticides for a site
+	 * @return the most-detected pesticides for a site
 	 */
-	public List<String> getMostDetectedPesticides(String siteQwId) {
+	public MostCommonPesticides getMostDetectedPesticides(String siteQwId) {
 		return dao.getMostDetectedPesticides(siteQwId);
 	}
 

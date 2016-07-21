@@ -18,6 +18,7 @@
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent' alias='WaterYearIntervalWithConstituent'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.DateInterval' alias='DateInterval'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent' alias='DateIntervalWithConstituent'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.mybatis.model.MostCommonPesticides' alias='MostCommonPesticides'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>
@@ -35,6 +36,7 @@
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MflowMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/MloadsMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/PestSitesMapper.xml' />
+		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/PesticideSampleMapper.xml' />
 		<mapper resource='gov/usgs/cida/nar/mybatis/mappers/SharedMapper.xml' />
 	</mappers>
 </configuration>

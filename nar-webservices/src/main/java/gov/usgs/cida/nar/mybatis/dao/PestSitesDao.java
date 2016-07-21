@@ -1,6 +1,6 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
-import gov.usgs.cida.nar.mybatis.model.Aflow;
+import gov.usgs.cida.nar.mybatis.model.MostCommonPesticides;
 import gov.usgs.cida.nar.mybatis.model.PestSites;
 import java.util.HashMap;
 import java.util.List;
@@ -33,17 +33,22 @@ public class PestSitesDao extends BaseDao {
 		return result;
 	}
 
-	public List<String> getMostDetectedPesticides(String siteQwId) {
-		List<String> result = null;
+	public MostCommonPesticides getMostDetectedPesticides(String siteQwId) {
+		List<MostCommonPesticides> queryResult = null;
 		
 		Map<String, Object> params = new HashMap<>(3);
 		params.put(SITE_QW, siteQwId);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-			result = session.selectList(QUERY_PACKAGE + ".PestSitesMapper.getMostDetectedPesticides", params);
+			queryResult = session.selectList(QUERY_PACKAGE + ".PestSitesMapper.getMostDetectedPesticides", params);
 		}
-		
-		return result;
+		if(1 == queryResult.size()) { 
+			return queryResult.get(0);
+		} else if (queryResult.isEmpty()) {
+			return null;
+		} else {
+			throw new RuntimeException("Duplicate records exist for a single site. There should only be one record per site.");
+		}
 	}
 	
 }
