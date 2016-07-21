@@ -337,5 +337,9 @@
 		</where>
 		ORDER BY site_qw_id, site_flow_id ASC
 	</select>
+
+	<select id="getMostDetectedPesticides" parameterType="String" resultType="String">
+		SELECT HERB_SAMP, NONHERB_SAMP FROM pestsites WHERE site_qw_id =  '#{qwId}'
+	</select>
 	
 </mapper>

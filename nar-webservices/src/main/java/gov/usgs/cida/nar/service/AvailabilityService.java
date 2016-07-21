@@ -28,7 +28,8 @@ public class AvailabilityService {
 			new MflowService(),
 			new MloadsService(),
 			new DflowService(),
-			new DiscqwService()
+			new DiscqwService(),
+			new PesticideSampleService()
 		));
 		for (NARService narService : narServices ){
 			LinkedList<String> siteQwIds = new LinkedList<>();

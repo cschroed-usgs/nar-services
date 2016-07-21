@@ -32,5 +32,18 @@ public class PestSitesDao extends BaseDao {
 		
 		return result;
 	}
+
+	public List<String> getMostDetectedPesticides(String siteQwId) {
+		List<String> result = null;
+		
+		Map<String, Object> params = new HashMap<>(3);
+		params.put(SITE_QW, siteQwId);
+		
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+			result = session.selectList(QUERY_PACKAGE + ".PestSitesMapper.getMostDetectedPesticides", params);
+		}
+		
+		return result;
+	}
 	
 }
