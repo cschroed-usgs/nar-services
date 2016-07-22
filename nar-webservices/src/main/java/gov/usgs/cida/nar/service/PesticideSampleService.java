@@ -19,7 +19,7 @@ import org.joda.time.LocalDateTime;
 class PesticideSampleService implements NARService<PestSites> {
 	
 	private PesticideSampleDao dao;
-	private List<String> siteQwId;
+	protected List<String> siteQwId;
 	private String startDate;
 	private String endDate;
 	private final PestSitesService sitesService;
@@ -51,7 +51,7 @@ class PesticideSampleService implements NARService<PestSites> {
 		return TimeSeriesCategory.CONCENTRATION;
 	}
 
-	private String getFullNameForPesticide(PesticideType type, String name){
+	protected String getFullNameForPesticide(PesticideType type, String name){
 		final String PEST_PREFIX = "PESTICIDE";
 		final String DELIM = "/";
 		
@@ -77,6 +77,7 @@ class PesticideSampleService implements NARService<PestSites> {
 		for(Map.Entry<PesticideType, String> pesticide : mostCommonPesticides.entrySet()){
 			PesticideType pesticideType = pesticide.getKey();
 			String pesticideName = pesticide.getValue();
+			
 			//Note that pesticides, in addition to nutrients, 
 			//are considered to be "constituents":
 			//http://water.usgs.gov/nawqa/constituents/pesticides.html
