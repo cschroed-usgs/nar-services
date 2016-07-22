@@ -73,24 +73,23 @@ public class PesticideSampleServiceTest {
 		
 		List<TimeSeriesAvailability> actualAvailability = instance.getAvailability();
 		
-		List<TimeSeriesAvailability> expectedAvailability = Lists.newArrayList(
-			new TimeSeriesAvailability(
-				instance.getTimeSeriesCategory(),
-				instance.getTimeStepDensity(),
-				nonHerbStart,
-				nonHerbEnd,
-				instance.getFullNameForPesticide(PesticideType.NON_HERBICIDE, MOCK_NON_HERBICIDE)
-			),
-			new TimeSeriesAvailability(
-				instance.getTimeSeriesCategory(),
-				instance.getTimeStepDensity(),
-				herbStart,
-				herbEnd,
-				instance.getFullNameForPesticide(PesticideType.HERBICIDE, MOCK_HERBICIDE)
-			)
-		
+		TimeSeriesAvailability nonHerbAvailability = new TimeSeriesAvailability(
+			instance.getTimeSeriesCategory(),
+			instance.getTimeStepDensity(),
+			nonHerbStart,
+			nonHerbEnd,
+			instance.getFullNameForPesticide(PesticideType.NON_HERBICIDE, MOCK_NON_HERBICIDE)
 		);
-		assertEquals(expectedAvailability, actualAvailability);
+		TimeSeriesAvailability herbAvailability = new TimeSeriesAvailability(
+			instance.getTimeSeriesCategory(),
+			instance.getTimeStepDensity(),
+			herbStart,
+			herbEnd,
+			instance.getFullNameForPesticide(PesticideType.HERBICIDE, MOCK_HERBICIDE)
+		);
+		
+		assertTrue("results must contain an herbicide with the correct dates", actualAvailability.contains(herbAvailability));
+		assertTrue("results must contain a non-herbicide with the correct dates", actualAvailability.contains(nonHerbAvailability));
 	}
 
 	/**
