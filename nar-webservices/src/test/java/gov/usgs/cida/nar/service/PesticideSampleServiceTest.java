@@ -1,11 +1,13 @@
 package gov.usgs.cida.nar.service;
 
 import com.google.common.collect.Lists;
-import gov.usgs.cida.nar.domain.PesticideType;
+import gov.usgs.cida.nar.domain.Herbicide;
+import gov.usgs.cida.nar.domain.NonHerbicide;
+import gov.usgs.cida.nar.domain.Pesticide;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.mybatis.dao.PesticideSampleDao;
 import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
-import gov.usgs.cida.nar.mybatis.model.MostCommonPesticides;
+import java.util.ArrayList;
 import java.util.List;
 import org.joda.time.LocalDateTime;
 import org.junit.After;
@@ -14,16 +16,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
 
 public class PesticideSampleServiceTest {
 
 	PesticideSampleService instance;
 	final String MOCK_SITE_ID = "42";
-	final String MOCK_HERBICIDE = "Someherbicideozine";
-	final String MOCK_NON_HERBICIDE = "Somefungicideorinsectocideozine";
-	MostCommonPesticides mcp;
+	final String MOCK_HERBICIDE_NAME = "Someherbicideozine";
+	final String MOCK_NON_HERBICIDE_NAME = "Somefungicideorinsectocideozine";
+	List<Pesticide> mostCommonPesticides;
 	PesticideSampleDao sampleDao;
 	PestSitesService sitesService;
 
@@ -38,7 +40,7 @@ public class PesticideSampleServiceTest {
 	@Before
 	public void setUp() {
 		sampleDao = mock(PesticideSampleDao.class);
-		mcp = new MostCommonPesticides();
+		mostCommonPesticides = new ArrayList<>();
 		sitesService = mock(PestSitesService.class);
 		instance = new PesticideSampleService(sampleDao, sitesService);
 		
@@ -53,10 +55,12 @@ public class PesticideSampleServiceTest {
 	 */
 	@Test
 	public void testGetAvailability() {
-		mcp.setHerbicide(MOCK_HERBICIDE);
-		mcp.setNonHerbicide(MOCK_NON_HERBICIDE);
+		Herbicide mockHerbicide = new Herbicide(MOCK_HERBICIDE_NAME);
+		NonHerbicide mockNonHerbicide = new NonHerbicide(MOCK_NON_HERBICIDE_NAME);
+		mostCommonPesticides.add(mockHerbicide);
+		mostCommonPesticides.add(mockNonHerbicide);
 		
-		when(sitesService.getMostDetectedPesticides(MOCK_SITE_ID)).thenReturn(mcp);
+		when(sitesService.getMostDetectedPesticides(MOCK_SITE_ID)).thenReturn(mostCommonPesticides);
 		instance.setSiteQwId(Lists.newArrayList(MOCK_SITE_ID));
 		
 		LocalDateTime herbStart = new LocalDateTime(1990, 1, 1, 12, 0);
@@ -65,11 +69,11 @@ public class PesticideSampleServiceTest {
 		LocalDateTime nonHerbStart = new LocalDateTime(2000, 1, 1, 12, 0);
 		LocalDateTime nonHerbEnd = new LocalDateTime(2001, 1, 1, 12, 0);
 		
-		DateIntervalWithConstituent herbInterval = new DateIntervalWithConstituent(herbStart.toDate(), herbEnd.toDate(), MOCK_HERBICIDE);
-		when(sampleDao.getAvailability(MOCK_SITE_ID, MOCK_HERBICIDE)).thenReturn(Lists.newArrayList(herbInterval));
+		DateIntervalWithConstituent herbInterval = new DateIntervalWithConstituent(herbStart.toDate(), herbEnd.toDate(), MOCK_HERBICIDE_NAME);
+		when(sampleDao.getAvailability(MOCK_SITE_ID, MOCK_HERBICIDE_NAME)).thenReturn(Lists.newArrayList(herbInterval));
 		
-		DateIntervalWithConstituent nonHerbInterval = new DateIntervalWithConstituent(nonHerbStart.toDate(), nonHerbEnd.toDate(), MOCK_NON_HERBICIDE);
-		when(sampleDao.getAvailability(MOCK_SITE_ID, MOCK_NON_HERBICIDE)).thenReturn(Lists.newArrayList(nonHerbInterval));
+		DateIntervalWithConstituent nonHerbInterval = new DateIntervalWithConstituent(nonHerbStart.toDate(), nonHerbEnd.toDate(), MOCK_NON_HERBICIDE_NAME);
+		when(sampleDao.getAvailability(MOCK_SITE_ID, MOCK_NON_HERBICIDE_NAME)).thenReturn(Lists.newArrayList(nonHerbInterval));
 		
 		List<TimeSeriesAvailability> actualAvailability = instance.getAvailability();
 		
@@ -78,14 +82,14 @@ public class PesticideSampleServiceTest {
 			instance.getTimeStepDensity(),
 			nonHerbStart,
 			nonHerbEnd,
-			instance.getFullNameForPesticide(PesticideType.NON_HERBICIDE, MOCK_NON_HERBICIDE)
+			mockNonHerbicide.getFullName()
 		);
 		TimeSeriesAvailability herbAvailability = new TimeSeriesAvailability(
 			instance.getTimeSeriesCategory(),
 			instance.getTimeStepDensity(),
 			herbStart,
 			herbEnd,
-			instance.getFullNameForPesticide(PesticideType.HERBICIDE, MOCK_HERBICIDE)
+			mockHerbicide.getFullName()
 		);
 		
 		assertTrue("results must contain an herbicide with the correct dates", actualAvailability.contains(herbAvailability));

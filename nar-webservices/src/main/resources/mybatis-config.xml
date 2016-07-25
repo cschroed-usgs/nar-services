@@ -18,7 +18,7 @@
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.WaterYearIntervalWithConstituent' alias='WaterYearIntervalWithConstituent'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.DateInterval' alias='DateInterval'></typeAlias>
 		<typeAlias type='gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent' alias='DateIntervalWithConstituent'></typeAlias>
-		<typeAlias type='gov.usgs.cida.nar.mybatis.model.MostCommonPesticides' alias='MostCommonPesticides'></typeAlias>
+		<typeAlias type='gov.usgs.cida.nar.domain.PesticideBuilder' alias='PesticideBuilder'></typeAlias>
 	</typeAliases>
 	<environments default='container'>
 		<environment id='container'>

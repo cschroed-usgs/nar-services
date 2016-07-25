@@ -339,13 +339,14 @@
 	</select>
 
 
-	<resultMap id="mostCommonPesticides" type="MostCommonPesticides">
-		<result property="herbicide" column="HERB_SAMP" />
-		<result property="nonHerbicide" column="NONHERB_SAMP" />
+	<resultMap id="pesticideBuilder" type="PesticideBuilder">
+		<result property="name" column="name" />
+		<result property="type" column="type"/>
 	</resultMap>
 
-	<select id="getMostDetectedPesticides" parameterType="map" resultMap="mostCommonPesticides">
-		SELECT HERB_SAMP, NONHERB_SAMP FROM pestsites WHERE site_qw_id = #{siteQwId}
+	<select id="getMostDetectedPesticides" parameterType="map" resultMap="pesticideBuilder">
+		SELECT 'HERBICIDE' as type, herb_samp as name FROM pestsites WHERE site_qw_id = #{siteQwId} UNION
+		SELECT 'NON_HERBICIDE' as type, nonherb_samp as name FROM pestsites WHERE site_qw_id = #{siteQwId};
 	</select>
 	
 </mapper>
