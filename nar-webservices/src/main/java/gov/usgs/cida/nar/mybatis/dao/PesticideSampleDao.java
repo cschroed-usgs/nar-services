@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
+import com.google.common.base.Strings;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.CONSTIT;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.QUERY_PACKAGE;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.SITE_QW;
@@ -21,7 +22,7 @@ public class PesticideSampleDao extends BaseDao {
 		//Must put all params in a list to re-use retrieval queries
 		params.put(SITE_QW, Lists.newArrayList(siteQwId));
 		
-		if(null != constituent && 0 != constituent.length()){
+		if(Strings.isNullOrEmpty(constituent)){
 			params.put(CONSTIT, Lists.newArrayList(constituent));
 		}
 		
