@@ -20,14 +20,17 @@ public class PesticideSampleDao extends BaseDao {
 		
 		Map<String, Object> params = new HashMap<>(11);
 		//Must put all params in a list to re-use retrieval queries
-		params.put(SITE_QW, Lists.newArrayList(siteQwId));
+		params.put(SITE_QW, siteQwId);
 		
-		if(Strings.isNullOrEmpty(constituent)){
-			params.put(CONSTIT, Lists.newArrayList(constituent));
+		if(!Strings.isNullOrEmpty(constituent)){
+			params.put(CONSTIT, constituent);
 		}
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			availability = session.selectList(QUERY_PACKAGE + ".PesticideSampleMapper.getAvailability", params);
+		}
+		for(DateIntervalWithConstituent interval : availability) {
+			interval.setConstit(constituent);
 		}
 		return availability;
 	}

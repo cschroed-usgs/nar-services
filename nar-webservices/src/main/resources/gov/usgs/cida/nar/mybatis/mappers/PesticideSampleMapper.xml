@@ -8,19 +8,16 @@
 	<resultMap id="pesticideSampleAvailability" type="DateIntervalWithConstituent">
 		<result property="start" column="startDate"/>
 		<result property="end" column="endDate"/>
-		<result property="constit" column="constit"/>
 	</resultMap>
 	
 	
 
 	<select id="getAvailability" parameterType="map" resultMap="pesticideSampleAvailability">
-		SELECT min(date) AS startDate, max(date) AS endDate, constit FROM
+		SELECT min(date) AS startDate, max(date) AS endDate FROM
 			pestsamp
-		<where>
-			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
-			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn"/>
-		</where>
-		GROUP BY
-			constit
+		WHERE 
+			constit = #{constit}
+			AND
+			site_qw_id = #{siteQwId}
 	</select>
 </mapper>
