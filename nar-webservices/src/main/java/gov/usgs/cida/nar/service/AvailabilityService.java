@@ -1,15 +1,17 @@
 package gov.usgs.cida.nar.service;
 
-import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.mybatis.model.NARData;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import javax.ws.rs.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AvailabilityService {
-
+	private static final Logger log = LoggerFactory.getLogger(AvailabilityService.class);
 	private String siteQwId;
 	private String constit;
 	private List<String> modtypeExcludes;
@@ -28,7 +30,8 @@ public class AvailabilityService {
 			new MflowService(),
 			new MloadsService(),
 			new DflowService(),
-			new DiscqwService()
+			new DiscqwService(),
+			new PesticideSampleService()
 		));
 		for (NARService narService : narServices ){
 			LinkedList<String> siteQwIds = new LinkedList<>();
@@ -42,7 +45,15 @@ public class AvailabilityService {
 			if(narService instanceof IModtypeFilterable){
 				((IModtypeFilterable)narService).setModtypeExcludes(modtypeExcludes);
 			}
-			List<TimeSeriesAvailability> availabilityForOneDataType = narService.getAvailability();
+			
+			List<TimeSeriesAvailability> availabilityForOneDataType = null;
+			try{
+				
+				availabilityForOneDataType = narService.getAvailability();
+			}
+			catch(NotFoundException e){
+				log.warn(e.getMessage());
+			}
 			if(null != availabilityForOneDataType && !availabilityForOneDataType.isEmpty()){
 				overallAvailability.addAll(availabilityForOneDataType);
 			}

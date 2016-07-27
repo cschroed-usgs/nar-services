@@ -337,5 +337,16 @@
 		</where>
 		ORDER BY site_qw_id, site_flow_id ASC
 	</select>
+
+
+	<resultMap id="pesticideBuilder" type="PesticideBuilder">
+		<result property="name" column="name" />
+		<result property="type" column="type"/>
+	</resultMap>
+
+	<select id="getMostDetectedPesticides" parameterType="map" resultMap="pesticideBuilder">
+		SELECT 'HERBICIDE' as type, herb_samp as name FROM pestsites WHERE site_qw_id = #{siteQwId} UNION
+		SELECT 'NON_HERBICIDE' as type, nonherb_samp as name FROM pestsites WHERE site_qw_id = #{siteQwId};
+	</select>
 	
 </mapper>
