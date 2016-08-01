@@ -10,14 +10,23 @@
     <artifactId>nar-geoserver</artifactId>
     <packaging>war</packaging>
     <name>NAWQA Annual Reporting Geoserver</name>
+    <repositories>
+        <repository>
+            <id>opengeo</id>
+            <name>Boundless Maven Repository</name>
+            <url>http://repo.boundlessgeo.com/main/</url>
+        </repository>
+    </repositories>
     <properties>
-        <geoserver.version>2.3.2-3</geoserver.version>
+        <geoserver.group>org.geoserver.web</geoserver.group>
+        <geoserver.artifact>gs-web-app</geoserver.artifact>
+        <geoserver.version>2.6.5</geoserver.version>
     </properties>
     
     <dependencies>
         <dependency>
-            <groupId>gov.usgs.cida.geoserver</groupId>
-            <artifactId>geoserver</artifactId>
+            <groupId>${geoserver.group}</groupId>
+            <artifactId>${geoserver.artifact}</artifactId>
             <version>${geoserver.version}</version>
             <type>war</type>
         </dependency>
@@ -55,8 +64,8 @@
                 <configuration>
                     <overlays>
                         <overlay>
-                            <groupId>gov.usgs.cida.geoserver</groupId>
-                            <artifactId>geoserver</artifactId>
+                            <groupId>${geoserver.group}</groupId>
+                            <artifactId>${geoserver.artifact}</artifactId>
                             <excludes>
                                 <!-- we use WEB-INF/web.xml as source for transform below,
                                      don't allow copy as it will overwrite transformed result -->
@@ -83,7 +92,7 @@
                 <configuration>
                     <transformationSets>
                         <transformationSet>
-                            <dir>target/war/work/gov.usgs.cida.geoserver/geoserver/WEB-INF</dir>
+                            <dir>target/war/work/${geoserver.group}/${geoserver.artifact}/WEB-INF</dir>
                             <includes>
                                 <include>web.xml</include>
                             </includes>

@@ -6,6 +6,9 @@ import java.util.Date;
 public class DateIntervalWithConstituent extends DateInterval {
 	private String constit;
 	
+	public DateIntervalWithConstituent(java.sql.Date start, java.sql.Date end){
+		this(start, end, null);
+	}
 	public DateIntervalWithConstituent(Date start, Date end, String constit) {
 		super(start, end);
 		this.constit = constit;

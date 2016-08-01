@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.Pesticide;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
@@ -12,7 +13,7 @@ import java.util.List;
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
 public class PestSitesService implements NARService<PestSites> {
-
+	private static final String ERROR_MSG = "This operation is not available for pesticide sites, try the pesticide sample API instead";
 	private PestSitesDao dao;
 	private List<String> siteQwId;
 	
@@ -41,16 +42,24 @@ public class PestSitesService implements NARService<PestSites> {
 
 	@Override
 	public TimeStepDensity getTimeStepDensity() {
-		throw new UnsupportedOperationException("getAvailability not available for pesticides");
+		throw new UnsupportedOperationException(ERROR_MSG);
 	}
 	@Override
 	public TimeSeriesCategory getTimeSeriesCategory() {
-		throw new UnsupportedOperationException("getAvailability not available for pesticides");
+		throw new UnsupportedOperationException(ERROR_MSG);
 	}
 
 	@Override
 	public List<TimeSeriesAvailability> getAvailability() {
-		throw new UnsupportedOperationException("getAvailability not available for pesticides");
+		throw new UnsupportedOperationException(ERROR_MSG);
+	}
+	
+	/**
+	 * 
+	 * @return the most-detected pesticides for a site
+	 */
+	public List<Pesticide> getMostDetectedPesticides(String siteQwId) {
+		return dao.getMostDetectedPesticides(siteQwId);
 	}
 
 }

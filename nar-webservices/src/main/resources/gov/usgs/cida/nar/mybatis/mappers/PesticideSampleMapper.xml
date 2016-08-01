@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="gov.usgs.cida.nar.mybatis.mappers.PesticideSampleMapper">
+	
+	<resultMap id="pesticideSampleAvailability" type="DateIntervalWithConstituent">
+		<result property="start" column="startDate"/>
+		<result property="end" column="endDate"/>
+	</resultMap>
+	
+	
+
+	<select id="getAvailability" parameterType="map" resultMap="pesticideSampleAvailability">
+		SELECT min(date) AS startDate, max(date) AS endDate FROM
+			pestsamp
+		WHERE 
+			constit = #{constit}
+			AND
+			site_qw_id = #{siteQwId}
+	</select>
+</mapper>
