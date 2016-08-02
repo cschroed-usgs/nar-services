@@ -15,7 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * This class only pertains to the PestSites information. For Pesticide Sample
+ * information, see PesticideSampleService
  * @author Jordan Walker <jiwalker@usgs.gov>
  */
 @Path("/pesticides")
