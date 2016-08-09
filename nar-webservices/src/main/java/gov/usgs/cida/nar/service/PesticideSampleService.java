@@ -56,7 +56,7 @@ public class PesticideSampleService implements NARService<PesticideSample> {
 
 	@Override
 	public TimeSeriesCategory getTimeSeriesCategory() {
-		return TimeSeriesCategory.CONCENTRATION;
+		return TimeSeriesCategory.PESTICIDE_CONCENTRATION;
 	}
 
 	@Override
