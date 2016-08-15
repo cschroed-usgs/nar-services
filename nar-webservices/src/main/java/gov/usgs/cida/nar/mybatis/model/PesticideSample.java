@@ -1,9 +1,112 @@
 package gov.usgs.cida.nar.mybatis.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 
 public class PesticideSample extends NARData{
+
+	@Override
+	public String toString() {
+		return "PesticideSample{" + "parmCd=" + parmCd + ", concentration=" + concentration + ", remark=" + remark + ", siteQwId=" + siteQwId + ", datetime=" + datetime + ", date=" + date + ", wy=" + wy + ", constit=" + constit + ", acuteFish=" + acuteFish + ", acuteInvert=" + acuteInvert + ", chronicFish=" + chronicFish + ", chronicInvert=" + chronicInvert + ", plant=" + plant + ", planttype=" + planttype + ", hh=" + hh + ", hhChronic=" + hhChronic + ", hhAcute=" + hhAcute + ", lrl=" + lrl + ", methCd=" + methCd + '}';
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 3;
+		hash = 59 * hash + Objects.hashCode(this.parmCd);
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.concentration) ^ (Double.doubleToLongBits(this.concentration) >>> 32));
+		hash = 59 * hash + Objects.hashCode(this.remark);
+		hash = 59 * hash + Objects.hashCode(this.siteQwId);
+		hash = 59 * hash + Objects.hashCode(this.datetime);
+		hash = 59 * hash + Objects.hashCode(this.date);
+		hash = 59 * hash + this.wy;
+		hash = 59 * hash + Objects.hashCode(this.constit);
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.acuteFish) ^ (Double.doubleToLongBits(this.acuteFish) >>> 32));
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.acuteInvert) ^ (Double.doubleToLongBits(this.acuteInvert) >>> 32));
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.chronicFish) ^ (Double.doubleToLongBits(this.chronicFish) >>> 32));
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.chronicInvert) ^ (Double.doubleToLongBits(this.chronicInvert) >>> 32));
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.plant) ^ (Double.doubleToLongBits(this.plant) >>> 32));
+		hash = 59 * hash + Objects.hashCode(this.planttype);
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.hh) ^ (Double.doubleToLongBits(this.hh) >>> 32));
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.hhChronic) ^ (Double.doubleToLongBits(this.hhChronic) >>> 32));
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.hhAcute) ^ (Double.doubleToLongBits(this.hhAcute) >>> 32));
+		hash = 59 * hash + (int) (Double.doubleToLongBits(this.lrl) ^ (Double.doubleToLongBits(this.lrl) >>> 32));
+		hash = 59 * hash + Objects.hashCode(this.methCd);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final PesticideSample other = (PesticideSample) obj;
+		if (Double.doubleToLongBits(this.concentration) != Double.doubleToLongBits(other.concentration)) {
+			return false;
+		}
+		if (this.wy != other.wy) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.acuteFish) != Double.doubleToLongBits(other.acuteFish)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.acuteInvert) != Double.doubleToLongBits(other.acuteInvert)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.chronicFish) != Double.doubleToLongBits(other.chronicFish)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.chronicInvert) != Double.doubleToLongBits(other.chronicInvert)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.plant) != Double.doubleToLongBits(other.plant)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.hh) != Double.doubleToLongBits(other.hh)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.hhChronic) != Double.doubleToLongBits(other.hhChronic)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.hhAcute) != Double.doubleToLongBits(other.hhAcute)) {
+			return false;
+		}
+		if (Double.doubleToLongBits(this.lrl) != Double.doubleToLongBits(other.lrl)) {
+			return false;
+		}
+		if (!Objects.equals(this.parmCd, other.parmCd)) {
+			return false;
+		}
+		if (!Objects.equals(this.remark, other.remark)) {
+			return false;
+		}
+		if (!Objects.equals(this.siteQwId, other.siteQwId)) {
+			return false;
+		}
+		if (!Objects.equals(this.datetime, other.datetime)) {
+			return false;
+		}
+		if (!Objects.equals(this.constit, other.constit)) {
+			return false;
+		}
+		if (!Objects.equals(this.planttype, other.planttype)) {
+			return false;
+		}
+		if (!Objects.equals(this.methCd, other.methCd)) {
+			return false;
+		}
+		if (!Objects.equals(this.date, other.date)) {
+			return false;
+		}
+		return true;
+	}
 	private String parmCd;
 	private double concentration;
 	private String remark;
