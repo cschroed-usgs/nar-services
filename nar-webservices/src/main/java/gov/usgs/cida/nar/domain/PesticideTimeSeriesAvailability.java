@@ -17,6 +17,7 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 		this.comparisonCategory = comparisonCategory;
 		this.comparisonOrder = comparisonOrder;
 		
+		
 	}
 	@Override
 	public int hashCode(){

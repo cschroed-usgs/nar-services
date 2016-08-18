@@ -1,6 +1,7 @@
 package gov.usgs.cida.nar.service;
 
 import gov.usgs.cida.nar.domain.Pesticide;
+import gov.usgs.cida.nar.domain.PesticideTimeSeriesAvailability;
 import gov.usgs.cida.nar.mybatis.dao.PesticideSampleDao;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
