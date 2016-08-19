@@ -5,6 +5,62 @@
  
 <mapper namespace="gov.usgs.cida.nar.mybatis.mappers.PesticideSampleMapper">
 	
+	<resultMap id="pesticideSample" type="PesticideSample">	
+		<result property="parmCd" column="parm_cd" />
+		<result property="concentration" column="concentration" />
+		<result property="remark" column="remark" />
+		<result property="siteQwId" column="site_qw_id" />
+		<result property="datetime" column="datetime" />
+		<result property="date" column="date" />
+		<result property="wy" column="wy" />
+		<result property="constit" column="constit" />
+		<result property="acuteFish" column="acute_fish" />
+		<result property="acuteInvert" column="acute_invert" />
+		<result property="chronicFish" column="chronic_fish" />
+		<result property="chronicInvert" column="chronic_invert" />
+		<result property="plant" column="plant" />
+		<result property="planttype" column="planttype" />
+		<result property="hh" column="hh" />
+		<result property="hhChronic" column="hh_chronic" />
+		<result property="hhAcute" column="hh_acute" />
+		<result property="lrl" column="lrl" />
+		<result property="methCd" column="meth_cd" />
+	</resultMap>
+	
+	<sql id="columns">
+		parm_cd,
+		concentration,
+		remark,
+		site_qw_id,
+		datetime,
+		date,
+		wy,
+		constit,
+		acute_fish,
+		acute_invert,
+		chronic_fish,
+		chronic_invert,
+		plant,
+		planttype,
+		hh,
+		hh_chronic,
+		hh_acute,
+		lrl,
+		meth_cd
+	</sql>
+	
+	<select id="getPesticideSample" parameterType="map" resultMap="pesticideSample">
+		SELECT
+			<include refid="columns"/>
+		FROM
+			pestsamp
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.constitIn" />
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.dateWithin" />
+		</where>
+	</select>
+	
 	<resultMap id="pesticideSampleAvailability" type="DateIntervalWithConstituent">
 		<result property="start" column="startDate"/>
 		<result property="end" column="endDate"/>

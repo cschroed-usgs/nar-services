@@ -7,12 +7,14 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public abstract class Pesticide {
 	
 	protected static final String PREFIX = "PESTICIDE";
-	protected static final String DELIM = "/";
+	protected static final String DELIM = "|";
 	abstract public String getType();
 	abstract public String getName();
 	
 	public final String getFullName(){
-		return PREFIX + DELIM + getType() + DELIM + getName();
+		//yes, intentionally leave a trailing delim so that the client
+		//can use the rightmost pipe to locate the end of pesticide info
+		return PREFIX + DELIM + getType() + DELIM + getName() + DELIM;
 	}
 	
 	@Override

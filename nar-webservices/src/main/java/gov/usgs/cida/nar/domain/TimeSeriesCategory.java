@@ -7,5 +7,6 @@ public enum TimeSeriesCategory {
 	//Adjust this tight coupling with care.
 	FLOW,
 	LOAD,
-	CONCENTRATION,
+	CONCENTRATION, //used for nutrients and suspended sediment
+	PESTICIDE_CONCENTRATION // used for pesticides only
 }

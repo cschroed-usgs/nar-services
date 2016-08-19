@@ -6,7 +6,9 @@ import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
-import gov.usgs.cida.nar.mybatis.model.PestSites;
+import gov.usgs.cida.nar.mybatis.model.PesticideSample;
+import gov.usgs.cida.nar.util.DateUtil;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.NotFoundException;
@@ -14,13 +16,14 @@ import org.joda.time.LocalDateTime;
 
 
 
-class PesticideSampleService implements NARService<PestSites> {
+public class PesticideSampleService implements NARService<PesticideSample> {
 	
 	private PesticideSampleDao dao;
 	protected List<String> siteQwId;
 	private String startDate;
 	private String endDate;
 	private final PestSitesService sitesService;
+	private List<String> constit;
 	
 	public PesticideSampleService() {
 		this(new PesticideSampleDao(), new PestSitesService());
@@ -34,11 +37,18 @@ class PesticideSampleService implements NARService<PestSites> {
 		this.endDate = null;
 	}
 	
+		
 	@Override
-	public List<? extends PestSites> request() {
-		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	public List<PesticideSample> request() {
+		return request(siteQwId, constit, startDate, endDate);
 	}
 
+	public List<PesticideSample> request(List<String> siteQwId, List<String> constit, String startDateStr, String endDateStr) {
+		Date startDateSql = DateUtil.getSqlDate(startDateStr);
+		Date endDateSql = DateUtil.getSqlDate(endDateStr);
+		return dao.getPesticideSample(siteQwId, constit, startDateSql, endDateSql);
+	}
+	
 	@Override
 	public TimeStepDensity getTimeStepDensity() {
 		return TimeStepDensity.DISCRETE;
@@ -46,7 +56,7 @@ class PesticideSampleService implements NARService<PestSites> {
 
 	@Override
 	public TimeSeriesCategory getTimeSeriesCategory() {
-		return TimeSeriesCategory.CONCENTRATION;
+		return TimeSeriesCategory.PESTICIDE_CONCENTRATION;
 	}
 
 	@Override
@@ -89,6 +99,48 @@ class PesticideSampleService implements NARService<PestSites> {
 	@Override
 	public void setSiteQwId(List<String> siteQwId) {
 		this.siteQwId = siteQwId;
+	}
+
+	/**
+	 * @return the startDate
+	 */
+	public String getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * @return the endDate
+	 */
+	public String getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	/**
+	 * @return the constit
+	 */
+	public List<String> getConstit() {
+		return constit;
+	}
+
+	/**
+	 * @param constit the constit to set
+	 */
+	public void setConstit(List<String> constit) {
+		this.constit = constit;
 	}
 
 }
