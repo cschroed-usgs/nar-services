@@ -1,4 +1,4 @@
-package gov.usgs.cida.nar.domain;
+package gov.usgs.cida.nar.domain.constituent;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

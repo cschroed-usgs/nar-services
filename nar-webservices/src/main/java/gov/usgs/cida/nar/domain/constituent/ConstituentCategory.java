@@ -1,4 +1,4 @@
-package gov.usgs.cida.nar.domain;
+package gov.usgs.cida.nar.domain.constituent;
 
 
 public enum ConstituentCategory {
