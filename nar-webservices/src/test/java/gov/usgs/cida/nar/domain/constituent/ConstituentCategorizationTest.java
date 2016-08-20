@@ -10,9 +10,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class ConstituentTest {
+public class ConstituentCategorizationTest {
 
-	public ConstituentTest() {
+	public ConstituentCategorizationTest() {
 	}
 
 	@BeforeClass
@@ -34,13 +34,13 @@ public class ConstituentTest {
 	@Test
 	public void testBeanNess() {
 		BeanTester beanTester = new BeanTester();
-		beanTester.testBean(Constituent.class);
+		beanTester.testBean(ConstituentCategorization.class);
 	}
 
 	@Test
 	public void testMAP(){
 		for(ConstituentSubcategory subcategory: ConstituentSubcategory.values()){
-			assertNotNull(Constituent.MAP.get(subcategory));
+			assertNotNull(ConstituentCategorization.MAP.get(subcategory));
 		}
 	}
 	
@@ -52,10 +52,10 @@ public class ConstituentTest {
 		invalidCategoriesForSubcategories.removeAll(validCategoriesForSubcategories);
 		for(ConstituentSubcategory subcategory : validSubcategories){
 			for(ConstituentCategory validCategory : validCategoriesForSubcategories){
-				assertTrue( subcategory + " should be a valid subcategory of " + validCategory, Constituent.isValidSubcategoryOfCategory(subcategory, validCategory));
+				assertTrue( subcategory + " should be a valid subcategory of " + validCategory, ConstituentCategorization.isValidSubcategoryOfCategory(subcategory, validCategory));
 			}
 			for(ConstituentCategory invalidCategory : invalidCategoriesForSubcategories){
-				assertFalse( subcategory + " should be an ivalid subcategory of " + invalidCategory, Constituent.isValidSubcategoryOfCategory(subcategory, invalidCategory));
+				assertFalse( subcategory + " should be an ivalid subcategory of " + invalidCategory, ConstituentCategorization.isValidSubcategoryOfCategory(subcategory, invalidCategory));
 			}
 		}
 	}

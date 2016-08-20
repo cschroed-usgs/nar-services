@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.domain;
 
+import gov.usgs.cida.nar.domain.constituent.ConstituentCategorization;
+import java.util.Objects;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.LocalDateTime;
 
@@ -8,15 +10,16 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 	private AggregationType aggregationType; //none (if real measurement), time-weighted, moving average
 	private ComparisonCategory comparisonCategory; //human health, aquatic life
 	private int comparisonOrder; //1-based index. 1 for closest to benchmark, 2 for 2nd-closest to bencmark, etc.
+	private ConstituentCategorization constituentCategorization;
 	
 	public PesticideTimeSeriesAvailability(){}
 	
-	public PesticideTimeSeriesAvailability(TimeSeriesCategory timeSeriesCategory, TimeStepDensity timeStepDensity, LocalDateTime startTime, LocalDateTime endTime, String constit, AggregationType aggregationType, ComparisonCategory comparisonCategory, int comparisonOrder){
+	public PesticideTimeSeriesAvailability(TimeSeriesCategory timeSeriesCategory, TimeStepDensity timeStepDensity, LocalDateTime startTime, LocalDateTime endTime, String constit, AggregationType aggregationType, ComparisonCategory comparisonCategory, int comparisonOrder, ConstituentCategorization constituentCategorization){
 		super(timeSeriesCategory, timeStepDensity, startTime, endTime, constit);
 		this.aggregationType = aggregationType;
 		this.comparisonCategory = comparisonCategory;
 		this.comparisonOrder = comparisonOrder;
-		
+		this.constituentCategorization = constituentCategorization;
 		
 	}
 	@Override
@@ -26,6 +29,7 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 		hcb.append(getAggregationType())
 			.append(getComparisonCategory())
 			.append(getComparisonOrder())
+			.append(getConstituentCategorization())
 			.appendSuper(super.hashCode());
 		
 		return hcb.toHashCode();
@@ -52,12 +56,15 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 		if (this.getComparisonCategory() != other.getComparisonCategory()) {
 			return false;
 		}
+		if (!Objects.equals(this.getConstituentCategorization(), other.getConstituentCategorization())) {
+			return false;
+		}
 		return super.equals(obj);
 	}
 
 	@Override
 	public String toString() {
-		return "PesticideTimeSeriesAvailability{" + "aggregationType=" + getAggregationType() + ", comparisonCategory=" + getComparisonCategory() + ", comparisonOrder=" + getComparisonOrder() + 
+		return "PesticideTimeSeriesAvailability{" + "aggregationType=" + getAggregationType() + ", comparisonCategory=" + getComparisonCategory() + ", comparisonOrder=" + getComparisonOrder() + ", constituentCategorization=" + getConstituentCategorization() +
 			super.toString() +
 			'}';
 	}
@@ -102,5 +109,19 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 	 */
 	public void setComparisonOrder(int comparisonOrder) {
 		this.comparisonOrder = comparisonOrder;
+	}
+
+	/**
+	 * @return the constituentCategorization
+	 */
+	public ConstituentCategorization getConstituentCategorization() {
+		return constituentCategorization;
+	}
+
+	/**
+	 * @param constituentCategorization the constituentCategorization to set
+	 */
+	public void setConstituentCategorization(ConstituentCategorization constituentCategorization) {
+		this.constituentCategorization = constituentCategorization;
 	}
 }

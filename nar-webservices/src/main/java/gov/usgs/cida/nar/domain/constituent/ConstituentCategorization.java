@@ -6,8 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-public class Constituent {
-	protected String name;
+public class ConstituentCategorization {
 	protected ConstituentCategory category;
 	protected ConstituentSubcategory subcategory;
 
@@ -21,12 +20,11 @@ public class Constituent {
 		
 	}
 	
-	public Constituent(){}
+	public ConstituentCategorization(){}
 	
-	public Constituent(ConstituentCategory category, ConstituentSubcategory subcategory, String name){
+	public ConstituentCategorization(ConstituentCategory category, ConstituentSubcategory subcategory){
 		this.category = category;
 		this.subcategory = subcategory;
-		this.name = name;
 	}
 	/**
 	 * 
@@ -41,19 +39,6 @@ public class Constituent {
 		} else {
 			return parentCategories.contains(category);
 		}
-	}
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**
@@ -96,7 +81,6 @@ public class Constituent {
 	@Override
 	public int hashCode() {
 		int hash = 7;
-		hash = 53 * hash + Objects.hashCode(this.name);
 		hash = 53 * hash + Objects.hashCode(this.category);
 		hash = 53 * hash + Objects.hashCode(this.subcategory);
 		return hash;
@@ -104,7 +88,7 @@ public class Constituent {
 
 	@Override
 	public String toString() {
-		return "Constituent{" + "name=" + name + ", category=" + category + ", subcategory=" + subcategory + '}';
+		return "ConstituentCategorization{" + "category=" + category + ", subcategory=" + subcategory + '}';
 	}
 
 	@Override
@@ -118,10 +102,7 @@ public class Constituent {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		final Constituent other = (Constituent) obj;
-		if (!Objects.equals(this.name, other.name)) {
-			return false;
-		}
+		final ConstituentCategorization other = (ConstituentCategorization) obj;
 		if (this.category != other.category) {
 			return false;
 		}

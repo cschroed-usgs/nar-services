@@ -1,10 +1,16 @@
 package gov.usgs.cida.nar.service;
 
 import com.google.common.collect.Lists;
+import gov.usgs.cida.nar.domain.AggregationType;
+import gov.usgs.cida.nar.domain.ComparisonCategory;
 import gov.usgs.cida.nar.domain.Herbicide;
 import gov.usgs.cida.nar.domain.NonHerbicide;
 import gov.usgs.cida.nar.domain.Pesticide;
+import gov.usgs.cida.nar.domain.PesticideTimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
+import gov.usgs.cida.nar.domain.constituent.ConstituentCategorization;
+import gov.usgs.cida.nar.domain.constituent.ConstituentCategory;
+import gov.usgs.cida.nar.domain.constituent.ConstituentSubcategory;
 import gov.usgs.cida.nar.mybatis.dao.PesticideSampleDao;
 import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
 import java.util.ArrayList;
@@ -54,7 +60,7 @@ public class PesticideSampleServiceTest {
 	 * Test of getAvailability method, of class PesticideSampleService.
 	 */
 	@Test
-	public void testGetAvailability() {
+	public void testGetMostFrequentlyDetectedAvailability() {
 		Herbicide mockHerbicide = new Herbicide(MOCK_HERBICIDE_NAME);
 		NonHerbicide mockNonHerbicide = new NonHerbicide(MOCK_NON_HERBICIDE_NAME);
 		mostCommonPesticides.add(mockHerbicide);
@@ -75,21 +81,29 @@ public class PesticideSampleServiceTest {
 		DateIntervalWithConstituent nonHerbInterval = new DateIntervalWithConstituent(nonHerbStart.toDate(), nonHerbEnd.toDate(), MOCK_NON_HERBICIDE_NAME);
 		when(sampleDao.getAvailability(MOCK_SITE_ID, MOCK_NON_HERBICIDE_NAME)).thenReturn(Lists.newArrayList(nonHerbInterval));
 		
-		List<TimeSeriesAvailability> actualAvailability = instance.getAvailability();
+		List<TimeSeriesAvailability> actualAvailability = instance.getMostFrequentlyDetectedAvailability();
 		
-		TimeSeriesAvailability nonHerbAvailability = new TimeSeriesAvailability(
+		PesticideTimeSeriesAvailability nonHerbAvailability = new PesticideTimeSeriesAvailability(
 			instance.getTimeSeriesCategory(),
 			instance.getTimeStepDensity(),
 			nonHerbStart,
 			nonHerbEnd,
-			mockNonHerbicide.getFullName()
+			mockNonHerbicide.getName(),
+			AggregationType.NONE,
+			ComparisonCategory.ABSOLUTE,
+			1,
+			new ConstituentCategorization(ConstituentCategory.PESTICIDE, ConstituentSubcategory.NON_HERBICIDE)
 		);
-		TimeSeriesAvailability herbAvailability = new TimeSeriesAvailability(
+		PesticideTimeSeriesAvailability herbAvailability = new PesticideTimeSeriesAvailability(
 			instance.getTimeSeriesCategory(),
 			instance.getTimeStepDensity(),
 			herbStart,
 			herbEnd,
-			mockHerbicide.getFullName()
+			mockHerbicide.getName(),
+			AggregationType.NONE,
+			ComparisonCategory.ABSOLUTE,
+			1,
+			new ConstituentCategorization(ConstituentCategory.PESTICIDE, ConstituentSubcategory.HERBICIDE)
 		);
 		
 		assertTrue("results must contain an herbicide with the correct dates", actualAvailability.contains(herbAvailability));

@@ -1,11 +1,18 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.AggregationType;
+import gov.usgs.cida.nar.domain.ComparisonCategory;
+import gov.usgs.cida.nar.domain.Herbicide;
+import gov.usgs.cida.nar.domain.NonHerbicide;
 import gov.usgs.cida.nar.domain.Pesticide;
 import gov.usgs.cida.nar.domain.PesticideTimeSeriesAvailability;
 import gov.usgs.cida.nar.mybatis.dao.PesticideSampleDao;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
 import gov.usgs.cida.nar.domain.TimeStepDensity;
+import gov.usgs.cida.nar.domain.constituent.ConstituentCategorization;
+import gov.usgs.cida.nar.domain.constituent.ConstituentCategory;
+import gov.usgs.cida.nar.domain.constituent.ConstituentSubcategory;
 import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
 import gov.usgs.cida.nar.mybatis.model.PestSites;
 import java.util.ArrayList;
@@ -49,12 +56,16 @@ class PesticideSampleService implements NARService<PestSites> {
 	public TimeSeriesCategory getTimeSeriesCategory() {
 		return TimeSeriesCategory.CONCENTRATION;
 	}
-
+	
 	@Override
 	/**
 	 * @throws javax.ws.rs.NotFoundException if pesticide information is unavailable for the site
 	 */
 	public List<TimeSeriesAvailability> getAvailability() {
+		return getMostFrequentlyDetectedAvailability();
+	}
+	
+	public List<TimeSeriesAvailability> getMostFrequentlyDetectedAvailability(){
 		String siteQw = siteQwId.get(0);
 		List<Pesticide> pests = sitesService.getMostDetectedPesticides(siteQw);
 		
@@ -63,7 +74,18 @@ class PesticideSampleService implements NARService<PestSites> {
 		}
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
 		for(Pesticide pesticide : pests){
-			
+			ConstituentSubcategory constituentSubcategory = null;
+			switch(pesticide.getType()){
+				case Herbicide.TYPE:
+					constituentSubcategory = ConstituentSubcategory.HERBICIDE;
+					break;
+				case NonHerbicide.TYPE:
+					constituentSubcategory = ConstituentSubcategory.NON_HERBICIDE;
+					break;
+				default:
+					throw new IllegalArgumentException(pesticide.getType()+ " is not a valid pesticide type");
+			}
+					
 			//Note that pesticides, in addition to nutrients, 
 			//are considered to be "constituents":
 			//http://water.usgs.gov/nawqa/constituents/pesticides.html
@@ -73,12 +95,16 @@ class PesticideSampleService implements NARService<PestSites> {
 				for (DateIntervalWithConstituent dateIntervalWithConstit : dateIntervalsWithConstits) {
 					LocalDateTime start = new LocalDateTime(dateIntervalWithConstit.getStart());
 					LocalDateTime end = new LocalDateTime(dateIntervalWithConstit.getEnd());
-					TimeSeriesAvailability tsa = new TimeSeriesAvailability(
+					PesticideTimeSeriesAvailability tsa = new PesticideTimeSeriesAvailability(
 						this.getTimeSeriesCategory(),
 						this.getTimeStepDensity(),
 						start,
 						end,
-						pesticide.getFullName()
+						dateIntervalWithConstit.getConstit(),
+						AggregationType.NONE,
+						ComparisonCategory.ABSOLUTE,
+						1,
+						new ConstituentCategorization(ConstituentCategory.PESTICIDE, constituentSubcategory)
 					);
 					availability.add(tsa);
 				}
