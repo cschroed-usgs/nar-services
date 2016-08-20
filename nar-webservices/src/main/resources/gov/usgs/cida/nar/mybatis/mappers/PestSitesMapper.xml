@@ -349,4 +349,11 @@
 		SELECT 'NON_HERBICIDE' as type, nonherb_samp as name FROM pestsites WHERE site_qw_id = #{siteQwId};
 	</select>
 	
+	<select id="getPesticidesCloseToBenchmarks" parameterType="map" resultMap="hashmap">
+		SELECT aq1, aq2, aq3, hh1, hh2, hh3 FROM pestsites
+		<where>
+			<include refid="gov.usgs.cida.nar.mybatis.mappers.SharedMapper.siteQwIdIn" />
+		</where>
+	</select>
+	
 </mapper>

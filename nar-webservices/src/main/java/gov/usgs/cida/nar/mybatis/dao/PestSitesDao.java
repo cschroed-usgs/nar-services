@@ -17,6 +17,7 @@ import static gov.usgs.cida.nar.mybatis.dao.BaseDao.SITE_QW;
 import java.util.ArrayList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
  *
@@ -25,6 +26,10 @@ import org.apache.commons.lang3.tuple.Pair;
 public class PestSitesDao extends BaseDao {
 
 	private static final Logger log = LoggerFactory.getLogger(PestSitesDao.class);
+	
+	public PestSitesDao(SqlSessionFactory factory){
+		super(factory);
+	}
 	
 	public List<PestSites> getPestSites(List<String> siteQwId) {
 		List<PestSites> result = null;
@@ -61,22 +66,58 @@ public class PestSitesDao extends BaseDao {
 		return pesticides;
 	}
 
+	protected ComparisonCategorization getComparisonCategorizationForColumnName(String columnName){
+		log.debug("Attempting to map column name '" + columnName + "' to a reasonable ComparisonCategorization");
+		ComparisonCategorization result = null;
+		String strComparisonCategory = columnName.substring(0, 2).toUpperCase();
+		String strComparisonOrder = columnName.substring(2);
+		ComparisonCategory category = null;
+		switch(strComparisonCategory){
+			case "AQ":
+				category = ComparisonCategory.AQUATIC_LIFE;
+				break;
+			case "HH":
+				category = ComparisonCategory.HUMAN_HEALTH;
+				break;
+			default:
+				throw new IllegalArgumentException("Could not map the substring '" + strComparisonCategory + "' of the string '" + columnName + "' to a value of " + ComparisonCategory.class.getSimpleName());
+		}
+		
+		int order;
+		try{
+			order = Integer.parseInt(strComparisonOrder);
+		} catch(NumberFormatException e){
+			throw new IllegalArgumentException("Could not map the substring '" + strComparisonOrder + "' of the string '" + columnName + "' to a valid integer");
+		}
+		result = new ComparisonCategorization(category, order);
+		return result;
+	}
 	/**
 	 * 
 	 * @param siteQwId a list of site id
-	 * @return a Map of String constituent names to a Pair, whose left 
-	 * element is a ComparisonCategory, and right element is a comparison order
+	 * @return a Map of String constituent names to a comparison Categorization
 	 */
 	public Map<String, ComparisonCategorization> getPesticidesCloseToBenchmarks(List<String> siteQwId) {
-		Map<String, ComparisonCategorization> result= new HashMap<>();
-		
+		Map<String, ComparisonCategorization> methodResult= new HashMap<>();
+		Map<String, String> queryResult;//column name to name of pesticide
 		Map<String, Object> params = new HashMap<>(3);
 		params.put(SITE_QW, siteQwId);
 		
+		log.debug("querying db for pesticides close to benchmarks for site '" + siteQwId + "'.");
+		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-//			pestBuilders = session.selectList(QUERY_PACKAGE + ".PestSitesMapper.getMostDetectedPesticides", params);
+			queryResult = session.selectOne(QUERY_PACKAGE + ".PestSitesMapper.getPesticidesCloseToBenchmarks", params);
 		}
-		return null;
+		
+		log.debug("processing db query results for pesticides close to benchmarks for site '" + siteQwId + "'.");
+		
+		for(Map.Entry<String, String> entry : queryResult.entrySet()){
+			String columnName = entry.getKey();
+			String pesticide = entry.getValue();
+			ComparisonCategorization comparisonCategorization = getComparisonCategorizationForColumnName(columnName);
+			methodResult.put(pesticide, comparisonCategorization);
+		}
+		return methodResult;
 		
 	}
 	
