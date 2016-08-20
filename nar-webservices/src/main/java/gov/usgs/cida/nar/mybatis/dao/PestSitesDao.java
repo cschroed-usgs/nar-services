@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
+import gov.usgs.cida.nar.domain.ComparisonCategorization;
+import gov.usgs.cida.nar.domain.ComparisonCategory;
 import gov.usgs.cida.nar.domain.Pesticide;
 import gov.usgs.cida.nar.domain.PesticideBuilder;
 import gov.usgs.cida.nar.mybatis.model.PestSites;
@@ -13,6 +15,8 @@ import org.slf4j.LoggerFactory;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.QUERY_PACKAGE;
 import static gov.usgs.cida.nar.mybatis.dao.BaseDao.SITE_QW;
 import java.util.ArrayList;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -35,14 +39,14 @@ public class PestSitesDao extends BaseDao {
 		return result;
 	}
 
-	public List<Pesticide> getMostDetectedPesticides(String siteQwId) {
+	public List<Pesticide> getMostFrequentlyDetectedPesticides(String siteQwId) {
 		List<PesticideBuilder> pestBuilders = null;
 		List<Pesticide> pesticides = new ArrayList<>();
 		Map<String, Object> params = new HashMap<>(3);
 		params.put(SITE_QW, siteQwId);
 		
 		try (SqlSession session = sqlSessionFactory.openSession()) {
-			pestBuilders = session.selectList(QUERY_PACKAGE + ".PestSitesMapper.getMostDetectedPesticides", params);
+			pestBuilders = session.selectList(QUERY_PACKAGE + ".PestSitesMapper.getMostFrequentlyDetectedPesticides", params);
 		}
 		if(null == pestBuilders || pestBuilders.isEmpty()){
 			//return empty list
@@ -55,6 +59,25 @@ public class PestSitesDao extends BaseDao {
 			throw new RuntimeException("Duplicate records exist for a single site. There should only be one record per site.");
 		}
 		return pesticides;
+	}
+
+	/**
+	 * 
+	 * @param siteQwId a list of site id
+	 * @return a Map of String constituent names to a Pair, whose left 
+	 * element is a ComparisonCategory, and right element is a comparison order
+	 */
+	public Map<String, ComparisonCategorization> getPesticidesCloseToBenchmarks(List<String> siteQwId) {
+		Map<String, ComparisonCategorization> result= new HashMap<>();
+		
+		Map<String, Object> params = new HashMap<>(3);
+		params.put(SITE_QW, siteQwId);
+		
+		try (SqlSession session = sqlSessionFactory.openSession()) {
+//			pestBuilders = session.selectList(QUERY_PACKAGE + ".PestSitesMapper.getMostDetectedPesticides", params);
+		}
+		return null;
+		
 	}
 	
 }

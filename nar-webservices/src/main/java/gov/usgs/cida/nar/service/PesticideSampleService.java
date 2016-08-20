@@ -1,6 +1,7 @@
 package gov.usgs.cida.nar.service;
 
 import gov.usgs.cida.nar.domain.AggregationType;
+import gov.usgs.cida.nar.domain.ComparisonCategorization;
 import gov.usgs.cida.nar.domain.ComparisonCategory;
 import gov.usgs.cida.nar.domain.Herbicide;
 import gov.usgs.cida.nar.domain.NonHerbicide;
@@ -16,7 +17,9 @@ import gov.usgs.cida.nar.domain.constituent.ConstituentSubcategory;
 import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
 import gov.usgs.cida.nar.mybatis.model.PestSites;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.ws.rs.NotFoundException;
 import org.joda.time.LocalDateTime;
 
@@ -65,9 +68,43 @@ class PesticideSampleService implements NARService<PestSites> {
 		return getMostFrequentlyDetectedAvailability();
 	}
 	
+	
+	public List<TimeSeriesAvailability> getAvailabilityOfPesticidesCloseToBenchmarks(){
+				String siteQw = siteQwId.get(0);
+		Map<String, ComparisonCategorization> pests = sitesService.getPesticidesCloseToBenchmarks(siteQw);
+		
+		if (null == pests || pests.isEmpty()){
+			throw new NotFoundException("Could not determine the availability of pesticides close to benchmarks at site '" + siteQw +"'.");
+		}
+		List<TimeSeriesAvailability> availability = new ArrayList<>();
+		for (Map.Entry<String, ComparisonCategorization> entry : pests.entrySet()) {
+			String constit = entry.getKey();
+			ComparisonCategorization comparisonCategorization = entry.getValue();
+			List<DateIntervalWithConstituent> dateIntervalsWithConstits = this.dao.getAvailability(siteQw, constit);
+			if (null != dateIntervalsWithConstits && !dateIntervalsWithConstits.isEmpty()) {
+				for (DateIntervalWithConstituent dateIntervalWithConstit : dateIntervalsWithConstits) {
+					LocalDateTime start = new LocalDateTime(dateIntervalWithConstit.getStart());
+					LocalDateTime end = new LocalDateTime(dateIntervalWithConstit.getEnd());
+					PesticideTimeSeriesAvailability tsa = new PesticideTimeSeriesAvailability(
+						this.getTimeSeriesCategory(),
+						this.getTimeStepDensity(),
+						start,
+						end,
+						dateIntervalWithConstit.getConstit(),
+						AggregationType.NONE,
+						comparisonCategorization,
+						new ConstituentCategorization(ConstituentCategory.PESTICIDE, null)//subcategory is unimportant here
+					);
+					availability.add(tsa);
+				}
+			}
+		}
+		return availability;
+	}
+	
 	public List<TimeSeriesAvailability> getMostFrequentlyDetectedAvailability(){
 		String siteQw = siteQwId.get(0);
-		List<Pesticide> pests = sitesService.getMostDetectedPesticides(siteQw);
+		List<Pesticide> pests = sitesService.getMostFrequentlyDetectedPesticides(siteQw);
 		
 		if (null == pests || pests.isEmpty()){
 			throw new NotFoundException("Could not determine the most frequently-detected pesticides for site '" + siteQw +"'.");
@@ -102,8 +139,7 @@ class PesticideSampleService implements NARService<PestSites> {
 						end,
 						dateIntervalWithConstit.getConstit(),
 						AggregationType.NONE,
-						ComparisonCategory.ABSOLUTE,
-						1,
+						new ComparisonCategorization(ComparisonCategory.ABSOLUTE, 1),
 						new ConstituentCategorization(ConstituentCategory.PESTICIDE, constituentSubcategory)
 					);
 					availability.add(tsa);

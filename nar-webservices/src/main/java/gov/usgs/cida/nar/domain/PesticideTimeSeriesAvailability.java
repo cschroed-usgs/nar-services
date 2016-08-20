@@ -8,17 +8,15 @@ import org.joda.time.LocalDateTime;
 
 public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 	private AggregationType aggregationType; //none (if real measurement), time-weighted, moving average
-	private ComparisonCategory comparisonCategory; //human health, aquatic life
-	private int comparisonOrder; //1-based index. 1 for closest to benchmark, 2 for 2nd-closest to bencmark, etc.
+	private ComparisonCategorization comparisonCategorization; //human health, aquatic life
 	private ConstituentCategorization constituentCategorization;
 	
 	public PesticideTimeSeriesAvailability(){}
 	
-	public PesticideTimeSeriesAvailability(TimeSeriesCategory timeSeriesCategory, TimeStepDensity timeStepDensity, LocalDateTime startTime, LocalDateTime endTime, String constit, AggregationType aggregationType, ComparisonCategory comparisonCategory, int comparisonOrder, ConstituentCategorization constituentCategorization){
+	public PesticideTimeSeriesAvailability(TimeSeriesCategory timeSeriesCategory, TimeStepDensity timeStepDensity, LocalDateTime startTime, LocalDateTime endTime, String constit, AggregationType aggregationType, ComparisonCategorization comparisonCategorization, ConstituentCategorization constituentCategorization){
 		super(timeSeriesCategory, timeStepDensity, startTime, endTime, constit);
 		this.aggregationType = aggregationType;
-		this.comparisonCategory = comparisonCategory;
-		this.comparisonOrder = comparisonOrder;
+		this.comparisonCategorization = comparisonCategorization;
 		this.constituentCategorization = constituentCategorization;
 		
 	}
@@ -27,8 +25,7 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 		
 		HashCodeBuilder hcb = new HashCodeBuilder();
 		hcb.append(getAggregationType())
-			.append(getComparisonCategory())
-			.append(getComparisonOrder())
+			.append(getComparisonCategorization())
 			.append(getConstituentCategorization())
 			.appendSuper(super.hashCode());
 		
@@ -47,13 +44,10 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 			return false;
 		}
 		final PesticideTimeSeriesAvailability other = (PesticideTimeSeriesAvailability) obj;
-		if (this.getComparisonOrder() != other.getComparisonOrder()) {
-			return false;
-		}
 		if (this.getAggregationType() != other.getAggregationType()) {
 			return false;
 		}
-		if (this.getComparisonCategory() != other.getComparisonCategory()) {
+		if (!Objects.equals(this.getComparisonCategorization(), other.getComparisonCategorization())) {
 			return false;
 		}
 		if (!Objects.equals(this.getConstituentCategorization(), other.getConstituentCategorization())) {
@@ -64,7 +58,7 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 
 	@Override
 	public String toString() {
-		return "PesticideTimeSeriesAvailability{" + "aggregationType=" + getAggregationType() + ", comparisonCategory=" + getComparisonCategory() + ", comparisonOrder=" + getComparisonOrder() + ", constituentCategorization=" + getConstituentCategorization() +
+		return "PesticideTimeSeriesAvailability{" + "aggregationType=" + getAggregationType() + ", comparisonCategorization=" + getComparisonCategorization() + ", constituentCategorization=" + getConstituentCategorization() +
 			super.toString() +
 			'}';
 	}
@@ -86,29 +80,15 @@ public class PesticideTimeSeriesAvailability extends TimeSeriesAvailability {
 	/**
 	 * @return the comparisonCategory
 	 */
-	public ComparisonCategory getComparisonCategory() {
-		return comparisonCategory;
+	public ComparisonCategorization getComparisonCategorization() {
+		return comparisonCategorization;
 	}
 
 	/**
 	 * @param comparisonCategory the comparisonCategory to set
 	 */
-	public void setComparisonCategory(ComparisonCategory comparisonCategory) {
-		this.comparisonCategory = comparisonCategory;
-	}
-
-	/**
-	 * @return the comparisonOrder
-	 */
-	public int getComparisonOrder() {
-		return comparisonOrder;
-	}
-
-	/**
-	 * @param comparisonOrder the comparisonOrder to set
-	 */
-	public void setComparisonOrder(int comparisonOrder) {
-		this.comparisonOrder = comparisonOrder;
+	public void setComparisonCategorization(ComparisonCategorization comparisonCategorization) {
+		this.comparisonCategorization = comparisonCategorization;
 	}
 
 	/**

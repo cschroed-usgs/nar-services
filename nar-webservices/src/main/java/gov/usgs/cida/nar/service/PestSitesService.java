@@ -1,5 +1,7 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.domain.ComparisonCategorization;
+import gov.usgs.cida.nar.domain.ComparisonCategory;
 import gov.usgs.cida.nar.domain.Pesticide;
 import gov.usgs.cida.nar.domain.TimeSeriesAvailability;
 import gov.usgs.cida.nar.domain.TimeSeriesCategory;
@@ -7,6 +9,9 @@ import gov.usgs.cida.nar.domain.TimeStepDensity;
 import gov.usgs.cida.nar.mybatis.dao.PestSitesDao;
 import gov.usgs.cida.nar.mybatis.model.PestSites;
 import java.util.List;
+import java.util.Map;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  *
@@ -58,8 +63,20 @@ public class PestSitesService implements NARService<PestSites> {
 	 * 
 	 * @return the most-detected pesticides for a site
 	 */
-	public List<Pesticide> getMostDetectedPesticides(String siteQwId) {
-		return dao.getMostDetectedPesticides(siteQwId);
+	public List<Pesticide> getMostFrequentlyDetectedPesticides(String siteQwId) {
+		return dao.getMostFrequentlyDetectedPesticides(siteQwId);
+	}
+
+	/**
+	 * 
+	 * @param siteQw a site id
+	 * @return a Map of String constituent names to a Pair, whose left 
+	 * element is a ComparisonCategory, and right element is a comparison order
+	 * 
+	 */
+	Map<String, ComparisonCategorization> getPesticidesCloseToBenchmarks(String siteQw) {
+
+		return dao.getPesticidesCloseToBenchmarks(siteQwId);
 	}
 
 }

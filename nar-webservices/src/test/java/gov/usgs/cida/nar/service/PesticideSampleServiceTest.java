@@ -2,6 +2,7 @@ package gov.usgs.cida.nar.service;
 
 import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.domain.AggregationType;
+import gov.usgs.cida.nar.domain.ComparisonCategorization;
 import gov.usgs.cida.nar.domain.ComparisonCategory;
 import gov.usgs.cida.nar.domain.Herbicide;
 import gov.usgs.cida.nar.domain.NonHerbicide;
@@ -66,7 +67,7 @@ public class PesticideSampleServiceTest {
 		mostCommonPesticides.add(mockHerbicide);
 		mostCommonPesticides.add(mockNonHerbicide);
 		
-		when(sitesService.getMostDetectedPesticides(MOCK_SITE_ID)).thenReturn(mostCommonPesticides);
+		when(sitesService.getMostFrequentlyDetectedPesticides(MOCK_SITE_ID)).thenReturn(mostCommonPesticides);
 		instance.setSiteQwId(Lists.newArrayList(MOCK_SITE_ID));
 		
 		LocalDateTime herbStart = new LocalDateTime(1990, 1, 1, 12, 0);
@@ -90,8 +91,7 @@ public class PesticideSampleServiceTest {
 			nonHerbEnd,
 			mockNonHerbicide.getName(),
 			AggregationType.NONE,
-			ComparisonCategory.ABSOLUTE,
-			1,
+			new ComparisonCategorization(ComparisonCategory.ABSOLUTE, 1),
 			new ConstituentCategorization(ConstituentCategory.PESTICIDE, ConstituentSubcategory.NON_HERBICIDE)
 		);
 		PesticideTimeSeriesAvailability herbAvailability = new PesticideTimeSeriesAvailability(
@@ -101,8 +101,7 @@ public class PesticideSampleServiceTest {
 			herbEnd,
 			mockHerbicide.getName(),
 			AggregationType.NONE,
-			ComparisonCategory.ABSOLUTE,
-			1,
+			new ComparisonCategorization(ComparisonCategory.ABSOLUTE, 1),
 			new ConstituentCategorization(ConstituentCategory.PESTICIDE, ConstituentSubcategory.HERBICIDE)
 		);
 		
