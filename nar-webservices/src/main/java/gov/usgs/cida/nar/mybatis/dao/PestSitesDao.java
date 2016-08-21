@@ -27,6 +27,10 @@ public class PestSitesDao extends BaseDao {
 
 	private static final Logger log = LoggerFactory.getLogger(PestSitesDao.class);
 	
+	public PestSitesDao(){
+		super();
+	}
+	
 	public PestSitesDao(SqlSessionFactory factory){
 		super(factory);
 	}
