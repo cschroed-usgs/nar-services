@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.service;
 
+import gov.usgs.cida.nar.mybatis.model.PesticideSample;
 import gov.usgs.cida.nar.domain.AggregationType;
 import gov.usgs.cida.nar.domain.ComparisonCategorization;
 import gov.usgs.cida.nar.domain.ComparisonCategory;
@@ -15,9 +16,9 @@ import gov.usgs.cida.nar.domain.constituent.ConstituentCategorization;
 import gov.usgs.cida.nar.domain.constituent.ConstituentCategory;
 import gov.usgs.cida.nar.domain.constituent.ConstituentSubcategory;
 import gov.usgs.cida.nar.mybatis.model.DateIntervalWithConstituent;
-import gov.usgs.cida.nar.mybatis.model.PestSites;
+import gov.usgs.cida.nar.util.DateUtil;
+import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.ws.rs.NotFoundException;
@@ -25,13 +26,14 @@ import org.joda.time.LocalDateTime;
 
 
 
-class PesticideSampleService implements NARService<PestSites> {
+public class PesticideSampleService implements NARService<PesticideSample>, IConstituentFilterable{
 	
 	private PesticideSampleDao dao;
 	protected List<String> siteQwId;
 	private String startDate;
 	private String endDate;
 	private final PestSitesService sitesService;
+	public List<String> constits;
 	
 	public PesticideSampleService() {
 		this(new PesticideSampleDao(), new PestSitesService());
@@ -44,9 +46,16 @@ class PesticideSampleService implements NARService<PestSites> {
 		this.startDate = null;
 		this.endDate = null;
 	}
+
+	public List<PesticideSample> request(List<String> siteQwId, List<String> constit, String startDateStr, String endDateStr) {
+		Date startDateSql = DateUtil.getSqlDate(startDateStr);
+		Date endDateSql = DateUtil.getSqlDate(endDateStr);
+		List<PesticideSample> pesticideSamples = dao.getPesticideSamples(siteQwId, constit, startDateSql, endDateSql);
+		return pesticideSamples;
+	}
 	
 	@Override
-	public List<? extends PestSites> request() {
+	public List<PesticideSample> request() {
 		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 	}
 
@@ -67,7 +76,7 @@ class PesticideSampleService implements NARService<PestSites> {
 	public List<TimeSeriesAvailability> getAvailability() {
 		List<TimeSeriesAvailability> mostFrequentlyDetected = getMostFrequentlyDetectedAvailability();
 		List<TimeSeriesAvailability> closestToBenchmarks = getAvailabilityOfPesticidesCloseToBenchmarks();
-		List<TimeSeriesAvailability> allPestSampleAvailability = new ArrayList<TimeSeriesAvailability>();
+		List<TimeSeriesAvailability> allPestSampleAvailability = new ArrayList<>();
 		allPestSampleAvailability.addAll(mostFrequentlyDetected);
 		allPestSampleAvailability.addAll(closestToBenchmarks);
 		return allPestSampleAvailability;
@@ -157,6 +166,39 @@ class PesticideSampleService implements NARService<PestSites> {
 	@Override
 	public void setSiteQwId(List<String> siteQwId) {
 		this.siteQwId = siteQwId;
+	}
+
+	@Override
+	public void setConstit(List<String> constits) {
+		this.constits = constits;
+	}
+
+	/**
+	 * @return the startDate
+	 */
+	public String getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * @param startDate the startDate to set
+	 */
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	/**
+	 * @return the endDate
+	 */
+	public String getEndDate() {
+		return endDate;
+	}
+
+	/**
+	 * @param endDate the endDate to set
+	 */
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 
 }

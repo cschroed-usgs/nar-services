@@ -8,7 +8,7 @@ import gov.usgs.cida.nar.mybatis.model.Dflow;
 import gov.usgs.cida.nar.mybatis.model.Discqw;
 import gov.usgs.cida.nar.mybatis.model.Mflow;
 import gov.usgs.cida.nar.mybatis.model.Mloads;
-import gov.usgs.cida.nar.mybatis.model.PestSites;
+import gov.usgs.cida.nar.mybatis.model.PesticideSample;
 import gov.usgs.cida.nar.service.AflowService;
 import gov.usgs.cida.nar.service.AloadsService;
 import gov.usgs.cida.nar.service.AvailabilityService;
@@ -16,7 +16,7 @@ import gov.usgs.cida.nar.service.DflowService;
 import gov.usgs.cida.nar.service.DiscqwService;
 import gov.usgs.cida.nar.service.MflowService;
 import gov.usgs.cida.nar.service.MloadsService;
-import gov.usgs.cida.nar.service.PestSitesService;
+import gov.usgs.cida.nar.service.PesticideSampleService;
 import gov.usgs.cida.nar.util.JSONUtil;
 import java.util.List;
 import javax.ws.rs.GET;
@@ -118,5 +118,18 @@ public class TimeSeriesWebservice {
 		List<TimeSeriesAvailability> tsas = availServ.request(siteQwId, constit, excludeModtype);
 		
 		return Response.ok(JSONUtil.toJSON(tsas)).build();
+	}
+	
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/pesticide_samples/site/{siteQwId}")
+	public Response getPesticideSamplesBySite(@PathParam("siteQwId")String siteQwId,
+			@QueryParam("constit")List<String> constit,
+			@QueryParam("startTime")String startTime, @QueryParam("endTime")String endTime) {
+		log.debug("Pesticide Samples requested from {} for {} from {} to {}", siteQwId, constit, startTime, endTime);
+		PesticideSampleService service = new PesticideSampleService();
+		List<PesticideSample> samples = service.request(Lists.newArrayList(siteQwId), constit, startTime, endTime);
+		return Response.ok(JSONUtil.toJSON(samples)).build();
 	}
 }
