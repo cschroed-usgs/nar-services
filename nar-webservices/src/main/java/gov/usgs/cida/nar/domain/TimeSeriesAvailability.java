@@ -11,11 +11,11 @@ import org.joda.time.format.ISODateTimeFormat;
 
 
 public class TimeSeriesAvailability {
-	private TimeSeriesCategory timeSeriesCategory;
-	private TimeStepDensity timeStepDensity;
-	private LocalDateTime startTime;
-	private LocalDateTime endTime;
-	private String constit;
+	protected TimeSeriesCategory timeSeriesCategory;
+	protected TimeStepDensity timeStepDensity;
+	protected LocalDateTime startTime;
+	protected LocalDateTime endTime;
+	protected String constit;
 	
 	public TimeSeriesAvailability(){}
 	
