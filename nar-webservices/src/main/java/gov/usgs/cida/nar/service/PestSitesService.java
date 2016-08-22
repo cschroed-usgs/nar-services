@@ -1,5 +1,6 @@
 package gov.usgs.cida.nar.service;
 
+import com.google.common.collect.Lists;
 import gov.usgs.cida.nar.domain.ComparisonCategorization;
 import gov.usgs.cida.nar.domain.ComparisonCategory;
 import gov.usgs.cida.nar.domain.Pesticide;
@@ -70,13 +71,11 @@ public class PestSitesService implements NARService<PestSites> {
 	/**
 	 * 
 	 * @param siteQw a site id
-	 * @return a Map of String constituent names to a Pair, whose left 
-	 * element is a ComparisonCategory, and right element is a comparison order
+	 * @return a Map of a ComparisonCategorization to a constituent name
 	 * 
 	 */
-	Map<String, ComparisonCategorization> getPesticidesCloseToBenchmarks(String siteQw) {
-
-		return dao.getPesticidesCloseToBenchmarks(siteQwId);
+	Map<ComparisonCategorization, String> getPesticidesCloseToBenchmarks(String siteQw) {
+		return dao.getPesticidesCloseToBenchmarks(siteQw);
 	}
 
 }

@@ -65,21 +65,26 @@ class PesticideSampleService implements NARService<PestSites> {
 	 * @throws javax.ws.rs.NotFoundException if pesticide information is unavailable for the site
 	 */
 	public List<TimeSeriesAvailability> getAvailability() {
-		return getMostFrequentlyDetectedAvailability();
+		List<TimeSeriesAvailability> mostFrequentlyDetected = getMostFrequentlyDetectedAvailability();
+		List<TimeSeriesAvailability> closestToBenchmarks = getAvailabilityOfPesticidesCloseToBenchmarks();
+		List<TimeSeriesAvailability> allPestSampleAvailability = new ArrayList<TimeSeriesAvailability>();
+		allPestSampleAvailability.addAll(mostFrequentlyDetected);
+		allPestSampleAvailability.addAll(closestToBenchmarks);
+		return allPestSampleAvailability;
 	}
 	
 	
 	public List<TimeSeriesAvailability> getAvailabilityOfPesticidesCloseToBenchmarks(){
 				String siteQw = siteQwId.get(0);
-		Map<String, ComparisonCategorization> pests = sitesService.getPesticidesCloseToBenchmarks(siteQw);
+		Map<ComparisonCategorization, String> pests = sitesService.getPesticidesCloseToBenchmarks(siteQw);
 		
 		if (null == pests || pests.isEmpty()){
 			throw new NotFoundException("Could not determine the availability of pesticides close to benchmarks at site '" + siteQw +"'.");
 		}
 		List<TimeSeriesAvailability> availability = new ArrayList<>();
-		for (Map.Entry<String, ComparisonCategorization> entry : pests.entrySet()) {
-			String constit = entry.getKey();
-			ComparisonCategorization comparisonCategorization = entry.getValue();
+		for (Map.Entry<ComparisonCategorization, String> entry : pests.entrySet()) {
+			String constit = entry.getValue();
+			ComparisonCategorization comparisonCategorization = entry.getKey();
 			List<DateIntervalWithConstituent> dateIntervalsWithConstits = this.dao.getAvailability(siteQw, constit);
 			if (null != dateIntervalsWithConstits && !dateIntervalsWithConstits.isEmpty()) {
 				for (DateIntervalWithConstituent dateIntervalWithConstit : dateIntervalsWithConstits) {
