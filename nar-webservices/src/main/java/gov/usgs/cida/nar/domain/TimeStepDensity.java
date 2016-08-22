@@ -6,5 +6,7 @@ public enum TimeStepDensity {
 	ANNUAL,
 	MONTHLY,
 	DAILY,
-	DISCRETE
+	DISCRETE, //No regular pattern
+	EVERY_21_DAYS,
+	EVERY_60_DAYS,
 }
