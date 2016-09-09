@@ -164,6 +164,7 @@
 		<result property="nNutsDetAq" column="n_nuts_det_aq" />
 		<result property="nNutHh" column="n_nut_hh" />
 		<result property="plot" column="plot" />
+		<result property="npest3Aq" column="npest_3_aq" />
 	</resultMap>
 	
 	<sql id="columns">
@@ -324,7 +325,8 @@
 		n_nuts_det_hh,
 		n_nuts_det_aq,
 		n_nut_hh,
-		plot
+		plot,
+		npest_3_aq
 	</sql>
 	
 	<select id="getPestSites" parameterType="map" resultMap="pestSitesResult">
