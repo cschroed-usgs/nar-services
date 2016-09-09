@@ -164,6 +164,7 @@ public class PestSites extends NARData {
 	private double nNutsDetAq;
 	private int nNutHh;
 	private String plot;
+	private int npest3Aq;
 
 	public String getSiteQwId() {
 		return siteQwId;
@@ -1427,6 +1428,14 @@ public class PestSites extends NARData {
 
 	public void setPlot(String plot) {
 		this.plot = plot;
+	}
+
+	public int getNpest3Aq() {
+		return npest3Aq;
+	}
+
+	public void setNpest3Aq(int npest3Aq) {
+		this.npest3Aq = npest3Aq;
 	}
 
 }
