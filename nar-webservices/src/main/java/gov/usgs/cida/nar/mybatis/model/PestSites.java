@@ -20,12 +20,12 @@ public class PestSites extends NARData {
 	private String aq1;
 	private String aq2;
 	private String aq3;
-	private double percHh;
-	private double percAq;
-	private double percHh3;
-	private double percAq3;
-	private double percHhOld;
-	private double percAqOld;
+	private String percHh;
+	private String percAq;
+	private String percHh3;
+	private String percAq3;
+	private String percHhOld;
+	private String percAqOld;
 	private int nNew;
 	private int npestNewHh;
 	private int n3;
@@ -278,51 +278,51 @@ public class PestSites extends NARData {
 		this.aq3 = aq3;
 	}
 
-	public double getPercHh() {
+	public String getPercHh() {
 		return percHh;
 	}
 
-	public void setPercHh(double percHh) {
+	public void setPercHh(String percHh) {
 		this.percHh = percHh;
 	}
 
-	public double getPercAq() {
+	public String getPercAq() {
 		return percAq;
 	}
 
-	public void setPercAq(double percAq) {
+	public void setPercAq(String percAq) {
 		this.percAq = percAq;
 	}
 
-	public double getPercHh3() {
+	public String getPercHh3() {
 		return percHh3;
 	}
 
-	public void setPercHh3(double percHh3) {
+	public void setPercHh3(String percHh3) {
 		this.percHh3 = percHh3;
 	}
 
-	public double getPercAq3() {
+	public String getPercAq3() {
 		return percAq3;
 	}
 
-	public void setPercAq3(double percAq3) {
+	public void setPercAq3(String percAq3) {
 		this.percAq3 = percAq3;
 	}
 
-	public double getPercHhOld() {
+	public String getPercHhOld() {
 		return percHhOld;
 	}
 
-	public void setPercHhOld(double percHhOld) {
+	public void setPercHhOld(String percHhOld) {
 		this.percHhOld = percHhOld;
 	}
 
-	public double getPercAqOld() {
+	public String getPercAqOld() {
 		return percAqOld;
 	}
 
-	public void setPercAqOld(double percAqOld) {
+	public void setPercAqOld(String percAqOld) {
 		this.percAqOld = percAqOld;
 	}
 
