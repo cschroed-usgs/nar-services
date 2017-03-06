@@ -8,7 +8,6 @@
 	<name>NAWQA Annual Reporting Services Parent Project</name>
 
 	<modules>
-		<module>nar-geoserver</module>
 		<module>nar-webservices</module>
 	</modules>
 
