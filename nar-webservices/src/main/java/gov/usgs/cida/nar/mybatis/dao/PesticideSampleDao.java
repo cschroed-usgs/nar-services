@@ -32,6 +32,7 @@ public class PesticideSampleDao extends BaseDao {
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			availability = session.selectList(QUERY_PACKAGE + ".PesticideSampleMapper.getAvailability", params);
 		}
+		availability = removeNulls(availability);
 		for(DateIntervalWithConstituent interval : availability) {
 			interval.setConstit(constituent);
 		}
@@ -50,7 +51,7 @@ public class PesticideSampleDao extends BaseDao {
 		try (SqlSession session = sqlSessionFactory.openSession()) {
 			result = session.selectList(QUERY_PACKAGE + ".PesticideSampleMapper.getPesticideSample", params);
 		}
-		
+		result = removeNulls(result);
 		return result;
 	}
 
