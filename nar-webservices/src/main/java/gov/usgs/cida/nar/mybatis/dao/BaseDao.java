@@ -1,12 +1,8 @@
 package gov.usgs.cida.nar.mybatis.dao;
 
-import com.google.common.base.Predicates;
 import gov.usgs.cida.nar.mybatis.MyBatisConnectionFactory;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import jersey.repackaged.com.google.common.collect.Collections2;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
